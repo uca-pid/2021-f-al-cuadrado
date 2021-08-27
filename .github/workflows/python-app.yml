@@ -40,4 +40,4 @@ jobs:
         cd backend
         cd smartMoney
         coverage run -m pytest
-        coveralls
+        coveralls --service=github
