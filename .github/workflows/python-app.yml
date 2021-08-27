@@ -34,6 +34,7 @@ jobs:
         cd smartMoney
         pytest
     - name: Run coverage
+      env: GITHUB_TOKEN:${{ secrets.GITHUB_TOKEN }}
       run: |
         cd backend
         cd smartMoney
