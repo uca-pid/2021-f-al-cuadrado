@@ -39,5 +39,5 @@ jobs:
       run: |
         cd backend
         cd smartMoney
-        coverage run -m pytest
+        coverage run --source=mypkg -m pytest
         coveralls --service=github
