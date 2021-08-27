@@ -3,7 +3,9 @@
 
 name: Python application
 
-on: [push]
+
+
+on: ["push", "pull_request"]
 jobs:
   build:
 
@@ -20,6 +22,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r ./backend/requirements.txt
         pip install coverage 
+        pip install coveralls
     - name: Run migrations
       run: |
         cd backend
@@ -29,4 +32,12 @@ jobs:
       run: |
         cd backend
         cd smartMoney
-        python manage.py test
+        pytest
+    - name: Run coverage
+      env: 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        cd backend
+        cd smartMoney
+        coverage run --source=mypkg -m pytest
+        coveralls --service=github
