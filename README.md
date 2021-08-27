@@ -1,3 +1,3 @@
 # f-al-cuadrado-2021
 
-![python-app](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
+![python-app](https://github.com/uca-pid/2021-f-al-cuadrado/actions/workflows/main.yml/badge.svg)
