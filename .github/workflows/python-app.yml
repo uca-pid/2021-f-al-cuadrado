@@ -36,7 +36,7 @@ jobs:
       run: |
         cd backend
         cd smartMoney
-        coverage run -m pytest arg1 arg2 arg3
+        coverage run -m pytest
         coverage report -m
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@1.1.3
