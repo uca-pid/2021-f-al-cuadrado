@@ -29,3 +29,6 @@ jobs:
         cd backend
         cd smartMoney
         python manage.py test
+    - name: Coveralls GitHub Action
+      uses: coverallsapp/github-action@1.1.3
+
