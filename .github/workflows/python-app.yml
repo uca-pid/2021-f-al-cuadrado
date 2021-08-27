@@ -30,7 +30,7 @@ jobs:
       run: |
         cd backend
         cd smartMoney
-        python manage.py test
+        py.test
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@1.1.3
       with:
