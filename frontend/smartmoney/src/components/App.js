@@ -1,6 +1,7 @@
 import React from 'react';
 import {useState} from 'react';
 import './App.css';
+import logo from "./logo.png"; 
 
 function App() {
   const [layout, setLayout] = useState('login');
@@ -44,54 +45,74 @@ function App() {
         display: "flex", 
         flexDirection: "row"}}>
       <div style={{width:'35%',  backgroundColor:"#D7D7D6"}}>
-        <p style={{fontSize:30, fontWeight:'bold'}}>Smart Money</p>
         {(layout==='login')&&
-          <div name="Login" class="menu">     
-            <form style={{ display: "flex", 
-        flexDirection: 'column'}}>
-              <p>Usuario:</p>
-              <input type="text" value={user} onChange={e => setUser(e.target.value)} />
-              <p>Contraseña:</p>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
-              <input type="button" onClick={login} value="Iniciar sesión" />
-              <input type="button" onClick={forgotPass} value="Olvidé mi contraseña" />
-              <input type="button" onClick={register} value="Registrarse" />
+          <div style={{display:'flex', height:'100%' ,justifyContent:'center',alignItems:'center'}} name="Login" class="menu">     
+            <form style={{ display: "flex", flexDirection: 'column', width:'65%'}}>
+              <p style={styles.label}>Usuario:</p>
+              <input style={styles.input} type="text" value={user} onChange={e => setUser(e.target.value)} />
+              <p style={styles.label}>Contraseña:</p>
+              <input style={styles.input} type="password" value={password} onChange={e => setPassword(e.target.value)} />
+              <input style={{backgroundColor:"#D7D7D6",borderStyle:'none', color:'blue', textDecorationLine: 'underline', textAlign:'left', fontSize:11}} type="button" onClick={forgotPass} value="Olvidé mi contraseña" />
+              <input style={styles.button1} type="button" onClick={login} value="Iniciar sesión" />
+              <div style={{marginTop: 40,marginBottom:40,backgroundColor:'#292928', height:3, borderRadius:10, width:'120%', position:'relative', left:'-10%'}}></div>
+              <input style={styles.button2} type="button" onClick={register} value="Registrarse" />
             </form>
           </div> 
         }
         {(layout==='register')&&
-          <div name="Register" class="menu">     
-            <form style={{ display: "flex", 
-        flexDirection: 'column'}}>
-              <p>Mail:</p>
-              <input type="text" value={mail} onChange={e => setMail(e.target.value)} />
-              <p>Nombre:</p>
-              <input type="text" value={name} onChange={e => setName(e.target.value)} />
-              <p>Apellido:</p>
-              <input type="text" value={surname} onChange={e => setSurname(e.target.value)} />
-              <p>Contraseña:</p>
-              <input type="password" value={registerPassword} onChange={e => setRegisterPassword(e.target.value)} />
-              <input type="button" onClick={registerSubmit} value="Registrarse" />
-              <input type="button" onClick={returnLogin} value="Iniciar sesión" />
+          <div style={{display:'flex', height:'100%' ,justifyContent:'center',alignItems:'center'}} name="Register" class="menu">     
+            <form style={{ display: "flex", flexDirection: 'column', width:'65%'}}>
+              <p style={styles.label} >Mail:</p>
+              <input style={styles.input} type="text" value={mail} onChange={e => setMail(e.target.value)} />
+              <p style={styles.label}>Nombre:</p>
+              <input style={styles.input} type="text" value={name} onChange={e => setName(e.target.value)} />
+              <p style={styles.label}>Apellido:</p>
+              <input style={styles.input} type="text" value={surname} onChange={e => setSurname(e.target.value)} />
+              <p style={styles.label}>Contraseña:</p>
+              <input style={styles.input} type="password" value={registerPassword} onChange={e => setRegisterPassword(e.target.value)} />
+              <input style={styles.button1} type="button" onClick={registerSubmit} value="Registrarse" />
+              <div style={{marginTop: 20,marginBottom:20,backgroundColor:'#292928', height:3, borderRadius:10, width:'120%', position:'relative', left:'-10%'}}></div>
+              <input style={styles.button2} type="button" onClick={returnLogin} value="Iniciar sesión" />
             </form>
           </div> 
         }
         {(layout==='forgotPassword')&&
-          <div name="ForgotPassword" class="menu">     
-            <form style={{ display: "flex", 
-        flexDirection: 'column'}}>
-              <p>Usuario:</p>
-              <input type="text" value={userForgotPassword} onChange={e => setUserForgotPassword(e.target.value)} />
-              <input type="button" onClick={forgotPasswordSubmit} value="Enviar mail" />
-              <input type="button" onClick={returnLogin} value="Volver" />
+          <div style={{display:'flex', height:'100%' ,justifyContent:'center',alignItems:'center'}} name="ForgotPassword" class="menu">     
+            <form style={{ display: "flex", flexDirection: 'column', width:'65%'}}>
+              <p style={styles.label}>Usuario:</p>
+              <input style={styles.input} type="text" value={userForgotPassword} onChange={e => setUserForgotPassword(e.target.value)} />
+              <input style={styles.button1} type="button" onClick={forgotPasswordSubmit} value="Enviar mail" />
+              <div style={{marginTop: 40,marginBottom:40,backgroundColor:'#292928', height:3, borderRadius:10, width:'120%', position:'relative', left:'-10%'}}></div>
+              <input style={styles.button2} type="button" onClick={returnLogin} value="Volver" />
             </form>
           </div> 
         }
       </div>
-      <div style={{width: '65%',backgroundColor:'#292928'}}>
+      <div style={{width: '65%',backgroundColor:'#292928',display:'flex', height:'100%' ,justifyContent:'center',alignItems:'center'}}>
+        <img src={logo} width="280" height="200" />
       </div>
     </div>
   );
+}
+
+const styles = {
+  input: {
+    backgroundColor: "#D7D7D6",
+    borderRadius: 5,
+    padding: 2,
+  },
+  label:{
+    marginBottom:5,
+  },
+  button1:{
+    marginTop:20, 
+    borderRadius:5, 
+    height:27
+  },
+  button2:{
+    borderRadius:5, 
+    height:27
+  }
 }
 
 export default App;

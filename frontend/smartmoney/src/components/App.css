@@ -37,6 +37,8 @@
   }
 } */
 
-.menu {
-  flex-direction:'column'
+.inputlogin {
+  background-color: "#D7D7D6";
+  border-radius: 5;
+  padding: 2;
 }
