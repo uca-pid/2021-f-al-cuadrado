@@ -31,13 +31,13 @@ jobs:
     - name: Run tests
       run: |
         cd backend
-        cd smartMoney
+        cd smartMoney_project
         pytest
     - name: Run coverage
       env: 
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         cd backend
-        cd smartMoney
+        cd smartMoney_project
         coverage run --source=mypkg -m pytest
         coveralls --service=github
