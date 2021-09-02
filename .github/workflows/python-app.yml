@@ -26,7 +26,7 @@ jobs:
     - name: Run migrations
       run: |
         cd backend
-        cd smartMoney
+        cd smartMoney_project
         python manage.py migrate
     - name: Run tests
       run: |
