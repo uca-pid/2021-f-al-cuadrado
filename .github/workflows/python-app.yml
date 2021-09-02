@@ -40,5 +40,5 @@ jobs:
         cd backend
         cd smartMoney_project
         coverage run --source=mypkg -m pytest
-        coverage run --source='smartMoney_app' manage.py test the-app-you-want-to-test
+        coverage run --source='smartMoney_app' manage.py test
         coveralls --service=github
