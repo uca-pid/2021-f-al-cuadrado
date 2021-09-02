@@ -26,18 +26,19 @@ jobs:
     - name: Run migrations
       run: |
         cd backend
-        cd smartMoney
+        cd smartMoney_project
         python manage.py migrate
     - name: Run tests
       run: |
         cd backend
-        cd smartMoney
+        cd smartMoney_project
         pytest
     - name: Run coverage
       env: 
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         cd backend
-        cd smartMoney
+        cd smartMoney_project
         coverage run --source=mypkg -m pytest
+        coverage run --source='smartMoney_app' manage.py test
         coveralls --service=github
