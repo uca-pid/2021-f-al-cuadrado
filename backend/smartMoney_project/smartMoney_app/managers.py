@@ -1,8 +1,8 @@
-from django.contrib.auth.base_user import BaseUserManager
-from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.base_user import BaseUserManager # pragma: no cover
+from django.utils.translation import ugettext_lazy as _ # pragma: no cover
 
 
-class CustomUserManager(BaseUserManager):
+class CustomUserManager(BaseUserManager): # pragma: no cover
     """
     Custom user model manager where email is the unique identifiers
     for authentication instead of usernames.
