@@ -16,19 +16,39 @@ const Landing = () => {
   const [surname, setSurname] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
   const [userForgotPassword, setUserForgotPassword] = useState('');
+  const [codigoSeguridad, setCodigoSeguridad] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [codigoEnviado, setCodigoEnviado] = useState(false);
 
   const [buttom1Hover, setbuttom1Hover] = useState(false);
   const [buttom2Hover, setbuttom2Hover] = useState(false);
+  const [updatePasswordHover, setUpdatePasswordHover] = useState(false);
+  const [reenviarCodigo, setReenviarCodigo] = useState(false);
+
+  function resetValues() {
+    setUser('');
+    setPassword('');
+    setMail('');
+    setName('');
+    setSurname('');
+    setRegisterPassword('');
+    setUserForgotPassword('');
+    setCodigoSeguridad('');
+    setNewPassword('');
+
+  }
 
   function login() {
     //#TODO: Login
     window.location.href = "./home"
   }
   function forgotPass() {
+    resetValues();
     setLayout('forgotPassword')
   }
   function register() {
     setbuttom2Hover(false);
+    resetValues();
     setLayout('register');
   }
   function registerSubmit() {
@@ -36,10 +56,18 @@ const Landing = () => {
     window.location.href = "./home";
   }
   function forgotPasswordSubmit() {
+    setCodigoEnviado(true);
+    console.log('#TODO: forgotPass')
+  }
+  function updatePasswordSubmit() {
+    console.log('#TODO: forgotPass')
+  }
+  function reenviarCodigoSubmit() {
     console.log('#TODO: forgotPass')
   }
   function returnLogin() {
     setbuttom2Hover(false);
+    resetValues();
     setLayout('login');
   }
 
@@ -57,6 +85,21 @@ const Landing = () => {
         return styles.button2;
     }
   }
+  function styleUpdatePassword(){
+    if(updatePasswordHover){
+        return styles.button1Hover;
+    }else{
+        return styles.button1;
+    }
+  }
+  function styleReenviarCodigo(){
+    if(reenviarCodigo){
+        return styles.button2Hover;
+    }else{
+        return styles.button2;
+    }
+  }
+  
 
   return (
     <div style={{
@@ -130,13 +173,41 @@ const Landing = () => {
             <form style={{ display: "flex", flexDirection: 'column', width:'65%'}}>
               <p style={styles.label}>Usuario</p>
               <input style={styles.input} type="text" value={userForgotPassword} onChange={e => setUserForgotPassword(e.target.value)} />
-              <input 
-                onMouseEnter={()=>{setbuttom1Hover(true);}} 
-                onMouseLeave={()=>{setbuttom1Hover(false);}} 
-                style={styleButton1()}  
-                type="button" 
-                onClick={forgotPasswordSubmit} 
-                value="Enviar mail" />
+              {
+                !codigoEnviado &&
+                  <input 
+                    onMouseEnter={()=>{setbuttom1Hover(true);}} 
+                    onMouseLeave={()=>{setbuttom1Hover(false);}} 
+                    style={styleButton1()}  
+                    type="button" 
+                    onClick={forgotPasswordSubmit} 
+                    value="Enviar mail" />
+              }
+              {
+                codigoEnviado &&
+                <form style={{ display: "flex", flexDirection: 'column', width:'100%'}}>
+                    <p style={styles.label}>Código</p>
+                    <input style={styles.input} type="text" value={codigoSeguridad} onChange={e => setCodigoSeguridad(e.target.value)} />
+                    <p style={styles.label}>Nueva contraseña</p>
+                    <input style={styles.input} type="text" value={newPassword} onChange={e => setNewPassword(e.target.value)} />
+                    <input 
+                      onMouseEnter={()=>{setUpdatePasswordHover(true);}} 
+                      onMouseLeave={()=>{setUpdatePasswordHover(false);}} 
+                      style={styleUpdatePassword()}  
+                      type="button" 
+                      onClick={updatePasswordSubmit} 
+                      value="Actualizar contraseña" />
+                    <div style={{height:10}}></div>
+                    <input 
+                      onMouseEnter={()=>{setReenviarCodigo(true);}} 
+                      onMouseLeave={()=>{setReenviarCodigo(false);}} 
+                      style={styleReenviarCodigo()} 
+                      type="button" 
+                      onClick={reenviarCodigoSubmit} 
+                      value="Reenviar código" />
+                  </form>
+                  
+              }
               <div style={styles.line}></div>
               <input 
                 onMouseEnter={()=>{setbuttom2Hover(true);}} 
