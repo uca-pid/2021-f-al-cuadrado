@@ -44,6 +44,11 @@ class UserTestCase(TestCase):
         response = webClient.post('/login/', {'email': 'f2@gmail.com', 'password': 'admin'})
         self.assertEqual(response.status_code,401)
 
-
+    def test_user_registration(self):
+        webClient = Client()
+        response = webClient.post('/registration/',{'first_name': 'Federico','last_name' : 'De Grandis', 'email' : 'f2@gmail.com', 'password' : 'f^2'})
+        self.assertEqual(response.status_code,201)
+        new_user = User.objects.filter(email = 'f2@gmail.com')
+        self.assertTrue(len(new_user) > 0)
 
 
