@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.core.exceptions import ValidationError
 from rest_framework.test import APITestCase
 from django.contrib.auth.hashers import make_password,check_password
+from django.core import mail
 
 
 
@@ -108,6 +109,9 @@ class UserTestCase(APITestCase):
         response = client.post('/forgotPassword/',{'email' : 'f@gmail.com'})
         user_id = response.data.get('user_id')
         code = response.data.get('code')
+        self.assertEqual(len(mail.outbox),1)
+        self.assertEqual(mail.outbox[0].subject,'Password Recovery')
+        self.assertEqual(mail.outbox[0].body,'Use the next code to recover your password' + str(code))
         self.assertEqual(response.status_code,200) #email enviado y codigo creado
         response =  client.put('/forgotPassword/' + str(user_id) + '/', {'new_password' : 'f^2', 'code' : code})
         user = User.objects.filter(email = 'f@gmail.com').first()
@@ -119,12 +123,14 @@ class UserTestCase(APITestCase):
         self.assertTrue(len(user) == 0)
         response = client.post('/forgotPassword/',{'email' : 'f_cuadrado@gmail.com'})
         self.assertEqual(response.status_code,400)
+        self.assertEqual(len(mail.outbox),0)
     def test_user_forgot_password_fails_bc_wrong_code(self):
         client = self.client
         response = client.post('/forgotPassword/',{'email' : 'f@gmail.com'})
         user_id = response.data.get('user_id')
         code = response.data.get('code')
         self.assertEqual(response.status_code,200) #email enviado y codigo creado
+        self.assertEqual(len(mail.outbox),1)
         response =  client.put('/forgotPassword/' + str(user_id) + '/', {'new_password' : 'f^2', 'code' : code[::-1]})
         self.assertEqual(response.status_code,401)
 

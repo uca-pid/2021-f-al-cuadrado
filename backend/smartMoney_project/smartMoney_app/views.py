@@ -7,12 +7,16 @@ from django.contrib.auth.hashers import make_password,check_password
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
+
 from rest_framework.decorators import api_view, renderer_classes
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework import status
 from rest_framework.response import Response
 from django.http import HttpResponse
 
+
+from smartMoney_project.settings import EMAIL_HOST_USER
+from django.core.mail import send_mail
 
 
 from . import models
@@ -29,6 +33,12 @@ last_name = openapi.Parameter('last_name', openapi.IN_QUERY, type=openapi.TYPE_S
 code = openapi.Parameter('code', openapi.IN_QUERY, type=openapi.TYPE_STRING,required = True)
 
 
+def sendEmail(receiver_email,code):
+	code = str(code)
+	subject = 'Password Recovery'
+	message = 'Use the next code to recover your password' + code
+	send_mail(subject, message, EMAIL_HOST_USER, [receiver_email], fail_silently = False)
+	
 
 
 
@@ -95,6 +105,7 @@ def forgot_password(request):
 		code = Sc.instanceCreation(user.getId()) #no deberia retornar el code... sin embargo con el test tendria que generar un code deterministico
 		code.full_clean()
 		code.save()
+		sendEmail(request.data.get('email'),code.getCode())
 		return Response({'code' : code.getCode(),'user_id': code.getUserId()} , status = status.HTTP_200_OK)
 	except Exception as e:
 		return Response(status = status.HTTP_400_BAD_REQUEST)
