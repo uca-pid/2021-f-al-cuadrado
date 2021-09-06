@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import django_heroku
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -36,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'rest_framework',
+    'corsheaders',
     'drf_yasg',
     'django.contrib.staticfiles',
     'smartMoney_app',
@@ -139,3 +144,7 @@ DEFAULT_FROM_EMAIL = 'smartmoney.pintegral@gmail.com'
 SERVER_EMAIL = 'smartmoney.pintegral@gmail.com'
 
 AUTH_USER_MODEL = 'smartMoney_app.Sm_user'
+
+
+APPEND_SLASH=False
+django_heroku.settings(locals())
