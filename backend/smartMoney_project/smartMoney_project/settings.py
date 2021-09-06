@@ -147,4 +147,4 @@ AUTH_USER_MODEL = 'smartMoney_app.Sm_user'
 
 
 APPEND_SLASH=False
-django_heroku.settings(locals())
+django_heroku.settings(locals(), test_runner=False)
