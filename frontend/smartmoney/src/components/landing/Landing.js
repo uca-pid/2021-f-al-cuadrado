@@ -3,10 +3,16 @@ import {useState} from 'react';
 import ReactDOM from 'react-dom';
 import logo from "./logo.png"; 
 import "./style.css"
-
-
+import webStyles from "./webStyles";
+import mobilStyles from "./mobilStyles";
+import { useMediaQuery } from 'react-responsive'
 
 const Landing = () => {
+
+  const isMobileDevice = useMediaQuery({
+    query: "(max-device-width: 480px)",
+  });
+
   const [layout, setLayout] = useState('login');
 
   const [user, setUser] = useState('');
@@ -73,54 +79,45 @@ const Landing = () => {
 
   function styleButton1(){
     if(buttom1Hover){
-        return styles.button1Hover;
+        return isMobileDevice ? mobilStyles.button1Hover : webStyles.button1Hover;
     }else{
-        return styles.button1;
+        return isMobileDevice ? mobilStyles.button1 :webStyles.button1;
     }
   }
   function styleButton2(){
     if(buttom2Hover){
-        return styles.button2Hover;
+        return isMobileDevice ? mobilStyles.button2Hover : webStyles.button2Hover;
     }else{
-        return styles.button2;
+        return isMobileDevice ? mobilStyles.button2 : webStyles.button2;
     }
   }
   function styleUpdatePassword(){
     if(updatePasswordHover){
-        return styles.button1Hover;
+        return isMobileDevice ? mobilStyles.button1Hover : webStyles.button1Hover;
     }else{
-        return styles.button1;
+        return isMobileDevice ? mobilStyles.button1 : webStyles.button1;
     }
   }
   function styleReenviarCodigo(){
     if(reenviarCodigo){
-        return styles.button2Hover;
+        return isMobileDevice ? mobilStyles.button2Hover : webStyles.button2Hover;
     }else{
-        return styles.button2;
+        return isMobileDevice ? mobilStyles.button2 : webStyles.button2;
     }
   }
   
 
   return (
-    <div style={{
-        position:'fixed',
-        padding:0,
-        margin:0,
-        top:0,
-        left:0,
-        width: '100%',
-        height: '100%',
-        display: "flex", 
-        flexDirection: "row"}}>
-      <div style={{width:'35%',  backgroundColor:"#D7D7D6"}}>
+    <div style={isMobileDevice ? mobilStyles.body : webStyles.body}>
+      <div style={isMobileDevice ? mobilStyles.secondRow : webStyles.leftColumn}>
         {(layout==='login')&&
-          <div style={{display:'flex', height:'100%' ,justifyContent:'center',alignItems:'center'}} name="Login" class="menu">     
-            <form style={{ display: "flex", flexDirection: 'column', width:'65%'}}>
-              <p style={styles.label}>Usuario</p>
-              <input style={styles.input} type="text" value={user} onChange={e => setUser(e.target.value)} />
-              <p style={styles.label}>Contraseña</p>
-              <input style={styles.input} type="password" value={password} onChange={e => setPassword(e.target.value)} />
-              <input style={{backgroundColor:"#D7D7D6",borderStyle:'none', color:'blue', textDecorationLine: 'underline', textAlign:'left', fontSize:11}} type="button" onClick={forgotPass} value="Olvidé mi contraseña" />
+          <div style={isMobileDevice ? mobilStyles.formContainer : webStyles.formContainer} name="Login" class="menu">     
+            <form style={isMobileDevice ? mobilStyles.form : webStyles.form}>
+              <p style={isMobileDevice ? mobilStyles.label : webStyles.label}>Usuario</p>
+              <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="text" value={user} onChange={e => setUser(e.target.value)} />
+              <p style={isMobileDevice ? mobilStyles.label : webStyles.label}>Contraseña</p>
+              <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="password" value={password} onChange={e => setPassword(e.target.value)} />
+              <input style={isMobileDevice ? mobilStyles.forgotPassword : webStyles.forgotPassword} type="button" onClick={forgotPass} value="Olvidé mi contraseña" />
               <input 
                 onMouseEnter={()=>{setbuttom1Hover(true);}} 
                 onMouseLeave={()=>{setbuttom1Hover(false);}} 
@@ -128,7 +125,7 @@ const Landing = () => {
                 type="button" 
                 onClick={login} 
                 value="Iniciar sesión" />
-              <div style={styles.line}></div>
+              <div style={isMobileDevice ? mobilStyles.line : webStyles.line}></div>
               <input 
                 onMouseEnter={()=>{setbuttom2Hover(true);}} 
                 onMouseLeave={()=>{setbuttom2Hover(false);}} 
@@ -140,16 +137,16 @@ const Landing = () => {
           </div> 
         }
         {(layout==='register')&&
-          <div style={{display:'flex', height:'100%' ,justifyContent:'center',alignItems:'center'}} name="Register" class="menu">     
-            <form style={{ display: "flex", flexDirection: 'column', width:'65%'}}>
-              <p style={styles.label} >Mail</p>
-              <input style={styles.input} type="text" value={mail} onChange={e => setMail(e.target.value)} />
-              <p style={styles.label}>Nombre</p>
-              <input style={styles.input} type="text" value={name} onChange={e => setName(e.target.value)} />
-              <p style={styles.label}>Apellido</p>
-              <input style={styles.input} type="text" value={surname} onChange={e => setSurname(e.target.value)} />
-              <p style={styles.label}>Contraseña</p>
-              <input style={styles.input} type="password" value={registerPassword} onChange={e => setRegisterPassword(e.target.value)} />
+          <div style={isMobileDevice ? mobilStyles.formContainer : webStyles.formContainer} name="Register" class="menu">     
+            <form style={isMobileDevice ? mobilStyles.form : webStyles.form}>
+              <p style={isMobileDevice ? mobilStyles.label : webStyles.label} >Mail</p>
+              <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="text" value={mail} onChange={e => setMail(e.target.value)} />
+              <p style={isMobileDevice ? mobilStyles.label : webStyles.label}>Nombre</p>
+              <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="text" value={name} onChange={e => setName(e.target.value)} />
+              <p style={isMobileDevice ? mobilStyles.label : webStyles.label}>Apellido</p>
+              <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="text" value={surname} onChange={e => setSurname(e.target.value)} />
+              <p style={isMobileDevice ? mobilStyles.label : webStyles.label}>Contraseña</p>
+              <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="password" value={registerPassword} onChange={e => setRegisterPassword(e.target.value)} />
               <input 
                 onMouseEnter={()=>{setbuttom1Hover(true);}} 
                 onMouseLeave={()=>{setbuttom1Hover(false);}} 
@@ -157,7 +154,7 @@ const Landing = () => {
                 type="button" 
                 onClick={registerSubmit} 
                 value="Registrarse" />
-              <div style={styles.line}></div>
+              <div style={isMobileDevice ? mobilStyles.line : webStyles.line}></div>
               <input 
                 onMouseEnter={()=>{setbuttom2Hover(true);}} 
                 onMouseLeave={()=>{setbuttom2Hover(false);}} 
@@ -169,10 +166,10 @@ const Landing = () => {
           </div> 
         }
         {(layout==='forgotPassword')&&
-          <div style={{display:'flex', height:'100%' ,justifyContent:'center',alignItems:'center'}} name="ForgotPassword" class="menu">     
-            <form style={{ display: "flex", flexDirection: 'column', width:'65%'}}>
-              <p style={styles.label}>Usuario</p>
-              <input style={styles.input} type="text" value={userForgotPassword} onChange={e => setUserForgotPassword(e.target.value)} />
+          <div style={isMobileDevice ? mobilStyles.formContainer : webStyles.formContainer} name="ForgotPassword" class="menu">     
+            <form style={isMobileDevice ? mobilStyles.form : webStyles.form}>
+              <p style={isMobileDevice ? mobilStyles.label : webStyles.label}>Usuario</p>
+              <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="text" value={userForgotPassword} onChange={e => setUserForgotPassword(e.target.value)} />
               {
                 !codigoEnviado &&
                   <input 
@@ -185,11 +182,11 @@ const Landing = () => {
               }
               {
                 codigoEnviado &&
-                <form style={{ display: "flex", flexDirection: 'column', width:'100%'}}>
-                    <p style={styles.label}>Código</p>
-                    <input style={styles.input} type="text" value={codigoSeguridad} onChange={e => setCodigoSeguridad(e.target.value)} />
-                    <p style={styles.label}>Nueva contraseña</p>
-                    <input style={styles.input} type="text" value={newPassword} onChange={e => setNewPassword(e.target.value)} />
+                <form style={isMobileDevice ? mobilStyles.formCode : webStyles.formCode}>
+                    <p style={isMobileDevice ? mobilStyles.label : webStyles.label}>Código</p>
+                    <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="text" value={codigoSeguridad} onChange={e => setCodigoSeguridad(e.target.value)} />
+                    <p style={isMobileDevice ? mobilStyles.label : webStyles.label}>Nueva contraseña</p>
+                    <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="text" value={newPassword} onChange={e => setNewPassword(e.target.value)} />
                     <input 
                       onMouseEnter={()=>{setUpdatePasswordHover(true);}} 
                       onMouseLeave={()=>{setUpdatePasswordHover(false);}} 
@@ -208,7 +205,7 @@ const Landing = () => {
                   </form>
                   
               }
-              <div style={styles.line}></div>
+              <div style={isMobileDevice ? mobilStyles.line : webStyles.line}></div>
               <input 
                 onMouseEnter={()=>{setbuttom2Hover(true);}} 
                 onMouseLeave={()=>{setbuttom2Hover(false);}} 
@@ -220,73 +217,12 @@ const Landing = () => {
           </div> 
         }
       </div>
-      <div style={{width: '65%',backgroundColor:'#292928',display:'flex', height:'100%' ,justifyContent:'center',alignItems:'center'}}>
-        <img src={logo} width="280" height="200" />
+      <div style={isMobileDevice ? mobilStyles.firstRow : webStyles.rightColumn}>
+        <img src={logo} style={isMobileDevice ? mobilStyles.logo : webStyles.logo}/>
       </div>
     </div>
   );
 }
 
-const styles = {
-  input: {
-    backgroundColor: "#D7D7D6",
-    borderRadius: 5,
-    padding: 3,
-  },
-  label:{
-    marginBottom:5,
-    fontWeight:'bold'
-  },
-  button1:{
-    marginTop:20, 
-    borderRadius:5, 
-    height:27,
-    backgroundColor:'#3399FF',
-    border:0,
-    color:'#FFFFFF',
-    fontWeight:'bold',
-    height:40,
-  },
-  button1Hover:{
-    marginTop:20, 
-    borderRadius:5, 
-    height:27,
-    border:0,
-    color:'#FFFFFF',
-    fontWeight:'bold',
-    height:40,
-    backgroundColor:'#005CB8',
-  },
-  button2:{
-    
-    borderRadius:5, 
-    height:27,
-    backgroundColor:'#FFFFFF',
-    border:0,
-    color:'#3399FF',
-    fontWeight:'bold',
-    height:40,
-  },
-  button2Hover:{
-    
-    borderRadius:5, 
-    height:27,
-    border:0,
-    color:'#3399FF',
-    fontWeight:'bold',
-    height:40,
-    backgroundColor:'#AAAAAA',
-  },
-  line:{
-    marginTop: 40,
-    marginBottom:40,
-    backgroundColor:'#292928', 
-    height:3, 
-    borderRadius:10, 
-    width:'120%', 
-    position:'relative', 
-    left:'-10%'
-  }
-}
 
 export default Landing;
