@@ -84,3 +84,16 @@ class SecurityCode(models.Model):
     def updateDate(self):
         self.valid_from = timezone.now()
         self.save
+
+
+class Expense(models.Model):
+    owner = models.ForeignKey(Sm_user, on_delete=models.CASCADE)
+    value = models.FloatField()
+    
+    def getOwner(self):
+        return self.owner
+    def getValue(self):
+        return self.value
+    def save(self,*arg,**args):
+        self.full_clean()
+        super().save(*arg,**args)
