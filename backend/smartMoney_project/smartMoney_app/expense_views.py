@@ -34,8 +34,8 @@ value = openapi.Parameter('value', openapi.IN_QUERY, type=openapi.FORMAT_FLOAT,r
 
 @swagger_auto_schema(method='post',manual_parameters=[code,value], responses={201: 'Expense created',401: 'Invalid Credentials'})
 @api_view(['POST'])
-def new_expense(request,id):
-	user = User.objects.filter(id = id).first()
+def new_expense(request,user_id):
+	user = User.objects.filter(id = user_id).first()
 	expected_code = Sc.objects.filter(user=user).first().getCode()
 	received_code = request.data.get('code')
 	value = request.data.get('value')
@@ -49,8 +49,8 @@ def new_expense(request,id):
 
 @swagger_auto_schema(method='post', manual_parameters=[code],responses={200: 'Expenses sended',401: 'Invalid Credentials'})
 @api_view(['POST'])
-def expense_list(request,id):
-	user = User.objects.filter(id = id).first()
+def expense_list(request,user_id):
+	user = User.objects.filter(id = user_id).first()
 	expected_code = Sc.objects.filter(user=user).first().getCode()
 	received_code = request.data.get('code')
 	value = request.data.get('value')

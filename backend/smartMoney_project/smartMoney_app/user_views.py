@@ -72,8 +72,8 @@ def user_register(request):
 
 @swagger_auto_schema(method='put',manual_parameters=[code,old_password,new_password], responses={200: 'User password changed',401: 'Outdated credentials'})
 @api_view(['PUT'])
-def change_password(request,id):
-	user = User.objects.filter(id = id).first()
+def change_password(request,user_id):
+	user = User.objects.filter(id = user_id).first()
 	expected_code = Sc.objects.filter(user=user).first().getCode()
 	received_code = request.data.get('code')
 	old_password = request.data.get('old_password')
@@ -101,8 +101,9 @@ def forgot_password(request):
 
 @swagger_auto_schema(method='put',manual_parameters=[new_password,code], responses={200: 'User password changed',401: 'Outdated credentials'})
 @api_view(['PUT'])
-def forgot_password_confirmation(request,id):
-	user = User.objects.filter(id = id).first()
+
+def forgot_password_confirmation(request,user_id):
+	user = User.objects.filter(id = user_id).first()
 	expected_code = Sc.objects.filter(user=user).first().getCode()
 	received_code = request.data.get('code')
 	new_password = request.data.get('new_password')
@@ -111,4 +112,5 @@ def forgot_password_confirmation(request,id):
 		return Response(status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED) 
 
+	
 	
