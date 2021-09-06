@@ -74,7 +74,7 @@ def user_register(request):
 @swagger_auto_schema(method='put',manual_parameters=[code,old_password,new_password], responses={200: 'User password changed',401: 'Outdated credentials'})
 @api_view(['PUT'])
 def change_password(request,id):
-	expected_code = Sc.objects.filter(id=id).first().getCode()
+	expected_code = Sc.objects.filter(user_id=id).first().getCode()
 	received_code = request.data.get('code')
 	old_password = request.data.get('old_password')
 	new_password = request.data.get('new_password')
@@ -83,4 +83,32 @@ def change_password(request,id):
 		user.updatePassword(new_password)
 		return Response(status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
-		
+
+
+
+
+@swagger_auto_schema(method='post',manual_parameters=[email], responses={200: 'Confirmation email sent',400: 'Mail not registered'})
+@api_view(['POST'])
+def forgot_password(request):
+	user = User.objects.filter(email = request.data.get('email')).first()
+	try:
+		code = Sc.instanceCreation(user.getId()) #no deberia retornar el code... sin embargo con el test tendria que generar un code deterministico
+		code.full_clean()
+		code.save()
+		return Response({'code' : code.getCode(),'user_id': code.getUserId()} , status = status.HTTP_200_OK)
+	except Exception as e:
+		return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@swagger_auto_schema(method='put',manual_parameters=[new_password,code], responses={200: 'User password changed',401: 'Outdated credentials'})
+@api_view(['PUT'])
+def forgot_password_confirmation(request,id):
+	user = User.objects.filter(id = id).first()
+	expected_code = Sc.objects.filter(user_id=id).first().getCode()
+	received_code = request.data.get('code')
+	new_password = request.data.get('new_password')
+	if expected_code == received_code:
+		user.updatePassword(new_password)
+		return Response(status = status.HTTP_200_OK)
+	return Response(status = status.HTTP_401_UNAUTHORIZED) 
+
+	

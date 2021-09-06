@@ -100,3 +100,33 @@ class UserTestCase(APITestCase):
         webClient = self.client
         response = webClient.put('/changePassword/' + str(user_id) + '/',{'code' : code, 'old_password': '', 'new_password' : 'f^2'})
         self.assertEqual(response.status_code,401)
+        user = User.objects.filter(email = 'f@gmail.com').first()
+        self.assertTrue(check_password('admin',user.getPassword()))
+
+    def test_user_forgot_password_successfully(self):
+        client = self.client
+        response = client.post('/forgotPassword/',{'email' : 'f@gmail.com'})
+        user_id = response.data.get('user_id')
+        code = response.data.get('code')
+        self.assertEqual(response.status_code,200) #email enviado y codigo creado
+        response =  client.put('/forgotPassword/' + str(user_id) + '/', {'new_password' : 'f^2', 'code' : code})
+        user = User.objects.filter(email = 'f@gmail.com').first()
+        self.assertTrue(check_password('f^2',user.getPassword()))
+
+    def test_user_forgot_password_fails_bc_inexistent_email(self):
+        client = self.client
+        user = User.objects.filter(email = 'f_cuadrado@gmail.com')
+        self.assertTrue(len(user) == 0)
+        response = client.post('/forgotPassword/',{'email' : 'f_cuadrado@gmail.com'})
+        self.assertEqual(response.status_code,400)
+    def test_user_forgot_password_fails_bc_wrong_code(self):
+        client = self.client
+        response = client.post('/forgotPassword/',{'email' : 'f@gmail.com'})
+        user_id = response.data.get('user_id')
+        code = response.data.get('code')
+        self.assertEqual(response.status_code,200) #email enviado y codigo creado
+        response =  client.put('/forgotPassword/' + str(user_id) + '/', {'new_password' : 'f^2', 'code' : code[::-1]})
+        self.assertEqual(response.status_code,401)
+
+
+
