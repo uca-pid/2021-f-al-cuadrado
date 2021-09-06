@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from django.contrib.auth.hashers import make_password,check_password
 
@@ -41,17 +41,17 @@ class Sm_user(AbstractUser):
         return self.id
 
 class SecurityCode(models.Model):
-    user_id = models.IntegerField()
+    user = models.ForeignKey(Sm_user, on_delete=models.CASCADE)
     user_code = models.CharField(max_length = 6)
     valid_from = models.DateTimeField()
 
 
     def __eq__(self, otherObject):
-        return isinstance(otherObject, SecurityCode) and self.user_id == otherObject.getUserId() and self.user_code == otherObject.getCode()
+        return isinstance(otherObject, SecurityCode) and self.user.getId() == otherObject.getUserId() and self.user_code == otherObject.getCode()
 
     @classmethod
-    def validCode(cls,userId,userCode):
-        code = cls.objects.filter(user_id = userId, user_code = userCode).first()
+    def validCode(cls,user,userCode):
+        code = cls.objects.filter(user = user, user_code = userCode).first()
         expire_date = code.getDate() + timedelta(minutes = 20)
         if timezone.now() < expire_date:
             code.updateDate()
@@ -61,17 +61,24 @@ class SecurityCode(models.Model):
 
 
     @classmethod
-    def instanceCreation(cls, userId):
+    def instanceCreation(cls, user):
+        codes = cls.objects.filter(user = user)
         digits = [0,1,2,3,4,5,6,7,8,9]
         code = ''
         for i in range(6):
             code += str(choice(digits))
         todayDate = timezone.now()
-        return cls(user_id = userId, user_code = code, valid_from = todayDate)
+        if codes:
+            userCode = codes.first()
+            userCode.user_code = code
+            userCode.updateDate()
+            return userCode
+        else:
+            return cls(user = user, user_code = code, valid_from = todayDate)
     def getCode(self):
         return self.user_code
     def getUserId(self):
-        return self.user_id
+        return self.user.getId()
     def getDate(self):
         return self.valid_from
     def updateDate(self):

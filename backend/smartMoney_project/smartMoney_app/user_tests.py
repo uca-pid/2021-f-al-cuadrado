@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from rest_framework.test import APITestCase
 from django.contrib.auth.hashers import make_password,check_password
 from django.core import mail
+from .models import SecurityCode as Sc 
 
 
 
@@ -133,6 +134,13 @@ class UserTestCase(APITestCase):
         self.assertEqual(len(mail.outbox),1)
         response =  client.put('/forgotPassword/' + str(user_id) + '/', {'new_password' : 'f^2', 'code' : code[::-1]})
         self.assertEqual(response.status_code,401)
+    def test_user_has_only_one_code_after_2_logins(self):
+        self.assertEqual(len(Sc.objects.filter()),0)
+        self.userLogin('f@gmail.com','admin')
+        self.assertEqual(len(Sc.objects.filter()),1)
+        self.userLogin('f@gmail.com','admin')
+        self.assertEqual(len(Sc.objects.filter()),1)
+
 
 
 

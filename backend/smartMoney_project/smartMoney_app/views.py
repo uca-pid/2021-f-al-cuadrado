@@ -56,7 +56,7 @@ def user_login(request):
 	password = request.data.get('password')
 	user = User.objects.filter(email = email).first()
 	if user and check_password(password,user.getPassword()):
-		code = Sc.instanceCreation(user.getId())
+		code = Sc.instanceCreation(user)
 		code.full_clean()
 		code.save()
 		return Response({'code' : code.getCode(),'user_id': code.getUserId()},status=status.HTTP_200_OK)
@@ -84,12 +84,12 @@ def user_register(request):
 @swagger_auto_schema(method='put',manual_parameters=[code,old_password,new_password], responses={200: 'User password changed',401: 'Outdated credentials'})
 @api_view(['PUT'])
 def change_password(request,id):
-	expected_code = Sc.objects.filter(user_id=id).first().getCode()
+	user = User.objects.filter(id = id).first()
+	expected_code = Sc.objects.filter(user=user).first().getCode()
 	received_code = request.data.get('code')
 	old_password = request.data.get('old_password')
 	new_password = request.data.get('new_password')
-	user = User.objects.filter(id = id).first()
-	if expected_code == received_code and Sc.validCode(id,expected_code) and check_password(old_password,user.getPassword()):
+	if expected_code == received_code and Sc.validCode(user,expected_code) and check_password(old_password,user.getPassword()):
 		user.updatePassword(new_password)
 		return Response(status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
@@ -102,7 +102,7 @@ def change_password(request,id):
 def forgot_password(request):
 	user = User.objects.filter(email = request.data.get('email')).first()
 	try:
-		code = Sc.instanceCreation(user.getId()) #no deberia retornar el code... sin embargo con el test tendria que generar un code deterministico
+		code = Sc.instanceCreation(user) #no deberia retornar el code... sin embargo con el test tendria que generar un code deterministico
 		code.full_clean()
 		code.save()
 		sendEmail(request.data.get('email'),code.getCode())
@@ -114,7 +114,7 @@ def forgot_password(request):
 @api_view(['PUT'])
 def forgot_password_confirmation(request,id):
 	user = User.objects.filter(id = id).first()
-	expected_code = Sc.objects.filter(user_id=id).first().getCode()
+	expected_code = Sc.objects.filter(user=user).first().getCode()
 	received_code = request.data.get('code')
 	new_password = request.data.get('new_password')
 	if expected_code == received_code:
