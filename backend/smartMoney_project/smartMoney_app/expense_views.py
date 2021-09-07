@@ -25,14 +25,24 @@ from .models import SecurityCode as Sc
 from .models import Expense
 
 
-code = openapi.Parameter('code', openapi.IN_QUERY, type=openapi.TYPE_STRING,required = True)
-value = openapi.Parameter('value', openapi.IN_QUERY, type=openapi.FORMAT_FLOAT,required = True)
+#code = openapi.Parameter('code', openapi.IN_QUERY, type=openapi.TYPE_STRING,required = True)
+value = openapi.Schema(title = 'value',type=openapi.FORMAT_FLOAT)
+code = openapi.Schema(title = 'session_code',type=openapi.TYPE_STRING)
 
 
 
 
-
-@swagger_auto_schema(method='post',manual_parameters=[code,value], responses={201: 'Expense created',401: 'Invalid Credentials'})
+#@swagger_auto_schema(method='post',manual_parameters=[code,value], responses={201: 'Expense created',401: 'Invalid Credentials'})
+@swagger_auto_schema(methods=['post'],
+					request_body=openapi.Schema(
+						type=openapi.TYPE_OBJECT,
+						required=['version'],
+						properties={
+							'code': code,
+							'value': value
+							},
+						),
+					responses={201: 'Expense created',401: 'Invalid Credentials'})
 @api_view(['POST'])
 def new_expense(request,user_id):
 	user = User.objects.filter(id = user_id).first()
@@ -47,7 +57,16 @@ def new_expense(request,user_id):
 
 
 
-@swagger_auto_schema(method='post', manual_parameters=[code],responses={200: 'Expenses sended',401: 'Invalid Credentials'})
+#@swagger_auto_schema(method='post', manual_parameters=[code],responses={200: 'Expenses sended',401: 'Invalid Credentials'})
+@swagger_auto_schema(methods=['post'],
+					request_body=openapi.Schema(
+						type=openapi.TYPE_OBJECT,
+						required=['version'],
+						properties={
+							'code': code,
+							},
+						),
+					responses={200: 'Expenses sended',401: 'Invalid Credentials'})
 @api_view(['POST'])
 def expense_list(request,user_id):
 	user = User.objects.filter(id = user_id).first()

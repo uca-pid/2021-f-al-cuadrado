@@ -23,7 +23,7 @@ from . import models
 from .models import Sm_user as User
 from .models import SecurityCode as Sc
 
-
+'''
 email = openapi.Parameter('email', openapi.IN_QUERY, type=openapi.TYPE_STRING,required = True)
 password = openapi.Parameter('password', openapi.IN_QUERY, type=openapi.TYPE_STRING,required = True)
 old_password = openapi.Parameter('old_password', openapi.IN_QUERY, type=openapi.TYPE_STRING,required = True)
@@ -31,6 +31,17 @@ new_password = openapi.Parameter('new_password', openapi.IN_QUERY, type=openapi.
 first_name = openapi.Parameter('first_name', openapi.IN_QUERY, type=openapi.TYPE_STRING,required = True)
 last_name = openapi.Parameter('last_name', openapi.IN_QUERY, type=openapi.TYPE_STRING,required = True)
 code = openapi.Parameter('code', openapi.IN_QUERY, type=openapi.TYPE_STRING,required = True)
+'''
+
+email = openapi.Schema(title = 'email',type=openapi.TYPE_STRING)
+password = openapi.Schema(title = 'password',type=openapi.TYPE_STRING)
+old_password = openapi.Schema(title = 'old_password',type=openapi.TYPE_STRING)
+new_password = openapi.Schema(title = 'new_password',type=openapi.TYPE_STRING)
+first_name = openapi.Schema(title = 'first_name',type=openapi.TYPE_STRING)
+last_name = openapi.Schema(title = 'last_name',type=openapi.TYPE_STRING)
+code = openapi.Schema(title = 'session_code',type=openapi.TYPE_STRING)
+
+
 
 def sendEmail(receiver_email,code):
 	code = str(code)
@@ -38,7 +49,17 @@ def sendEmail(receiver_email,code):
 	message = 'Use the next code to recover your password' + code
 	send_mail(subject, message, EMAIL_HOST_USER, [receiver_email], fail_silently = False)
 
-@swagger_auto_schema(method='post',manual_parameters=[email,password], responses={200: 'Login success',400: 'Invalid credentials'})
+#@swagger_auto_schema(method='post',manual_parameters=[email,password], responses={200: 'Login success',400: 'Invalid credentials'})
+@swagger_auto_schema(methods=['post'],
+					request_body=openapi.Schema(
+						type=openapi.TYPE_OBJECT,
+						required=['version'],
+						properties={
+							'email': email,
+							'password':password
+							},
+						),
+					responses={200: 'Login success',400: 'Invalid credentials'})
 @api_view(['POST']) #creo que va con get
 def user_login(request):
 	email = request.data.get('email')
@@ -52,7 +73,19 @@ def user_login(request):
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 
-@swagger_auto_schema(method='post',manual_parameters=[first_name,last_name,email,password], responses={201: 'User created',409: 'The email is already used'})
+#@swagger_auto_schema(method='post',manual_parameters=[first_name,last_name,email,password], responses={201: 'User created',409: 'The email is already used'})
+@swagger_auto_schema(methods=['post'],
+					request_body=openapi.Schema(
+						type=openapi.TYPE_OBJECT,
+						required=['version'],
+						properties={
+							'first_name': first_name,
+							'last_name': last_name,
+							'email': email,
+							'password':password
+							},
+						),
+					responses={201: 'User created',409: 'The email is already used'})
 @api_view(['POST'])
 def user_register(request):
 	first_name = request.data.get('first_name')
@@ -70,7 +103,18 @@ def user_register(request):
 
 
 
-@swagger_auto_schema(method='put',manual_parameters=[code,old_password,new_password], responses={200: 'User password changed',401: 'Outdated credentials'})
+#@swagger_auto_schema(method='put',manual_parameters=[code,old_password,new_password], responses={200: 'User password changed',401: 'Outdated credentials'})
+@swagger_auto_schema(methods=['put'],
+					request_body=openapi.Schema(
+						type=openapi.TYPE_OBJECT,
+						required=['version'],
+						properties={
+							'code': code,
+							'old_password': old_password,
+							'new_password': new_password,
+							},
+						),
+					responses={200: 'User password changed',401: 'Outdated credentials'})
 @api_view(['PUT'])
 def change_password(request,user_id):
 	user = User.objects.filter(id = user_id).first()
@@ -86,7 +130,16 @@ def change_password(request,user_id):
 
 
 
-@swagger_auto_schema(method='post',manual_parameters=[email], responses={200: 'Confirmation email sent',400: 'Mail not registered'})
+#@swagger_auto_schema(method='post',manual_parameters=[email], responses={200: 'Confirmation email sent',400: 'Mail not registered'})
+@swagger_auto_schema(methods=['post'],
+					request_body=openapi.Schema(
+						type=openapi.TYPE_OBJECT,
+						required=['version'],
+						properties={
+							'email': email,
+							},
+						),
+					responses={200: 'Confirmation email sent',400: 'Mail not registered'})
 @api_view(['POST'])
 def forgot_password(request):
 	user = User.objects.filter(email = request.data.get('email')).first()
@@ -99,9 +152,18 @@ def forgot_password(request):
 	except Exception as e:
 		return Response(status = status.HTTP_400_BAD_REQUEST)
 
-@swagger_auto_schema(method='put',manual_parameters=[new_password,code], responses={200: 'User password changed',401: 'Outdated credentials'})
+#@swagger_auto_schema(method='put',manual_parameters=[new_password,code], responses={200: 'User password changed',401: 'Outdated credentials'})
+@swagger_auto_schema(methods=['put'],
+					request_body=openapi.Schema(
+						type=openapi.TYPE_OBJECT,
+						required=['version'],
+						properties={
+							'new_password': new_password,
+							'code': code,
+							},
+						),
+					responses={200: 'User password changed',401: 'Outdated credentials'})
 @api_view(['PUT'])
-
 def forgot_password_confirmation(request,user_id):
 	user = User.objects.filter(id = user_id).first()
 	expected_code = Sc.objects.filter(user=user).first().getCode()
@@ -112,5 +174,4 @@ def forgot_password_confirmation(request,user_id):
 		return Response(status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED) 
 
-	
 	
