@@ -45,8 +45,8 @@ code = openapi.Schema(title = 'session_code',type=openapi.TYPE_STRING)
 					responses={201: 'Expense created',401: 'Invalid Credentials'})
 @api_view(['POST'])
 def new_expense(request,user_id):
-	user = User.objects.filter(id = user_id).first()
-	expected_code = Sc.objects.filter(user=user).first().getCode()
+	user = User.get(id = user_id)
+	expected_code = Sc.get(user=user).getCode()
 	received_code = request.data.get('code')
 	value = request.data.get('value')
 	if expected_code == received_code:
@@ -69,11 +69,11 @@ def new_expense(request,user_id):
 					responses={200: 'Expenses sended',401: 'Invalid Credentials'})
 @api_view(['POST'])
 def expense_list(request,user_id):
-	user = User.objects.filter(id = user_id).first()
-	expected_code = Sc.objects.filter(user=user).first().getCode()
+	user = User.get(id = user_id)
+	expected_code = Sc.get(user=user).getCode()
 	received_code = request.data.get('code')
 	value = request.data.get('value')
 	if expected_code == received_code:
-		expenses = Expense.objects.filter(owner = user)
+		expenses = Expense.getAllWith(owner = user)
 		return Response(expenses.values(), status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
