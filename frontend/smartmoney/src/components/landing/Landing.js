@@ -22,6 +22,7 @@ const Landing = () => {
   const [surname, setSurname] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
   const [userForgotPassword, setUserForgotPassword] = useState('');
+  const [forgotPassUserId, setForgotPassUserId] = useState('');
   const [codigoSeguridad, setCodigoSeguridad] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [codigoEnviado, setCodigoEnviado] = useState(false);
@@ -41,12 +42,22 @@ const Landing = () => {
     setUserForgotPassword('');
     setCodigoSeguridad('');
     setNewPassword('');
-
+    setForgotPassUserId('');
   }
 
   function login() {
-    //#TODO: Login
-    window.location.href = "./home"
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: user, password: password})
+    };
+    fetch('https://smart-money-back.herokuapp.com/login/', requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        localStorage.setItem('session',JSON.stringify(data));
+        window.location.href = "./home"
+      })
+      .catch(err => console.log("Credenciales incorrectas"))
   }
   function forgotPass() {
     resetValues();
@@ -58,18 +69,54 @@ const Landing = () => {
     setLayout('register');
   }
   function registerSubmit() {
-    //#TODO: Register
-    window.location.href = "./home";
+    //#TODO: Register Casos de error
+    const requestOptionsRegister = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ first_name: name, last_name: surname, email: mail, password: registerPassword})
+    };
+    console.log(requestOptionsRegister.body)
+    fetch('https://smart-money-back.herokuapp.com/register/', requestOptionsRegister)
+      .then((response) => {
+        if(response.status===201){
+          const requestOptionsLogin = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: mail, password: registerPassword})
+          };
+          fetch('https://smart-money-back.herokuapp.com/login/', requestOptionsLogin)
+            .then(response => response.json())
+            .then(data => {
+              localStorage.setItem('session',JSON.stringify(data));
+              window.location.href = "./home"
+            })
+        }
+      })
   }
   function forgotPasswordSubmit() {
+    //#TODO: Forgot Casos de error
     setCodigoEnviado(true);
-    console.log('#TODO: forgotPass')
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: userForgotPassword})
+    };
+    fetch('https://smart-money-back.herokuapp.com/forgotPassword/', requestOptions)
+      .then(response => response.json())
+      .then(data => setForgotPassUserId(data.user_id));
   }
   function updatePasswordSubmit() {
-    console.log('#TODO: forgotPass')
-  }
-  function reenviarCodigoSubmit() {
-    console.log('#TODO: forgotPass')
+    const requestOptions = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ new_password: newPassword, code: codigoSeguridad})
+    };
+    fetch('https://smart-money-back.herokuapp.com/forgotPassword/'+forgotPassUserId+'/', requestOptions)
+    .then((response) => {
+      if(response.status===200){
+        window.location.href = "./"
+      }
+    })
   }
   function returnLogin() {
     setbuttom2Hover(false);
@@ -111,7 +158,7 @@ const Landing = () => {
     <div style={isMobileDevice ? mobilStyles.body : webStyles.body}>
       <div style={isMobileDevice ? mobilStyles.secondRow : webStyles.leftColumn}>
         {(layout==='login')&&
-          <div style={isMobileDevice ? mobilStyles.formContainer : webStyles.formContainer} name="Login" class="menu">     
+          <div style={isMobileDevice ? mobilStyles.formContainer : webStyles.formContainer} name="Login">     
             <form style={isMobileDevice ? mobilStyles.form : webStyles.form}>
               <p style={isMobileDevice ? mobilStyles.label : webStyles.label}>Usuario</p>
               <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="text" value={user} onChange={e => setUser(e.target.value)} />
@@ -137,7 +184,7 @@ const Landing = () => {
           </div> 
         }
         {(layout==='register')&&
-          <div style={isMobileDevice ? mobilStyles.formContainer : webStyles.formContainer} name="Register" class="menu">     
+          <div style={isMobileDevice ? mobilStyles.formContainer : webStyles.formContainer} name="Register">     
             <form style={isMobileDevice ? mobilStyles.form : webStyles.form}>
               <p style={isMobileDevice ? mobilStyles.label : webStyles.label} >Mail</p>
               <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="text" value={mail} onChange={e => setMail(e.target.value)} />
@@ -166,7 +213,7 @@ const Landing = () => {
           </div> 
         }
         {(layout==='forgotPassword')&&
-          <div style={isMobileDevice ? mobilStyles.formContainer : webStyles.formContainer} name="ForgotPassword" class="menu">     
+          <div style={isMobileDevice ? mobilStyles.formContainer : webStyles.formContainer} name="ForgotPassword">     
             <form style={isMobileDevice ? mobilStyles.form : webStyles.form}>
               <p style={isMobileDevice ? mobilStyles.label : webStyles.label}>Usuario</p>
               <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="text" value={userForgotPassword} onChange={e => setUserForgotPassword(e.target.value)} />
@@ -186,7 +233,7 @@ const Landing = () => {
                     <p style={isMobileDevice ? mobilStyles.label : webStyles.label}>Código</p>
                     <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="text" value={codigoSeguridad} onChange={e => setCodigoSeguridad(e.target.value)} />
                     <p style={isMobileDevice ? mobilStyles.label : webStyles.label}>Nueva contraseña</p>
-                    <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="text" value={newPassword} onChange={e => setNewPassword(e.target.value)} />
+                    <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} />
                     <input 
                       onMouseEnter={()=>{setUpdatePasswordHover(true);}} 
                       onMouseLeave={()=>{setUpdatePasswordHover(false);}} 
@@ -200,7 +247,7 @@ const Landing = () => {
                       onMouseLeave={()=>{setReenviarCodigo(false);}} 
                       style={styleReenviarCodigo()} 
                       type="button" 
-                      onClick={reenviarCodigoSubmit} 
+                      onClick={forgotPasswordSubmit} 
                       value="Reenviar código" />
                   </form>
                   

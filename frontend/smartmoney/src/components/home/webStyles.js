@@ -88,6 +88,10 @@ const webStyles = {
     main:{backgroundColor:"#D7D7D6", display:'flex',flexDirection:'column', height:window.innerHeight-70},
     agregarConsumoContainer:{display:'flex',flexDirection:'row', alignItems:'center', margin:20},
     configurationLogo:{width:25, height:25},
+    expensesContainer:{ height:'80%',overflow:'auto', width:300},
+    expensesTable:{borderSpacing:0, margin: 20, width:250},
+    expensesRow:{textAlign:"left", height:40},
+    expensesValue:{borderBottomStyle:'solid', borderWidth:2},
 }
 
 export default webStyles;

@@ -5,6 +5,7 @@ import configurationIcon from "./configuration.png";
 import webStyles from "./webStyles";
 import mobilStyles from "./mobilStyles";
 import { useMediaQuery } from 'react-responsive'
+import FlatList from 'flatlist-react';
 
 const Home = () => {
 
@@ -22,6 +23,36 @@ const Home = () => {
   const [newPassword, setNewPassword] = useState('');
   const [buttomUpdatePassword, setButtomUpdatePassword] = useState(false);
 
+  const [consumos, setConsumos] = useState([]);
+  // const [consumos, setConsumos] = useState(() => {
+    // const session = JSON.parse(localStorage.session);
+    // let res = [];
+    // const requestOptions = {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ code: session.code})
+    // };
+    // //#TODO: Agregar user id al path
+    // fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptions)
+    //   .then(response => response.json())
+    //   .then(data => res = data);
+  //   console.log(res);
+  //   return res;
+  // })
+
+  function setExpenses(){
+    const session = JSON.parse(localStorage.session);
+    let res = [];
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: session.code})
+    };
+    fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptions)
+      .then(response => response.json())
+      .then(data => setConsumos(data));
+  }
+
   function configuration() {
     if(configutationMenu==='none'){
       setConfigutationMenu('block');
@@ -32,6 +63,7 @@ const Home = () => {
 
   function logout() {
     setConfigutationMenu('none');
+    localStorage.clear();
     window.location.href = "./"
   }
   function changePassword() {
@@ -42,11 +74,41 @@ const Home = () => {
   }
 
   function agregarConsumo() {
-    //#TODO: enviar al back
+    const session = JSON.parse(localStorage.session);
+    const requestOptionsNewExpense = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: session.code, value: nuevoConsumo})
+    };
+    fetch('https://smart-money-back.herokuapp.com/new_expense/'+session.user_id+'/', requestOptionsNewExpense)
+      .then((response) => {
+        if(response.status===201){
+          setNuevoConsumo('');
+          const requestOptionsExpenses = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code: session.code})
+          };
+          fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptionsExpenses)
+            .then(response => response.json())
+            .then(data => setConsumos(data));
+        }
+      });
+    
   }
   function updatePassword() {
-    setPopUpChangePassword('none');
-    //#TODO: enviar al back
+    const session = JSON.parse(localStorage.session);
+    const requestOptions = {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: session.code, old_password: previousPassword, new_password: newPassword})
+    };
+    fetch('https://smart-money-back.herokuapp.com/changePassword/'+session.user_id+'/', requestOptions)
+      .then((response) => {
+        if(response.status===200){
+          setPopUpChangePassword('none');
+        }
+      })
   }
 
   function styleButtonLogout(){
@@ -78,6 +140,18 @@ const Home = () => {
     }
   }
 
+  const renderConsumos = (item, index)=> {
+    return (
+      <tr style={isMobileDevice ? mobilStyles.expensesRow : webStyles.expensesRow}>
+          <th style={isMobileDevice ? mobilStyles.expensesValue : webStyles.expensesValue}>$ {item.value}</th>
+          {/* <th style={{paddingLeft:20, borderBottomStyle:'solid'}}>Horas: {item.horas}</th>
+          <th style={{paddingLeft:20, borderBottomStyle:'solid'}}>Minutos: {item.minutos}</th>
+          <th style={{paddingLeft:20, borderBottomStyle:'solid'}}>Segundos: {item.segundos}</th> */}          
+      </tr>        
+    )  
+  }
+
+  //setExpenses();
   return (
     <div style={isMobileDevice ? mobilStyles.body : webStyles.body}>
 
@@ -87,9 +161,9 @@ const Home = () => {
         <div style={isMobileDevice ? mobilStyles.divCenteredItems : webStyles.divCenteredItems}>
           <form style={isMobileDevice ? mobilStyles.formChangePassword : webStyles.formChangePassword}>
             <p style={isMobileDevice ? mobilStyles.label : webStyles.label} >Contraseña anterior</p>
-            <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="text" value={previousPassword} onChange={e => setPreviousPassword(e.target.value)} />
+            <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="password" value={previousPassword} onChange={e => setPreviousPassword(e.target.value)} />
             <p style={isMobileDevice ? mobilStyles.label : webStyles.label}>Nueva contraseña</p>
-            <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="text" value={newPassword} onChange={e => setNewPassword(e.target.value)} />
+            <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} />
             <input 
               onMouseEnter={()=>{setButtomUpdatePassword(true);}} 
               onMouseLeave={()=>{setButtomUpdatePassword(false);}} 
@@ -144,6 +218,24 @@ const Home = () => {
             onClick={agregarConsumo} 
             value="Agregar consumo" />
         </div>
+        <button 
+            // onMouseEnter={()=>{setButtomChangePassword(true);}} 
+            // onMouseLeave={()=>{setButtomChangePassword(false);}} 
+            style={webStyles.buttomAgregarConsumo}  
+            type="button" 
+            onClick={setExpenses} 
+            >Actualizar</button>
+        <div style={isMobileDevice ? mobilStyles.expensesContainer : webStyles.expensesContainer}>
+          <table style={isMobileDevice ? mobilStyles.expensesTable : webStyles.expensesTable}>
+          <FlatList 
+            list={consumos}
+            renderItem={renderConsumos}
+            renderWhenEmpty={() => <div>Todavía no se regitró ninún gasto!</div>}
+            sort={{by:"id"}}
+          />
+        </table>
+          </div>
+        
         
       </div>
       
