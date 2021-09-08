@@ -18,14 +18,17 @@ class UserTestCase(APITestCase):
         return webClient.post('/login/', {'email': email, 'password': password})
 
     def setUp(self):
-        user = User.objects.create_user(first_name='Francisco',email='f@gmail.com',last_name='Stulich',password='admin')
+        password = make_password('admin')
+        user = User(first_name='Francisco',email='f@gmail.com',last_name='Stulich',password=password)
+        user.full_clean()
+        user.save()
 
     def test_user_creation_success(self):
         user = User.objects.first()
         self.assertEqual(user.getName(),'Francisco')
         self.assertEqual(user.getEmail(),'f@gmail.com')
         self.assertEqual(user.getLastName(),'Stulich')
-        self.assertTrue(user.check_password('admin'))
+        self.assertTrue(check_password('admin',user.getPassword()))
 
     def test_user_creation_failed(self):
         invalid_users = []
@@ -39,6 +42,7 @@ class UserTestCase(APITestCase):
         invalid_users.append(user_without_password)
         for user in invalid_users:
             with self.assertRaises(ValidationError): #Genera un contexto, para que el test falle si en el siguiente codigo no salta la excepcion
+                user.full_clean()
                 user.save()
 
     def test_user_login_succesful(self):
@@ -53,13 +57,12 @@ class UserTestCase(APITestCase):
         self.assertEqual(response.status_code,401)
 
     def test_user_registration(self):
-        self.assertTrue(len(User.getAllWith()) == 1)
+        self.assertTrue(len(User.objects.filter()) == 1)
         webClient = self.client
         response = webClient.post('/register/',{'first_name': 'Federico','last_name' : 'De Grandis', 'email' : 'f2@gmail.com', 'password' : 'f^2'})
         self.assertEqual(response.status_code,201)
-        new_user = User.getAllWith(first_name = 'Federico', email = 'f2@gmail.com', last_name = 'De Grandis')
-        self.assertTrue(len(User.getAllWith()) == 2)
-        self.assertEqual(len(new_user),1)
+        new_user = User.objects.filter(first_name = 'Federico', email = 'f2@gmail.com', last_name = 'De Grandis')
+        self.assertTrue(len(User.objects.filter()) > 1)
 
     def test_user_registration_fails_bc_blank_fields(self):
         webClient = self.client
@@ -77,48 +80,47 @@ class UserTestCase(APITestCase):
             self.assertEqual(response.status_code,409)
 
     def test_user_registration_fails_bc_email_already_used(self):
-        self.assertTrue(len(User.getAllWith(email = 'f@gmail.com')) == 1)
+        self.assertTrue(len(User.objects.filter(email = 'f@gmail.com')) == 1)
         webClient = self.client
         response = webClient.post('/register/',{'first_name': 'Federico','last_name' : 'De Grandis', 'email' : 'f@gmail.com', 'password' : 'f^2'})
         self.assertEqual(response.status_code,409)
     def test_user_changes_his_password_succesfully(self):
         loginResponse = self.userLogin('f@gmail.com','admin').data
-        user = User.get(email = 'f@gmail.com')
+        user = User.objects.filter(email = 'f@gmail.com').first()
         code = loginResponse.get('code')
         user_id = loginResponse.get('user_id')
         webClient = self.client
         response = webClient.put('/changePassword/' + str(user_id) + '/',{'code' : code, 'old_password': 'admin', 'new_password' : 'f^2'})
         self.assertEqual(response.status_code,200)
-        user = User.get(email = 'f@gmail.com')
+        user = User.objects.filter(email = 'f@gmail.com').first()
         self.assertTrue(check_password('f^2',user.getPassword()))
-    def test_user_cant_change_password(self): #se pueden agregar mas test de error.
+    def test_user_cant_change_password(self):
         loginResponse = self.userLogin('f@gmail.com','admin').data
-        user = User.get(email = 'f@gmail.com')
+        user = User.objects.filter(email = 'f@gmail.com').first()
         code = loginResponse.get('code')
         user_id = loginResponse.get('user_id')
         webClient = self.client
         response = webClient.put('/changePassword/' + str(user_id) + '/',{'code' : code, 'old_password': '', 'new_password' : 'f^2'})
         self.assertEqual(response.status_code,401)
-        user = User.get(email = 'f@gmail.com')
+        user = User.objects.filter(email = 'f@gmail.com').first()
         self.assertTrue(check_password('admin',user.getPassword()))
 
     def test_user_forgot_password_successfully(self):
         client = self.client
         response = client.post('/forgotPassword/',{'email' : 'f@gmail.com'})
         user_id = response.data.get('user_id')
-        user = User.get(id = user_id)
-        code = Sc.get(user = user).getCode()
+        code = response.data.get('code')
         self.assertEqual(len(mail.outbox),1)
         self.assertEqual(mail.outbox[0].subject,'Password Recovery')
-        self.assertEqual(mail.outbox[0].body,'Use the next code to recover your password\n' + str(code))
+        self.assertEqual(mail.outbox[0].body,'Use the next code to recover your password' + str(code))
         self.assertEqual(response.status_code,200) #email enviado y codigo creado
         response =  client.put('/forgotPassword/' + str(user_id) + '/', {'new_password' : 'f^2', 'code' : code})
-        user = User.get(email = 'f@gmail.com')
-        self.assertTrue(user.check_password('f^2'))
+        user = User.objects.filter(email = 'f@gmail.com').first()
+        self.assertTrue(check_password('f^2',user.getPassword()))
 
     def test_user_forgot_password_fails_bc_inexistent_email(self):
         client = self.client
-        user = User.getAllWith(email = 'f_cuadrado@gmail.com')
+        user = User.objects.filter(email = 'f_cuadrado@gmail.com')
         self.assertTrue(len(user) == 0)
         response = client.post('/forgotPassword/',{'email' : 'f_cuadrado@gmail.com'})
         self.assertEqual(response.status_code,400)
@@ -133,19 +135,12 @@ class UserTestCase(APITestCase):
         response =  client.put('/forgotPassword/' + str(user_id) + '/', {'new_password' : 'f^2', 'code' : code[::-1]})
         self.assertEqual(response.status_code,401)
     def test_user_has_only_one_code_after_2_logins(self):
-        self.assertEqual(len(Sc.getAllWith()),0)
+        self.assertEqual(len(Sc.objects.filter()),0)
         self.userLogin('f@gmail.com','admin')
-        self.assertEqual(len(Sc.getAllWith()),1)
+        self.assertEqual(len(Sc.objects.filter()),1)
         self.userLogin('f@gmail.com','admin')
-        self.assertEqual(len(Sc.getAllWith()),1)
-    def test_user_code_changes_when_he_logins_again(self):
-        self.assertEqual(len(Sc.getAllWith()),0)
-        loginResponse = self.userLogin('f@gmail.com','admin')
-        first_code = Sc.get(user_code = loginResponse.data.get('code'))
-        self.assertEqual(len(Sc.getAllWith()),1)
-        self.userLogin('f@gmail.com','admin')
-        second_code = Sc.get(user_code = loginResponse.data.get('code'))
-        self.assertEqual(len(Sc.getAllWith()),1)
-        self.assertNotEqual(first_code, second_code)
+        self.assertEqual(len(Sc.objects.filter()),1)
+
+
 
 
