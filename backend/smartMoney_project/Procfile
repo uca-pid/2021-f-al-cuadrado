@@ -1,0 +1,2 @@
+web: gunicorn smartMoney_project.wsgi
+release: python manage.py migrate
