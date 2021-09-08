@@ -22,6 +22,14 @@ const mobilStyles = {
         padding: 3,
         fontSize:12,
     },
+    inputEmpty: {
+        backgroundColor: "#D7D7D6",
+        borderRadius: 5,
+        padding: 3,
+        fontSize:12,
+        borderColor:'red',
+    },
+    invalidCredentials:{color:'red', fontSize:11, margin:0, fontWeight:'bold'},
     label:{
         
         marginBottom:5,

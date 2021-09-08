@@ -21,6 +21,13 @@ const webStyles = {
         borderRadius: 5,
         padding: 3,
     },
+    inputEmpty: {
+        backgroundColor: "#D7D7D6",
+        borderRadius: 5,
+        padding: 3,
+        borderColor:'red'
+    },
+    invalidCredentials:{color:'red', fontSize:14, margin:0, fontWeight:'bold'},
     label:{
         marginBottom:5,
         fontWeight:'bold'

@@ -6,6 +6,8 @@ import webStyles from "./webStyles";
 import mobilStyles from "./mobilStyles";
 import { useMediaQuery } from 'react-responsive'
 import FlatList from 'flatlist-react';
+import RequiredField from '../RequiredField/requiredField';
+
 
 const Home = () => {
 
@@ -22,6 +24,12 @@ const Home = () => {
   const [previousPassword, setPreviousPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [buttomUpdatePassword, setButtomUpdatePassword] = useState(false);
+  const [previousPasswordEmpty, setPreviousPasswordEmpty] = useState(false);
+  const [newPasswordInvalid, setNewPasswordInvalid] = useState(false);
+  const [changePasswordInvalidCredentials, setChangePasswordInvalidCredentials] = useState(false);
+  const [newExpenseOnlyNumbers, setNewExpenseOnlyNumbers] = useState(false);
+
+
 
   const [consumos, setConsumos] = useState([]);
   // const [consumos, setConsumos] = useState(() => {
@@ -74,41 +82,52 @@ const Home = () => {
   }
 
   function agregarConsumo() {
-    const session = JSON.parse(localStorage.session);
-    const requestOptionsNewExpense = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: session.code, value: nuevoConsumo})
-    };
-    fetch('https://smart-money-back.herokuapp.com/new_expense/'+session.user_id+'/', requestOptionsNewExpense)
-      .then((response) => {
-        if(response.status===201){
-          setNuevoConsumo('');
-          const requestOptionsExpenses = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code: session.code})
-          };
-          fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptionsExpenses)
-            .then(response => response.json())
-            .then(data => setConsumos(data));
-        }
-      });
-    
+    const onlyNumbers = /^[0-9]*$/;
+    if(onlyNumbers.test(nuevoConsumo)){
+      const session = JSON.parse(localStorage.session);
+      const requestOptionsNewExpense = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: session.code, value: nuevoConsumo})
+      };
+      fetch('https://smart-money-back.herokuapp.com/new_expense/'+session.user_id+'/', requestOptionsNewExpense)
+        .then((response) => {
+          if(response.status===201){
+            setNuevoConsumo('');
+            const requestOptionsExpenses = {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ code: session.code})
+            };
+            fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptionsExpenses)
+              .then(response => response.json())
+              .then(data => setConsumos(data));
+          }
+        });
+    }else{
+      setNewExpenseOnlyNumbers(true)
+    }   
   }
   function updatePassword() {
-    const session = JSON.parse(localStorage.session);
-    const requestOptions = {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: session.code, old_password: previousPassword, new_password: newPassword})
-    };
-    fetch('https://smart-money-back.herokuapp.com/changePassword/'+session.user_id+'/', requestOptions)
-      .then((response) => {
-        if(response.status===200){
-          setPopUpChangePassword('none');
-        }
-      })
+    setChangePasswordInvalidCredentials(false)
+    if(previousPassword==='')setPreviousPasswordEmpty(true);
+    if(newPassword==='')setNewPasswordInvalid(true);
+    if(!(previousPassword===''||newPassword==='')){
+      const session = JSON.parse(localStorage.session);
+      const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: session.code, old_password: previousPassword, new_password: newPassword})
+      };
+      fetch('https://smart-money-back.herokuapp.com/changePassword/'+session.user_id+'/', requestOptions)
+        .then((response) => {
+          if(response.status===200){
+            setPopUpChangePassword('none');
+          }else{
+            setChangePasswordInvalidCredentials(true)
+          }
+        })
+    }
   }
 
   function styleButtonLogout(){
@@ -151,26 +170,45 @@ const Home = () => {
     )  
   }
 
+  function isValidPassword(password, setInvalid){
+    if(!passwordSyntax(password))setInvalid(true);
+  }
+
+  function passwordSyntax(password){
+    const hasNumber = /\d/; 
+    const hasLower = /[a-z]/;
+    const hasUpper = /[A-Z]/;
+    return (hasNumber.test(password)&&hasLower.test(password)&&hasUpper.test(password)&&(password.length>7))
+  }
+
+  function isEmpty(input, isEmpty){
+    if(input==='')isEmpty(true)
+  }
+
   //setExpenses();
   return (
     <div style={isMobileDevice ? mobilStyles.body : webStyles.body}>
 
       <button style={{position:'absolute', width:'100%', height:'100%', backgroundColor:'#333333', opacity:0.5, display:popUpChangePassword}} onClick={()=>setPopUpChangePassword('none')}/>
-      <div style={{position:'absolute',alignSelf: 'center', top:'20%', width:250, height:250, backgroundColor:'#FFFFFF', display:popUpChangePassword, borderRadius:10}}>
+      <div style={{position:'absolute',alignSelf: 'center', top:'20%', width:250, height:300, backgroundColor:'#FFFFFF', display:popUpChangePassword, borderRadius:10}}>
         <button style={isMobileDevice ? mobilStyles.back : webStyles.back} onClick={()=>setPopUpChangePassword('none')}>X</button>
         <div style={isMobileDevice ? mobilStyles.divCenteredItems : webStyles.divCenteredItems}>
           <form style={isMobileDevice ? mobilStyles.formChangePassword : webStyles.formChangePassword}>
+            <p style={changePasswordInvalidCredentials ? (isMobileDevice ? mobilStyles.invalidCredentials : webStyles.invalidCredentials):{display:'none'}}>Credenciales incorrectas</p>
             <p style={isMobileDevice ? mobilStyles.label : webStyles.label} >Contraseña anterior</p>
-            <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="password" value={previousPassword} onChange={e => setPreviousPassword(e.target.value)} />
+            <input style={isMobileDevice ? (previousPasswordEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (previousPasswordEmpty ? webStyles.inputEmpty : webStyles.input)} type="password" value={previousPassword} onChange={e => setPreviousPassword(e.target.value)}  onFocus={()=>setPreviousPasswordEmpty(false)} onBlur={()=>isEmpty(previousPassword,setPreviousPasswordEmpty)}/>
+            {previousPasswordEmpty&&<RequiredField/>}
             <p style={isMobileDevice ? mobilStyles.label : webStyles.label}>Nueva contraseña</p>
-            <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} />
+            <input style={isMobileDevice ? (newPasswordInvalid ? mobilStyles.inputEmpty : mobilStyles.input) : (newPasswordInvalid ? webStyles.inputEmpty : webStyles.input)} type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)}  onFocus={()=>setNewPasswordInvalid(false)} onBlur={()=>isValidPassword(newPassword,setNewPasswordInvalid)}/>
+            {newPasswordInvalid&&<p style={isMobileDevice ? mobilStyles.invalidCredentials : webStyles.invalidCredentials}>La contraseña debe tener minimo 8 caracteres, 1 número, 1 mayúscula y 1 minúscula</p>}
             <input 
               onMouseEnter={()=>{setButtomUpdatePassword(true);}} 
               onMouseLeave={()=>{setButtomUpdatePassword(false);}} 
               style={styleButtomUpdatePassword()}  
               type="button" 
               onClick={updatePassword} 
-              value="Actualizar" />
+              value="Actualizar" 
+              disabled={previousPasswordEmpty||newPasswordInvalid}/>
           </form>
           </div>
       </div>
@@ -209,15 +247,20 @@ const Home = () => {
       
       <div style={isMobileDevice ? mobilStyles.main : webStyles.main}>
         <div style={isMobileDevice ? mobilStyles.agregarConsumoContainer : webStyles.agregarConsumoContainer}>
-          <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="text" value={nuevoConsumo} onChange={e => setNuevoConsumo(e.target.value)} />
+          <div>
+            <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="text" value={nuevoConsumo} onChange={e => setNuevoConsumo(e.target.value)} onFocus={()=>setNewExpenseOnlyNumbers(false)}/>
+            {newExpenseOnlyNumbers&&<p style={isMobileDevice ? mobilStyles.invalidCredentials : webStyles.invalidCredentials}>Sólo números</p>}
+          </div>
           <input 
             onMouseEnter={()=>{setButtomAgregarConsumo(true);}} 
             onMouseLeave={()=>{setButtomAgregarConsumo(false);}} 
             style={styleButtonAgregarConsumo()} 
             type="button" 
             onClick={agregarConsumo} 
-            value="Agregar consumo" />
+            value="Agregar consumo" 
+            disabled={nuevoConsumo===''}/>
         </div>
+
         <button 
             // onMouseEnter={()=>{setButtomChangePassword(true);}} 
             // onMouseLeave={()=>{setButtomChangePassword(false);}} 

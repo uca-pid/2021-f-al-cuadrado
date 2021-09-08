@@ -14,6 +14,12 @@ const webStyles = {
         borderRadius: 5,
         padding: 3,
     },
+    inputEmpty: {
+        backgroundColor: "#D7D7D6",
+        borderRadius: 5,
+        padding: 3,
+        borderColor:'red'
+    },
     label:{
         marginBottom:5,
         fontWeight:'bold'
@@ -86,12 +92,14 @@ const webStyles = {
     configurationButton:{height:25, width:25, marginRight:20, backgroundColor:'#292928', border:0},
     configurationMenu:{width:150, borderRadius:10,backgroundColor:"#FFFFFF", position:'absolute', right:15, top:60},
     main:{backgroundColor:"#D7D7D6", display:'flex',flexDirection:'column', height:window.innerHeight-70},
-    agregarConsumoContainer:{display:'flex',flexDirection:'row', alignItems:'center', margin:20},
+    agregarConsumoContainer:{display:'flex',flexDirection:'row', margin:20},
     configurationLogo:{width:25, height:25},
     expensesContainer:{ height:'80%',overflow:'auto', width:300},
     expensesTable:{borderSpacing:0, margin: 20, width:250},
     expensesRow:{textAlign:"left", height:40},
     expensesValue:{borderBottomStyle:'solid', borderWidth:2},
+    invalidCredentials:{color:'red', fontSize:14, margin:0, fontWeight:'bold'},
+
 }
 
 export default webStyles;
