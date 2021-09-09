@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
 }
 
@@ -35,4 +35,10 @@
   to {
     transform: rotate(360deg);
   }
+} */
+
+.inputlogin {
+  background-color: "#D7D7D6";
+  border-radius: 5;
+  padding: 2;
 }
