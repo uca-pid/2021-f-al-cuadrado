@@ -1,5 +1,5 @@
 import React from 'react';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import logoHorizontal from "./logoHorizontal.png"; 
 import configurationIcon from "./configuration.png"; 
 import webStyles from "./webStyles";
@@ -32,6 +32,8 @@ const Home = () => {
 
 
   const [consumos, setConsumos] = useState([]);
+
+  
   // const [consumos, setConsumos] = useState(() => {
     // const session = JSON.parse(localStorage.session);
     // let res = [];
@@ -60,6 +62,8 @@ const Home = () => {
       .then(response => response.json())
       .then(data => setConsumos(data));
   }
+
+  useEffect(() => setExpenses())
 
   function configuration() {
     if(configutationMenu==='none'){
@@ -261,19 +265,19 @@ const Home = () => {
             disabled={nuevoConsumo===''}/>
         </div>
 
-        <button 
+        {/* <button 
             // onMouseEnter={()=>{setButtomChangePassword(true);}} 
             // onMouseLeave={()=>{setButtomChangePassword(false);}} 
             style={webStyles.buttomAgregarConsumo}  
             type="button" 
             onClick={setExpenses} 
-            >Actualizar</button>
+            >Actualizar</button> */}
         <div style={isMobileDevice ? mobilStyles.expensesContainer : webStyles.expensesContainer}>
           <table style={isMobileDevice ? mobilStyles.expensesTable : webStyles.expensesTable}>
           <FlatList 
             list={consumos}
             renderItem={renderConsumos}
-            renderWhenEmpty={() => <div>Todavía no se regitró ninún gasto!</div>}
+            renderWhenEmpty={() => <div>Todavía no se regitró ningún gasto!</div>}
             sort={{by:"id"}}
           />
         </table>
