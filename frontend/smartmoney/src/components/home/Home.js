@@ -7,6 +7,7 @@ import mobilStyles from "./mobilStyles";
 import { useMediaQuery } from 'react-responsive'
 import FlatList from 'flatlist-react';
 import RequiredField from '../RequiredField/requiredField';
+import isValidPassword from '../../functions/passwordFormatValidation';
 
 
 const Home = () => {
@@ -32,23 +33,6 @@ const Home = () => {
 
 
   const [consumos, setConsumos] = useState([]);
-
-  
-  // const [consumos, setConsumos] = useState(() => {
-    // const session = JSON.parse(localStorage.session);
-    // let res = [];
-    // const requestOptions = {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ code: session.code})
-    // };
-    // //#TODO: Agregar user id al path
-    // fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptions)
-    //   .then(response => response.json())
-    //   .then(data => res = data);
-  //   console.log(res);
-  //   return res;
-  // })
 
   function setExpenses(){
     const session = JSON.parse(localStorage.session);
@@ -166,30 +150,15 @@ const Home = () => {
   const renderConsumos = (item, index)=> {
     return (
       <tr style={isMobileDevice ? mobilStyles.expensesRow : webStyles.expensesRow}>
-          <th style={isMobileDevice ? mobilStyles.expensesValue : webStyles.expensesValue}>$ {item.value}</th>
-          {/* <th style={{paddingLeft:20, borderBottomStyle:'solid'}}>Horas: {item.horas}</th>
-          <th style={{paddingLeft:20, borderBottomStyle:'solid'}}>Minutos: {item.minutos}</th>
-          <th style={{paddingLeft:20, borderBottomStyle:'solid'}}>Segundos: {item.segundos}</th> */}          
+          <th style={isMobileDevice ? mobilStyles.expensesValue : webStyles.expensesValue}>$ {item.value}</th>       
       </tr>        
     )  
-  }
-
-  function isValidPassword(password, setInvalid){
-    if(!passwordSyntax(password))setInvalid(true);
-  }
-
-  function passwordSyntax(password){
-    const hasNumber = /\d/; 
-    const hasLower = /[a-z]/;
-    const hasUpper = /[A-Z]/;
-    return (hasNumber.test(password)&&hasLower.test(password)&&hasUpper.test(password)&&(password.length>7))
   }
 
   function isEmpty(input, isEmpty){
     if(input==='')isEmpty(true)
   }
 
-  //setExpenses();
   return (
     <div style={isMobileDevice ? mobilStyles.body : webStyles.body}>
 
@@ -264,14 +233,6 @@ const Home = () => {
             value="Agregar consumo" 
             disabled={nuevoConsumo===''}/>
         </div>
-
-        {/* <button 
-            // onMouseEnter={()=>{setButtomChangePassword(true);}} 
-            // onMouseLeave={()=>{setButtomChangePassword(false);}} 
-            style={webStyles.buttomAgregarConsumo}  
-            type="button" 
-            onClick={setExpenses} 
-            >Actualizar</button> */}
         <div style={isMobileDevice ? mobilStyles.expensesContainer : webStyles.expensesContainer}>
           <table style={isMobileDevice ? mobilStyles.expensesTable : webStyles.expensesTable}>
           <FlatList 
