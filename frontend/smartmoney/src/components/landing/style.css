@@ -3,7 +3,6 @@
 .body{
     flex-direction: row;
 }
-
 .formContainer{
     display: flex;
     justify-content: center;
@@ -15,40 +14,10 @@
     flex-direction: column;
     width:65%;
 }
-.invalidCredentials{
-    color:red;
-    font-size:14px;
-    margin:0px;
-    font-weight:bold;
-}
-.label{
-    margin-bottom:5px;
-    font-weight:bold
-}
 .button1{
-    background-color:#3399ff;
-    height:40px;
-    border-radius:5px;
     margin-top:20px;
-    border:0px;
-    color:#FFFFFF;
-    font-weight:bold;
 }
 
-.button1:hover{
-    background-color: #005CB8;
-}
-.button2{  
-    border-radius:5px;
-    background-color:#FFFFFF;
-    border:0px;
-    color:#3399FF;
-    font-weight:bold;
-    height:40px;
-}
-.button2:hover{
-    background-color:#AAAAAA;
-}
 .line{
     margin-top: 40px;
     margin-bottom:40px;

@@ -1,13 +1,12 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
-import logoHorizontal from "./logoHorizontal.png"; 
-import configurationIcon from "./configuration.png"; 
+import logoHorizontal from "../../images/logoHorizontal.png"; 
+import configurationIcon from "../../images/configuration.png"; 
 import webStyles from "./webStyles";
 import mobilStyles from "./mobilStyles";
 import { useMediaQuery } from 'react-responsive'
 import FlatList from 'flatlist-react';
-import RequiredField from '../RequiredField/requiredField';
-import isValidPassword from '../../functions/passwordFormatValidation';
+import PopUpChangePassword from './PopUpChangePassword';
 
 
 const Home = () => {
@@ -22,12 +21,6 @@ const Home = () => {
   const [buttomChangePassword, setButtomChangePassword] = useState(false);
   const [popUpChangePassword, setPopUpChangePassword] = useState('none');
   const [nuevoConsumo, setNuevoConsumo] = useState('');
-  const [previousPassword, setPreviousPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [buttomUpdatePassword, setButtomUpdatePassword] = useState(false);
-  const [previousPasswordEmpty, setPreviousPasswordEmpty] = useState(false);
-  const [newPasswordInvalid, setNewPasswordInvalid] = useState(false);
-  const [changePasswordInvalidCredentials, setChangePasswordInvalidCredentials] = useState(false);
   const [newExpenseOnlyNumbers, setNewExpenseOnlyNumbers] = useState(false);
 
 
@@ -64,8 +57,6 @@ const Home = () => {
   }
   function changePassword() {
     setConfigutationMenu('none');
-    setPreviousPassword('');
-    setNewPassword('');
     setPopUpChangePassword('block');
   }
 
@@ -96,27 +87,6 @@ const Home = () => {
       setNewExpenseOnlyNumbers(true)
     }   
   }
-  function updatePassword() {
-    setChangePasswordInvalidCredentials(false)
-    if(previousPassword==='')setPreviousPasswordEmpty(true);
-    if(newPassword==='')setNewPasswordInvalid(true);
-    if(!(previousPassword===''||newPassword==='')){
-      const session = JSON.parse(localStorage.session);
-      const requestOptions = {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: session.code, old_password: previousPassword, new_password: newPassword})
-      };
-      fetch('https://smart-money-back.herokuapp.com/changePassword/'+session.user_id+'/', requestOptions)
-        .then((response) => {
-          if(response.status===200){
-            setPopUpChangePassword('none');
-          }else{
-            setChangePasswordInvalidCredentials(true)
-          }
-        })
-    }
-  }
 
   function styleButtonLogout(){
     if(buttomLogoutHover){
@@ -139,13 +109,6 @@ const Home = () => {
         return isMobileDevice ? mobilStyles.buttomAgregarConsumo : webStyles.buttomAgregarConsumo;
     }
   }
-  function styleButtomUpdatePassword(){
-    if(buttomUpdatePassword){
-        return isMobileDevice ? mobilStyles.buttomUpdatePasswordHover : webStyles.buttomUpdatePasswordHover;
-    }else{
-        return isMobileDevice ? mobilStyles.buttomUpdatePassword : webStyles.buttomUpdatePassword;
-    }
-  }
 
   const renderConsumos = (item, index)=> {
     return (
@@ -155,36 +118,16 @@ const Home = () => {
     )  
   }
 
-  function isEmpty(input, isEmpty){
-    if(input==='')isEmpty(true)
+
+  function closePopUpChangePassword(){
+    setPopUpChangePassword('none')
   }
 
   return (
     <div style={isMobileDevice ? mobilStyles.body : webStyles.body}>
 
-      <button style={{position:'absolute', width:'100%', height:'100%', backgroundColor:'#333333', opacity:0.5, display:popUpChangePassword}} onClick={()=>setPopUpChangePassword('none')}/>
-      <div style={{position:'absolute',alignSelf: 'center', top:'20%', width:250, height:300, backgroundColor:'#FFFFFF', display:popUpChangePassword, borderRadius:10}}>
-        <button style={isMobileDevice ? mobilStyles.back : webStyles.back} onClick={()=>setPopUpChangePassword('none')}>X</button>
-        <div style={isMobileDevice ? mobilStyles.divCenteredItems : webStyles.divCenteredItems}>
-          <form style={isMobileDevice ? mobilStyles.formChangePassword : webStyles.formChangePassword}>
-            <p style={changePasswordInvalidCredentials ? (isMobileDevice ? mobilStyles.invalidCredentials : webStyles.invalidCredentials):{display:'none'}}>Credenciales incorrectas</p>
-            <p style={isMobileDevice ? mobilStyles.label : webStyles.label} >Contraseña anterior</p>
-            <input style={isMobileDevice ? (previousPasswordEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (previousPasswordEmpty ? webStyles.inputEmpty : webStyles.input)} type="password" value={previousPassword} onChange={e => setPreviousPassword(e.target.value)}  onFocus={()=>setPreviousPasswordEmpty(false)} onBlur={()=>isEmpty(previousPassword,setPreviousPasswordEmpty)}/>
-            {previousPasswordEmpty&&<RequiredField/>}
-            <p style={isMobileDevice ? mobilStyles.label : webStyles.label}>Nueva contraseña</p>
-            <input style={isMobileDevice ? (newPasswordInvalid ? mobilStyles.inputEmpty : mobilStyles.input) : (newPasswordInvalid ? webStyles.inputEmpty : webStyles.input)} type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)}  onFocus={()=>setNewPasswordInvalid(false)} onBlur={()=>isValidPassword(newPassword,setNewPasswordInvalid)}/>
-            {newPasswordInvalid&&<p style={isMobileDevice ? mobilStyles.invalidCredentials : webStyles.invalidCredentials}>La contraseña debe tener minimo 8 caracteres, 1 número, 1 mayúscula y 1 minúscula</p>}
-            <input 
-              onMouseEnter={()=>{setButtomUpdatePassword(true);}} 
-              onMouseLeave={()=>{setButtomUpdatePassword(false);}} 
-              style={styleButtomUpdatePassword()}  
-              type="button" 
-              onClick={updatePassword} 
-              value="Actualizar" 
-              disabled={previousPasswordEmpty||newPasswordInvalid}/>
-          </form>
-          </div>
-      </div>
+      <PopUpChangePassword display={popUpChangePassword} closePopUp= {closePopUpChangePassword}/>
+      
       
       <div style={isMobileDevice ? mobilStyles.menuContainer : webStyles.menuContainer}>
         <img src={logoHorizontal} style={isMobileDevice ? mobilStyles.logoHorizontal : webStyles.logoHorizontal}/>

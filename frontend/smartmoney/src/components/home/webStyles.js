@@ -84,9 +84,6 @@ const webStyles = {
         fontWeight:'bold',
         backgroundColor:'#005CB8',
     },
-    back:{position:'relative', left:220, top:5, backgroundColor:'#FFFFFF', border:0},
-    divCenteredItems:{display:'flex', flexDirection:'column',alignItems:'center', width:'100%'},
-    formChangePassword:{ display: "flex", flexDirection: 'column', width:'85%'},
     menuContainer:{height: 70,backgroundColor:'#292928',display:'flex' ,justifyContent:'space-between',alignItems:'center',flexDirection: "row"},
     logoHorizontal:{width:250, height:75, marginTop:10},
     configurationButton:{height:25, width:25, marginRight:20, backgroundColor:'#292928', border:0},
@@ -99,7 +96,6 @@ const webStyles = {
     expensesRow:{textAlign:"left", height:40},
     expensesValue:{borderBottomStyle:'solid', borderWidth:2},
     invalidCredentials:{color:'red', fontSize:14, margin:0, fontWeight:'bold'},
-
 }
 
 export default webStyles;
