@@ -41,3 +41,9 @@
     margin-bottom:5px;
     font-weight:bold
 }
+
+@media only screen and (max-width: 600px) {
+    .label{
+        font-size: 12px;
+    }
+}

@@ -1,5 +1,6 @@
-function isValidPassword(password, setInvalid){
-    if(!passwordSyntax(password))setInvalid(true);
+function isValidPassword(password){
+    if(!passwordSyntax(password))return false;
+    return true;
 }
 
 function passwordSyntax(password){

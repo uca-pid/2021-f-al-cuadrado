@@ -2,8 +2,6 @@ import React from 'react';
 import {useState} from 'react';
 import logo from "../../images/logo.png"; 
 import "./style.css"
-import webStyles from "./webStyles";
-import mobilStyles from "./mobilStyles";
 import { useMediaQuery } from 'react-responsive';
 import Login from './Login';
 import Register from './Register';
@@ -11,9 +9,6 @@ import ForgotPassword from './ForgotPassword';
 
 const Landing = () => {
 
-  const isMobileDevice = useMediaQuery({
-    query: "(max-device-width: 480px)",
-  });
   const [layout, setLayout] = useState('login');
 
   function setForgotPasswordLayout(){
@@ -27,7 +22,7 @@ const Landing = () => {
   }
 
   return (
-    <div className="body">
+    <div className="body bodyLanding">
       <div className="menu">
         {(layout==='login')&&
          <Login setLayoutForgotPassword={setForgotPasswordLayout} setLayoutRegister={setRegisterLayout}/>
@@ -45,6 +40,5 @@ const Landing = () => {
     </div>
   );
 }
-
 
 export default Landing;

@@ -21,17 +21,17 @@ const ForgotPassword = ({setLayoutLogin}) => {
 
     const [userEmpty, setUserEmpty] = useState(false);
     const [codeEmpty, setCodeEmpty] = useState(false);
-    const [invalidUser, setInvalidUser] = useState(false);
-    const [invalidCredentials, setInvalidCredentials] = useState(false);
+    const [invalidUser, setInvalidUser] = useState('none');
+    const [invalidCredentials, setInvalidCredentials] = useState('none');
     const [invalidPassword, setInvalidPassword] = useState(false);
 
     const isEmpty = (input, isEmpty) => {
         if(input==='')isEmpty(true)
-      }
+    }
 
     const forgotPasswordSubmit = () =>{
-        setInvalidUser(false)
-        setInvalidCredentials(false)
+        setInvalidUser('none')
+        setInvalidCredentials('none')
         if(user===''){
           setUserEmpty(true);
         }else{
@@ -46,12 +46,12 @@ const ForgotPassword = ({setLayoutLogin}) => {
               setUserId(data.user_id);
               setCodigoEnviado(true);
             })
-            .catch(err => setInvalidUser(true))
+            .catch(err => setInvalidUser('block'))
         }
     }
     const updatePasswordSubmit = () =>{
-        setInvalidUser(false)
-        setInvalidCredentials(false)
+        setInvalidUser('none')
+        setInvalidCredentials('none')
         if(codigoSeguridad==='')setCodeEmpty(true);
         if(newPassword==='')setInvalidPassword(true);
         if(!(codigoSeguridad===''||newPassword===''||invalidPassword)){
@@ -65,7 +65,7 @@ const ForgotPassword = ({setLayoutLogin}) => {
             if(response.status===200){
               window.location.href = "./"
             }else{
-              setInvalidCredentials(true)
+              setInvalidCredentials('block')
             }
           })
         }
@@ -74,8 +74,8 @@ const ForgotPassword = ({setLayoutLogin}) => {
     return(
         <div className="formContainer"  name="ForgotPassword">     
             <form className="form">
-              <p className="invalidCredentials" style={invalidUser ? (isMobileDevice ? mobilStyles.invalidCredentials : webStyles.invalidCredentials):{display:'none'}}>El usuario ingresado no existe</p>
-              <p className="invalidCredentials" style={invalidCredentials ? (isMobileDevice ? mobilStyles.invalidCredentials : webStyles.invalidCredentials):{display:'none'}}>Código incorrecto</p>
+              <p className="invalidCredentials" style={{display:invalidUser}}>El usuario ingresado no existe</p>
+              <p className="invalidCredentials" style={{display:invalidCredentials}}>Código incorrecto</p>
               <p className="label">Usuario</p>
               <input style={isMobileDevice ? (userEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (userEmpty ? webStyles.inputEmpty : webStyles.input)} type="text" value={user} onChange={e => setUser(e.target.value)} onFocus={()=>setUserEmpty(false)} onBlur={()=>isEmpty(user,setUserEmpty)}/>
               {userEmpty&&<RequiredField/>}
@@ -96,9 +96,9 @@ const ForgotPassword = ({setLayoutLogin}) => {
                     {(codigoEnviado&&codeEmpty)&&<RequiredField/>}
             
                     <p className="label">Nueva contraseña</p>
-                    <input style={isMobileDevice ? (invalidPassword ? mobilStyles.inputEmpty : mobilStyles.input) : (invalidPassword ? webStyles.inputEmpty : webStyles.input)} type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} onFocus={()=>setInvalidPassword(false)} onBlur={()=>isValidPassword(newPassword, setInvalidPassword)}/>
+                    <input style={isMobileDevice ? (invalidPassword ? mobilStyles.inputEmpty : mobilStyles.input) : (invalidPassword ? webStyles.inputEmpty : webStyles.input)} type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} onFocus={()=>setInvalidPassword(true)} onBlur={()=>setInvalidPassword(!isValidPassword(newPassword))}/>
 
-                    {invalidPassword&&<p className="invalidCredentials" style={isMobileDevice ? mobilStyles.invalidCredentials : webStyles.invalidCredentials}>La contraseña debe tener minimo 8 caracteres, 1 número, 1 mayúscula y 1 minúscula</p>}
+                    {invalidPassword&&<p className="invalidCredentials">La contraseña debe tener minimo 8 caracteres, 1 número, 1 mayúscula y 1 minúscula</p>}
 
                     <input 
                       className = "button1"

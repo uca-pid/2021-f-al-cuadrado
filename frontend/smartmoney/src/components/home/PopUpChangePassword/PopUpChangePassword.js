@@ -1,13 +1,13 @@
 import React from 'react';
 import {useState} from 'react';
 import "./style.css";
-import webStyles from "./webStyles";
-import mobilStyles from "./mobilStyles";
+import webStyles from "../webStyles";
+import mobilStyles from "../mobilStyles";
 import { useMediaQuery } from 'react-responsive';
-import RequiredField from '../RequiredField/requiredField';
-import isValidPassword from '../../functions/passwordFormatValidation';
+import RequiredField from '../../RequiredField/requiredField';
+import isValidPassword from '../../../functions/passwordFormatValidation';
 
-const PopUpChangePassword = ({display, closePopUp}) => {
+const PopUpChangePassword = ({closePopUp}) => {
 
     const isMobileDevice = useMediaQuery({
         query: "(max-device-width: 480px)",
@@ -39,14 +39,13 @@ const PopUpChangePassword = ({display, closePopUp}) => {
               }
             })
         }
-      }
-      function isEmpty(input, isEmpty){
-        if(input==='')isEmpty(true)
-      }
-
+    }
+    function isEmpty(input, isEmpty){
+      if(input==='')isEmpty(true)
+    }
 
     return(
-        <div className="popUpComponent" style={{display:display}}>
+        <div className="popUpComponent">
             <button className="popUpBackground" onClick={closePopUp}/>
             <div className="changePasswordContainer">
                 <button className="close" onClick={closePopUp}>X</button>
@@ -57,7 +56,7 @@ const PopUpChangePassword = ({display, closePopUp}) => {
                     <input style={isMobileDevice ? (previousPasswordEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (previousPasswordEmpty ? webStyles.inputEmpty : webStyles.input)} type="password" value={previousPassword} onChange={e => setPreviousPassword(e.target.value)}  onFocus={()=>setPreviousPasswordEmpty(false)} onBlur={()=>isEmpty(previousPassword,setPreviousPasswordEmpty)}/>
                     {previousPasswordEmpty&&<RequiredField/>}
                     <p className="label">Nueva contraseña</p>
-                    <input style={isMobileDevice ? (newPasswordInvalid ? mobilStyles.inputEmpty : mobilStyles.input) : (newPasswordInvalid ? webStyles.inputEmpty : webStyles.input)} type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)}  onFocus={()=>setNewPasswordInvalid(false)} onBlur={()=>isValidPassword(newPassword,setNewPasswordInvalid)}/>
+                    <input style={isMobileDevice ? (newPasswordInvalid ? mobilStyles.inputEmpty : mobilStyles.input) : (newPasswordInvalid ? webStyles.inputEmpty : webStyles.input)} type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)}  onFocus={()=>setNewPasswordInvalid(false)} onBlur={()=>setNewPasswordInvalid(!isValidPassword(newPassword))}/>
                     {newPasswordInvalid&&<p className="invalidCredentials">La contraseña debe tener minimo 8 caracteres, 1 número, 1 mayúscula y 1 minúscula</p>}
                     <input 
                     className="button1"

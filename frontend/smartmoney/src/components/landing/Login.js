@@ -13,12 +13,12 @@ const Login = ({setLayoutForgotPassword,setLayoutRegister}) => {
   });
     const [user, setUser] = useState('');
     const [password, setPassword] = useState('');
-    const [invalidCredentials, setInvalidCredentials] = useState(false);
+    const [invalidCredentials, setInvalidCredentials] = useState('none');
     const [userEmpty, setUserEmpty] = useState(false);
     const [passwordEmpty, setPasswordEmpty] = useState(false);
    
     const login = () => {
-      setInvalidCredentials(false)
+      setInvalidCredentials('none')
       if(user==='')setUserEmpty(true);
       if(password==='')setPasswordEmpty(true);
       if(!(user===''||password==='')){
@@ -33,7 +33,7 @@ const Login = ({setLayoutForgotPassword,setLayoutRegister}) => {
             localStorage.setItem('session',JSON.stringify(data));
             window.location.href = "./home"
           })
-          .catch(err => setInvalidCredentials(true))
+          .catch(err => setInvalidCredentials('block'))
       }
     }
 
@@ -45,7 +45,7 @@ const Login = ({setLayoutForgotPassword,setLayoutRegister}) => {
     return(
         <div className="formContainer" name="Login">     
             <form className="form">
-              <p className="invalidCredentials" style={invalidCredentials ? (isMobileDevice ? mobilStyles.invalidCredentials : webStyles.invalidCredentials):{display:'none'}}>Credenciales incorrectas</p>
+              <p className="invalidCredentials" style={{display:invalidCredentials}}>Credenciales incorrectas</p>
               <p className="label" >Usuario</p>
               <input style={isMobileDevice ? (userEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (userEmpty ? webStyles.inputEmpty : webStyles.input)} type="text" value={user} onChange={e => setUser(e.target.value)} onFocus={()=>setUserEmpty(false)} onBlur={()=>isEmpty(user,setUserEmpty)}/>
               {userEmpty&&<RequiredField/>}
