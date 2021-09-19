@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from django.contrib.auth.hashers import make_password,check_password
 
-from .managers import CustomUserManager,SecurityCodeManager
+from .managers import CustomUserManager,SecurityCodeManager,ExpenseManager
 from datetime import datetime, timedelta
 from django.utils import timezone
 
@@ -22,7 +22,7 @@ class baseModel():
         super().save(*arg,**args)
 
 
-class Sm_user(AbstractUser,baseModel):
+class Sm_user(AbstractUser,baseModel): 
     username = None
     email = models.EmailField(_('email address'), unique=True)
     first_name = models.CharField(max_length=150)
@@ -34,6 +34,7 @@ class Sm_user(AbstractUser,baseModel):
 
     def __str__(self):
         return self.email
+
     @classmethod
     def create_user(cls, email, password, **extra_fields):
         try:
@@ -102,8 +103,36 @@ class SecurityCode(models.Model,baseModel):
 class Expense(models.Model,baseModel):
     owner = models.ForeignKey(Sm_user, on_delete=models.CASCADE)
     value = models.FloatField()
+    description = models.CharField(max_length = 150,blank= True)
+    date = models.DateTimeField(default = timezone.now)
+
+    objects = ExpenseManager()
     
+    @classmethod
+    def create_expense(cls,**fields):
+        return cls.objects.create_expense(cls,**fields)
     def getOwner(self):
         return self.owner
     def getValue(self):
         return self.value
+    def getDescription(self):
+        return self.description
+    def getDate(self):
+        return self.date
+
+    def modify(self, **args_to_change):
+        keys = args_to_change.keys()
+        for argument in keys:
+            setattr(self, argument, args_to_change[argument])
+        self.save()
+        return self
+
+class Category(models.Model,baseModel):
+    name = models.CharField(max_length = 150) #deberia tener un custom validator...
+    icon = models.CharField(max_length = 150)
+
+    def getName(self):
+        return self.name 
+        
+    def getIcon(self):
+        self.icon

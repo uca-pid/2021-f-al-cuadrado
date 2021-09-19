@@ -43,3 +43,9 @@ class SecurityCodeManager(models.Manager):
             userCode = Sc(user = user, user_code = code, valid_from = todayDate)
             userCode.save()
             return userCode
+
+class ExpenseManager(models.Manager):
+    def create_expense(self,Expense,**extra_fields):
+        expense = Expense(**extra_fields)
+        expense.save()
+        return expense

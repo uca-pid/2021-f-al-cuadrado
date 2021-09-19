@@ -50,8 +50,7 @@ def new_expense(request,user_id):
 	received_code = request.data.get('code')
 	value = request.data.get('value')
 	if expected_code == received_code:
-		expense = Expense(value = value, owner = user)
-		expense.save()
+		expense = Expense.create_expense(value = value, owner = user)
 		return Response(status = status.HTTP_201_CREATED)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
 
