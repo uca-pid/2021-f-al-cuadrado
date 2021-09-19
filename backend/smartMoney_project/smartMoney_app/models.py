@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 
 from django.contrib.auth.hashers import make_password,check_password
 
-from .managers import CustomUserManager,SecurityCodeManager,ExpenseManager
+from .managers import CustomUserManager,SecurityCodeManager,ExpenseManager,CategoryManager
 from datetime import datetime, timedelta
 from django.utils import timezone
 
@@ -85,7 +85,7 @@ class SecurityCode(models.Model,baseModel):
     @classmethod
     def instanceCreation(cls, user):
         try:
-            return cls.objects.create_security_code(cls,user)
+            return cls.objects.create_security_code(user)
         except Exception as e:
             raise e
     def getCode(self):
@@ -110,7 +110,7 @@ class Expense(models.Model,baseModel):
     
     @classmethod
     def create_expense(cls,**fields):
-        return cls.objects.create_expense(cls,**fields)
+        return cls.objects.create_expense(**fields)
     def getOwner(self):
         return self.owner
     def getValue(self):
@@ -130,9 +130,36 @@ class Expense(models.Model,baseModel):
 class Category(models.Model,baseModel):
     name = models.CharField(max_length = 150) #deberia tener un custom validator...
     icon = models.CharField(max_length = 150)
+    user = models.ForeignKey(Sm_user, on_delete=models.CASCADE, null = True)
+
+    class Meta: #identificamos el par unico de atributos clave
+        unique_together = ('name', 'user')
+
+    #Custom Manager
+    objects = CategoryManager()
+
+    @classmethod
+    def create_default(cls):
+        return cls.objects.create_default()
+
+    @classmethod
+    def create(cls,**fields):
+        return cls.objects.create_category(**fields)
 
     def getName(self):
         return self.name 
-        
+
     def getIcon(self):
-        self.icon
+        return self.icon
+
+    def getUser(self):
+        return self.user
+
+    @classmethod
+    def getAllWith(cls,*arg,**fields):
+        keys = fields.keys()
+        if 'user' in keys:
+            default_categories = cls.objects.getDefault()
+            otherCategories = cls.objects.filter(user = fields['user'])
+            return default_categories | otherCategories
+        return super().getAllWith(*arg,**fields)
