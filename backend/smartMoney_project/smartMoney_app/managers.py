@@ -4,6 +4,9 @@ from django.db import models
 from random import choice
 
 
+
+from datetime import datetime
+import pytz
 from django.utils import timezone
 
 
@@ -46,9 +49,15 @@ class SecurityCodeManager(models.Manager):
 
 class ExpenseManager(models.Manager):
     def create_expense(self,**extra_fields):
+        if extra_fields['date'] :
+            extra_fields['date'] = self.dateFromString(extra_fields['date'])
         expense = self.model(**extra_fields)
         expense.save()
         return expense
+    def dateFromString(self,stringDate): #Format 'AAAA-MM-DD'
+        paris_tz = pytz.timezone("Europe/Paris")
+        parsedString = stringDate.split('-')
+        return paris_tz.localize(datetime(int(parsedString[0]), int(parsedString[1]), int(parsedString[2])))
 
 
 

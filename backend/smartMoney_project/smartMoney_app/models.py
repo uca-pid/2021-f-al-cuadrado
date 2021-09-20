@@ -8,6 +8,8 @@ from .managers import CustomUserManager,SecurityCodeManager,ExpenseManager,Categ
 from datetime import datetime, timedelta
 from django.utils import timezone
 
+from django.db.models import Q
+
 
 class baseModel():
     @classmethod
@@ -99,34 +101,6 @@ class SecurityCode(models.Model,baseModel):
         self.save()
 
 
-
-class Expense(models.Model,baseModel):
-    owner = models.ForeignKey(Sm_user, on_delete=models.CASCADE)
-    value = models.FloatField()
-    description = models.CharField(max_length = 150,blank= True)
-    date = models.DateTimeField(default = timezone.now)
-
-    objects = ExpenseManager()
-    
-    @classmethod
-    def create_expense(cls,**fields):
-        return cls.objects.create_expense(**fields)
-    def getOwner(self):
-        return self.owner
-    def getValue(self):
-        return self.value
-    def getDescription(self):
-        return self.description
-    def getDate(self):
-        return self.date
-
-    def modify(self, **args_to_change):
-        keys = args_to_change.keys()
-        for argument in keys:
-            setattr(self, argument, args_to_change[argument])
-        self.save()
-        return self
-
 class Category(models.Model,baseModel):
     name = models.CharField(max_length = 150) #deberia tener un custom validator...
     icon = models.CharField(max_length = 150)
@@ -138,6 +112,7 @@ class Category(models.Model,baseModel):
     #Custom Manager
     objects = CategoryManager()
 
+    
     @classmethod
     def create_default(cls):
         return cls.objects.create_default()
@@ -145,6 +120,10 @@ class Category(models.Model,baseModel):
     @classmethod
     def create(cls,**fields):
         return cls.objects.create_category(**fields)
+    @classmethod
+    def other(cls): #devuelvo el objeto 'otros, para los consumos "huerfanos"'
+        cls.create_default()
+        return cls.get(name = 'Otros').id
 
     def getName(self):
         return self.name 
@@ -157,9 +136,53 @@ class Category(models.Model,baseModel):
 
     @classmethod
     def getAllWith(cls,*arg,**fields):
+        cls.objects.create_default()
         keys = fields.keys()
         if 'user' in keys:
             default_categories = cls.objects.getDefault()
             otherCategories = cls.objects.filter(user = fields['user'])
             return default_categories | otherCategories
         return super().getAllWith(*arg,**fields)
+
+    @classmethod
+    def getAllWithTotalsFor(cls,user):
+        categories = cls.getAllWith(user = user).filter(Q(expense__owner = user) | Q(expense__owner = None))
+        categories = categories.annotate(total= models.Sum('expense__value'))
+        return categories
+
+
+
+class Expense(models.Model,baseModel):
+    owner = models.ForeignKey(Sm_user, on_delete=models.CASCADE)
+    value = models.FloatField()
+    description = models.CharField(max_length = 150,blank= True)
+    date = models.DateTimeField(default = timezone.now)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE,default = Category.other)
+    attributes = ['owner','value','description','date','category']
+    objects = ExpenseManager()
+    
+
+
+    @classmethod
+    def create_expense(cls,**fields):
+        return cls.objects.create_expense(**fields)
+    def getOwner(self):
+        return self.owner
+    def getValue(self):
+        return self.value
+    def getDescription(self):
+        return self.description
+    def getDate(self):
+        return self.date
+    def getCategory(self):
+        return self.category
+
+    def modify(self, **args_to_change):
+        keys = args_to_change.keys()
+        if 'date' in keys:
+            args_to_change['date'] = Expense.objects.dateFromString(args_to_change['date'])
+        for argument in keys:
+            if argument in self.attributes:
+                setattr(self, argument, args_to_change[argument])
+        self.save()
+        return self
