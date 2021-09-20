@@ -13,5 +13,7 @@ urlpatterns = [
     path('expenses/<int:user_id>/',views.expense_list, name = 'Get an user expenses'),
     path('edit_expense/<int:user_id>/',views.edit_expense, name = 'Edit an user expense'),
     path('categories/<int:user_id>/',views.category_list, name = 'Get an user categories with his totals'),
-    #path('category_expenses/<int:user_id>',views.)
+    path('category_expenses/<int:user_id>/',views.expenses_from_category,name= 'Get an user expenses from a category'),
+    path('new_category/<int:user_id>/',views.new_category,name= 'create category')
+
 ]

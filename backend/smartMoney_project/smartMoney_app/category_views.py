@@ -36,6 +36,8 @@ code = openapi.Schema(title = 'session_code',type=openapi.TYPE_STRING)
 description = openapi.Schema(title = 'description',type=openapi.TYPE_STRING)
 category = openapi.Schema(title = 'category',type=openapi.TYPE_STRING)
 date = openapi.Schema(title = 'date',type=openapi.TYPE_STRING)
+category_name = openapi.Schema(title = 'category_name',type=openapi.TYPE_STRING)
+icon = openapi.Schema(title = 'icons',type=openapi.TYPE_STRING)
 
 
 @swagger_auto_schema(methods=['post'],
@@ -54,4 +56,47 @@ def category_list(request,user_id):
 	if validCode(user_id,received_code):
 		categories = Category.getAllWithTotalsFor(user = user)
 		return Response(categories.values(), status = status.HTTP_200_OK)
+	return Response(status = status.HTTP_401_UNAUTHORIZED)
+
+
+
+@swagger_auto_schema(methods=['post'],
+					request_body=openapi.Schema(
+						type=openapi.TYPE_OBJECT,
+						required=['version'],
+						properties={
+							'code': code,
+							'category' : category
+							},
+						),
+					responses={200: 'Expenses sended',401: 'Invalid Credentials'})
+@api_view(['POST'])
+def expenses_from_category(request,user_id):	
+	user = User.get(id = user_id)
+	received_code = request.data.get('code')
+	category = Category.get(name = request.data.get('category'))
+	if validCode(user_id,received_code):
+		expenses = Expense.getAllWith(category = category)
+		return Response(expenses.values(), status = status.HTTP_200_OK)
+	return Response(status = status.HTTP_401_UNAUTHORIZED)
+		
+
+@swagger_auto_schema(methods=['post'],
+					request_body=openapi.Schema(
+						type=openapi.TYPE_OBJECT,
+						required=['version'],
+						properties={
+							'code': code,
+							'category_name': category_name,
+							'icon' : icon,
+							},
+						),
+					responses={201: 'Expense created',401: 'Invalid Credentials'})
+@api_view(['POST'])
+def new_category(request,user_id):
+	user = User.get(id = user_id)
+	received_code = request.data.get('code')
+	if validCode(user_id,received_code):
+		Category.create(name = request.data.get('category_name'), icon = request.data.get('icon'), user = user)
+		return Response(status = status.HTTP_201_CREATED)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)

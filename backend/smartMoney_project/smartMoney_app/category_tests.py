@@ -45,6 +45,7 @@ class CategoryTestCase(APITestCase):
 		self.assertEqual(category.getName(), 'Gimnasio')
 		self.assertEqual(category.getIcon(), 'Rocket')
 		self.assertEqual(category.getUser(), user)
+		self.assertEqual(len(Category.getAllWith()),7)
 
 	def test_different_users_create_identicals_custom_categories(self):
 		user1 = User.get(email = 'f@gmail.com')
@@ -103,7 +104,7 @@ class CategoryTestCase(APITestCase):
 		for category in categories:
 			if category['name'] in categories_with_expenses:
 				self.assertEqual(category['total'],750)
-'''
+
 	def test_get_all_user_expenses_from_category(self):
 		loginResponse = self.userLogin('f@gmail.com','admin')
 		self.assertEqual(loginResponse.status_code,200)
@@ -111,5 +112,31 @@ class CategoryTestCase(APITestCase):
 		user_id = loginResponse.data.get('user_id')
 		user = User.get(id= user_id)
 		webClient = self.client
-		response = webClient.post('/categories/' + str(user_id) + '/', {'code' : loginCode})
-'''
+		response = webClient.post('/category_expenses/' + str(user_id) + '/', {'code' : loginCode, 'category': 'Otros'})
+		self.assertEqual(response.status_code , 200)
+		self.assertEqual(len(response.data),2)
+	def test_user_create_category_success(self):
+		loginResponse = self.userLogin('f@gmail.com','admin')
+		self.assertEqual(loginResponse.status_code,200)
+		loginCode = loginResponse.data.get('code')
+		user_id = loginResponse.data.get('user_id')
+		user = User.get(id= user_id)
+		webClient = self.client
+		self.assertEqual(len(Category.getAllWith(user = user)),6)
+		response = webClient.post('/new_category/' + str(user_id) + '/', {'code' : loginCode, 'category_name': 'Gimnasio','icon': 'Rocket'})
+		self.assertEqual(response.status_code , 201)
+		self.assertEqual(len(Category.getAllWith(user = user)),7)
+		category = Category.get(user = user)
+		self.assertEqual(category.getName(),'Gimnasio')
+		self.assertEqual(category.getIcon(),'Rocket')
+		self.assertEqual(category.getUser(), user)
+
+
+
+
+
+
+
+
+
+
