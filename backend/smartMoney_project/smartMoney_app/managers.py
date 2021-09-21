@@ -65,7 +65,7 @@ class ExpenseManager(models.Manager):
 class CategoryManager(models.Manager):
     def create_default(self):
         default_categories = [('Bills and taxes', 'IoReceipt'), 
-        ('Workout and leisure', 'IoGameController'), 
+        ('Entertainment and leisure', 'IoGameController'), 
         ('Market and home', 'IoCart'),
         ('Wellness and cravings', 'IoWineSharp'), 
         ('Home appliances', 'IoDesktopSharp'), 
