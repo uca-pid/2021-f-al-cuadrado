@@ -65,38 +65,38 @@ const Register = ({setLayoutLogin}) => {
     return(
         <div className="formContainer" name="Register">     
             <form className="form">
-                <p className="label" >Mail</p>
+                <p className="label" >Email</p>
                 <input style={isMobileDevice ? (userInvalid ? mobilStyles.inputEmpty : mobilStyles.input) : (userInvalid ? webStyles.inputEmpty : webStyles.input)} type="text" value={mail} onChange={e => setMail(e.target.value)} onFocus={()=>setUserInvalid(false)} onBlur={()=>isValidEmail(mail,setUserInvalid)}/>
                 {userInvalid&&
-                    <p className="invalidCredentials" style={isMobileDevice ? mobilStyles.invalidCredentials : webStyles.invalidCredentials}>Mail incorrecto</p>
+                    <p className="invalidCredentials" style={isMobileDevice ? mobilStyles.invalidCredentials : webStyles.invalidCredentials}>Wrong email</p>
                 }
-                <p className="label">Nombre</p>
+                <p className="label">Name</p>
                 <input style={isMobileDevice ? (nameEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (nameEmpty ? webStyles.inputEmpty : webStyles.input)} type="text" value={name} onChange={e => setName(e.target.value)} onFocus={()=>setNameEmpty(false)} onBlur={()=>isEmpty(name,setNameEmpty)}/>
                 {nameEmpty&&
                     <RequiredField/>
                 }
-                <p className="label">Apellido</p>
+                <p className="label">Last name</p>
                 <input style={isMobileDevice ? (surnameEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (surnameEmpty ? webStyles.inputEmpty : webStyles.input)} type="text" value={surname} onChange={e => setSurname(e.target.value)} onFocus={()=>setSurnameEmpty(false)} onBlur={()=>isEmpty(surname,setSurnameEmpty)}/>
                 {surnameEmpty&&
                     <RequiredField/>
                 }
-                <p className="label">Contraseña</p>
+                <p className="label">Password</p>
                 <input style={isMobileDevice ? (invalidPassword ? mobilStyles.inputEmpty : mobilStyles.input) : (invalidPassword ? webStyles.inputEmpty : webStyles.input)} type="password" value={password} onChange={e => setPassword(e.target.value)} onFocus={()=>setInvalidPassword(false)} onBlur={()=>setInvalidPassword(!isValidPassword(password))}/>
                 {invalidPassword&&
-                    <p className="invalidCredentials" style={isMobileDevice ? mobilStyles.invalidCredentials : webStyles.invalidCredentials}>La contraseña debe tener minimo 8 caracteres, 1 número, 1 mayúscula y 1 minúscula</p>
+                    <p className="invalidCredentials" style={isMobileDevice ? mobilStyles.invalidCredentials : webStyles.invalidCredentials}>Password must have al least 8 caracters, 1 number, 1 uppercase and 1 lowercase</p>
                 }
                 <input  
                     className = "button1"
                     type="button" 
                     onClick={registerSubmit} 
-                    value="Registrarse" 
+                    value="Register" 
                     disabled={userInvalid||nameEmpty||surnameEmpty||invalidPassword}/>
                 <div className="line"></div>
                 <input 
                     className = "button2"
                     type="button" 
                     onClick={setLayoutLogin} 
-                    value="Iniciar sesión" />
+                    value="Login" />
             </form>
           </div> 
     )

@@ -71,13 +71,13 @@ const Espenses = () => {
             <div className = "agregarConsumoContainer">
                 <div>
                     <input style={isMobileDevice ? mobilStyles.input : webStyles.input} type="text" value={nuevoConsumo} onChange={e => setNuevoConsumo(e.target.value)} onFocus={()=>setNewExpenseOnlyNumbers(false)}/>
-                    {newExpenseOnlyNumbers&&<p className = "invalidCredentials">Sólo números</p>}
+                    {newExpenseOnlyNumbers&&<p className = "invalidCredentials">Only numbers</p>}
                 </div>
                 <input 
                     className="buttonAgregarConsumo"
                     type="button" 
                     onClick={agregarConsumo} 
-                    value="Agregar consumo" 
+                    value="Add expense" 
                     disabled={nuevoConsumo===''}/>
             </div>
             <div className = "expensesContainer">
@@ -85,7 +85,7 @@ const Espenses = () => {
                     <FlatList 
                         list={consumos}
                         renderItem={renderConsumos}
-                        renderWhenEmpty={() => <div>Todavía no se regitró ningún gasto!</div>}
+                        renderWhenEmpty={() => <div>There is no expense yet!</div>}
                         sort={{by:"id"}}
                     />
                 </table>

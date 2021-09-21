@@ -15,12 +15,12 @@ const Menu = ({openPopUpChangePassword}) => {
                     className="menuButton"  
                     type="button" 
                     onClick={openPopUpChangePassword} 
-                    >Cambiar contraseña</button>
+                    >Change password</button>
                 <button 
                     className="menuButton"   
                     type="button" 
                     onClick={logout} 
-                    >Cerar sesión</button>
+                    >Logout</button>
             </div>
       </div>
     )

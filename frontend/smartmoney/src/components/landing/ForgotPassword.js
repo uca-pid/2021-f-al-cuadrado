@@ -74,9 +74,9 @@ const ForgotPassword = ({setLayoutLogin}) => {
     return(
         <div className="formContainer"  name="ForgotPassword">     
             <form className="form">
-              <p className="invalidCredentials" style={{display:invalidUser}}>El usuario ingresado no existe</p>
-              <p className="invalidCredentials" style={{display:invalidCredentials}}>Código incorrecto</p>
-              <p className="label">Usuario</p>
+              <p className="invalidCredentials" style={{display:invalidUser}}>User doesn't exists</p>
+              <p className="invalidCredentials" style={{display:invalidCredentials}}>Wrong code</p>
+              <p className="label">User</p>
               <input style={isMobileDevice ? (userEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (userEmpty ? webStyles.inputEmpty : webStyles.input)} type="text" value={user} onChange={e => setUser(e.target.value)} onFocus={()=>setUserEmpty(false)} onBlur={()=>isEmpty(user,setUserEmpty)}/>
               {userEmpty&&<RequiredField/>}
               {
@@ -85,33 +85,33 @@ const ForgotPassword = ({setLayoutLogin}) => {
                     className = "button1"
                     type="button" 
                     onClick={forgotPasswordSubmit} 
-                    value="Enviar mail" 
+                    value="Send email" 
                     disabled={userEmpty}/>
               }
               {codigoEnviado &&
                 <div className="formCode">
-                    <p className="label">Código</p>
+                    <p className="label">Code</p>
                     <input style={isMobileDevice ? (codeEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (codeEmpty ? webStyles.inputEmpty : webStyles.input)} type="text" value={codigoSeguridad} onChange={e => setCodigoSeguridad(e.target.value)} onFocus={()=>setCodeEmpty(false)} onBlur={()=>isEmpty(codigoSeguridad,setCodeEmpty)}/>              
                     
                     {(codigoEnviado&&codeEmpty)&&<RequiredField/>}
             
-                    <p className="label">Nueva contraseña</p>
+                    <p className="label">New password</p>
                     <input style={isMobileDevice ? (invalidPassword ? mobilStyles.inputEmpty : mobilStyles.input) : (invalidPassword ? webStyles.inputEmpty : webStyles.input)} type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} onFocus={()=>setInvalidPassword(true)} onBlur={()=>setInvalidPassword(!isValidPassword(newPassword))}/>
 
-                    {invalidPassword&&<p className="invalidCredentials">La contraseña debe tener minimo 8 caracteres, 1 número, 1 mayúscula y 1 minúscula</p>}
+                    {invalidPassword&&<p className="invalidCredentials">Password must have al least 8 caracters, 1 number, 1 uppercase and 1 lowercase</p>}
 
                     <input 
                       className = "button1"
                       type="button" 
                       onClick={updatePasswordSubmit} 
-                      value="Actualizar contraseña" 
+                      value="Update password" 
                       disabled={userEmpty||codeEmpty||invalidPassword}/>
                     <div style={{height:10}}></div>
                     <input 
                       className = "button2" 
                       type="button" 
                       onClick={forgotPasswordSubmit} 
-                      value="Reenviar código"
+                      value="Resend code"
                       disabled={userEmpty}/>
                 </div>
                   
@@ -121,7 +121,7 @@ const ForgotPassword = ({setLayoutLogin}) => {
                 className = "button2"
                 type="button" 
                 onClick={setLayoutLogin} 
-                value="Volver" />
+                value="Back" />
             </form>
           </div> 
     )

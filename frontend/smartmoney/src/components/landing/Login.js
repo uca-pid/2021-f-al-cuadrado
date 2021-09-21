@@ -45,26 +45,26 @@ const Login = ({setLayoutForgotPassword,setLayoutRegister}) => {
     return(
         <div className="formContainer" name="Login">     
             <form className="form">
-              <p className="invalidCredentials" style={{display:invalidCredentials}}>Credenciales incorrectas</p>
-              <p className="label" >Usuario</p>
+              <p className="invalidCredentials" style={{display:invalidCredentials}}>Wrong credentials</p>
+              <p className="label" >User</p>
               <input style={isMobileDevice ? (userEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (userEmpty ? webStyles.inputEmpty : webStyles.input)} type="text" value={user} onChange={e => setUser(e.target.value)} onFocus={()=>setUserEmpty(false)} onBlur={()=>isEmpty(user,setUserEmpty)}/>
               {userEmpty&&<RequiredField/>}
-              <p className="label" >Contraseña</p>
+              <p className="label" >Password</p>
               <input style={isMobileDevice ? (passwordEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (passwordEmpty ? webStyles.inputEmpty : webStyles.input)} type="password" value={password} onChange={e => setPassword(e.target.value)} onFocus={()=>setPasswordEmpty(false)} onBlur={()=>isEmpty(password,setPasswordEmpty)}/>
               {passwordEmpty&&<RequiredField/>}
-              <input style={isMobileDevice ? mobilStyles.forgotPassword : webStyles.forgotPassword} type="button" onClick={setLayoutForgotPassword} value="Olvidé mi contraseña" />
+              <input style={isMobileDevice ? mobilStyles.forgotPassword : webStyles.forgotPassword} type="button" onClick={setLayoutForgotPassword} value="Forgot password" />
               <input 
                 className = "button1"
                 type="button" 
                 onClick={login} 
-                value="Iniciar sesión" 
+                value="Login" 
                 disabled={userEmpty||passwordEmpty}/>
               <div className="line"></div>
               <input 
                 className = "button2"
                 type="button" 
                 onClick={setLayoutRegister} 
-                value="Registrarse" />
+                value="Register" />
             </form>
           </div> 
     )

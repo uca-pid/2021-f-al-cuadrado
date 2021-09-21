@@ -10,7 +10,6 @@ const App = () => {
         <Route exact path="/">
           <Landing />
         </Route>
-        {/* #TODO: Validar que el usuario haya iniciado sesion*/}
         <Route exact path="/home">
           <Home />
         </Route>
