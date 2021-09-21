@@ -3,3 +3,8 @@
 .bodyHome{
     flex-direction: column;
 }
+.mainBody{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}

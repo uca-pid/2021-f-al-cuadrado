@@ -1,0 +1,21 @@
+.tableContainer{
+    display: flex;
+    flex: 1;
+    margin: 60px;
+    box-shadow: 4px 4px 8px 4px #888888;
+    border-radius: 5px;
+    padding: 10px;
+}
+.categoriesTable{
+    border-spacing:0px;
+    margin: 20px;
+    width:250px;
+}
+.categoriesRow{
+    text-align:left;
+    height:40px;
+}
+.categoriesValue{
+    border-bottom-style:solid;
+    border-width:2px;
+}

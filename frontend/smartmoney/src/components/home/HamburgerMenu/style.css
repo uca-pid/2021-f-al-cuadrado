@@ -1,0 +1,36 @@
+.hamburgerMenuContainer{
+    display:flex;
+    flex-direction:column;
+    height: 100%;
+    background-color: #EEEEEE;
+   
+}
+.hamburgerMenuButton{
+    border: 0px;
+    height: 40px;
+    display: flex;
+    flex-direction:row;
+    align-items: center;
+}
+.hamburgerMenuButton:hover{
+    background-color: #E3C9F7;
+}
+
+.hamburgerMenuText{
+    color: #8E29E0;
+    font-weight: bolder;
+    margin-left: 15px;
+}
+.hamburgerMenuBottomButtonsContainer{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    margin-bottom: 20px;
+}
+.hamburgerMenuIcon{
+    height:25px;
+    width:25px;
+    margin-left: 9px;
+
+}

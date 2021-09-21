@@ -3,12 +3,15 @@ import {useState, useEffect} from 'react';
 
 import webStyles from "./webStyles";
 import mobilStyles from "./mobilStyles";
-import { useMediaQuery } from 'react-responsive'
-import PopUpChangePassword from "./PopUpChangePassword"
-import Menu from './Menu';
+import { useMediaQuery } from 'react-responsive';
+import PopUpChangePassword from "./PopUpChangePassword";
+import PopUpNewExpense from "./PopUpNewExpense";
+
 import Header from './Header';
-import Expenses from './Expenses';
-import "./style.css"
+import Expenses from './Cards/Expenses';
+import Categories from './Cards/Categories';
+import "./style.css";
+import HamburgerMenu from './HamburgerMenu';
 
 const Home = () => {
 
@@ -16,30 +19,44 @@ const Home = () => {
     query: "(max-device-width: 480px)",
   });
 
-  const [configutationMenu, setConfigutationMenu] = useState(false);
   const [popUpChangePassword, setPopUpChangePassword] = useState(false);
+  const [popUpNewExpense, setPopUpNewpopUpNewExpense] = useState(false);
+  const [hamburgerMenu, setHamburgerMenu] = useState(true);
 
-  function configuration() {
-    setConfigutationMenu(!configutationMenu)
-  }
+
   function closePopUpChangePassword(){
     setPopUpChangePassword(false)
   }
+  function closePopUpNewExpense(){
+    setPopUpNewpopUpNewExpense(false)
+  }
   function openPopUpChangePassword(){
-    setConfigutationMenu(false);
     setPopUpChangePassword(true)
   }
+  function openPopUpNewExpense(){
+    setPopUpNewpopUpNewExpense(true)
+  }
+  function hamburger (){
+    setHamburgerMenu(!hamburgerMenu)
+    console.log(hamburgerMenu)
+}
 
   return (
     <div className="body bodyHome">
 
-      {configutationMenu && <Menu openPopUpChangePassword={openPopUpChangePassword}/>} 
-      {popUpChangePassword && <PopUpChangePassword closePopUp= {closePopUpChangePassword}/>}      
+      {popUpChangePassword && <PopUpChangePassword closePopUp= {closePopUpChangePassword}/>}
+      {popUpNewExpense && <PopUpNewExpense closePopUp= {closePopUpNewExpense}/>}      
       
-      <Header configurationMenu = {configuration}/>
+      <Header hamburger = {hamburger}/>
 
       <div style={isMobileDevice ? mobilStyles.main : webStyles.main}>
-        <Expenses />
+        {/* <Expenses /> */}
+        <HamburgerMenu hamburger={hamburgerMenu} changePassword={openPopUpChangePassword} newExpense={openPopUpNewExpense}/>
+        <div className="mainBody">
+          <Categories/>
+          <Expenses/>
+
+        </div>
       </div>
       
     </div>
