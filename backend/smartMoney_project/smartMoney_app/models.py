@@ -123,7 +123,7 @@ class Category(models.Model,baseModel):
     @classmethod
     def other(cls): #devuelvo el objeto 'otros, para los consumos "huerfanos"'
         cls.create_default()
-        return cls.get(name = 'Otros').id
+        return cls.get(name = 'Other').id
 
     def getName(self):
         return self.name 
@@ -147,7 +147,7 @@ class Category(models.Model,baseModel):
     @classmethod
     def getAllWithTotalsFor(cls,user):
         categories = cls.getAllWith(user = user).filter(Q(expense__owner = user) | Q(expense__owner = None))
-        categories = categories.annotate(total= models.Sum('expense__value'))
+        categories = categories.annotate(total= models.Sum('expense__value')).order_by('-total')
         return categories
 
 
@@ -163,6 +163,10 @@ class Expense(models.Model,baseModel):
     
 
 
+
+    @classmethod
+    def getAllWith(cls,**extra_fields):
+        return cls.objects.filter(**extra_fields).values('owner','value','description','date','category__name','category__icon').order_by('-date')
     @classmethod
     def create_expense(cls,**fields):
         return cls.objects.create_expense(**fields)

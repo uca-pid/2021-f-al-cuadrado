@@ -15,10 +15,10 @@ class CategoryTestCase(APITestCase):
 		user2 = User.create_user(first_name='Francisco',email='f2@gmail.com',last_name='Stulich',password='admin')
 		user = User.create_user(first_name='Francisco',email='f@gmail.com',last_name='Stulich',password='admin')
 		date = '2021-09-18'
-		category = Category.get(name = 'Otros')
+		category = Category.get(name = 'Other')
 		Expense.create_expense(value = 500,description = 'Entrada cine',owner = user,date = date,category = category)
 		Expense.create_expense(value = 250,description = 'Entrada teatro',owner = user,date = date,category = category)
-		category = Category.get(name = 'Impuestos y servicios')
+		category = Category.get(name = 'Bills and taxes')
 		Expense.create_expense(value = 750,description = 'ARBA',owner = user,date = date,category = category)
 		Expense.create_expense(value = 750,description = 'ARBA',owner = user2,date = date,category = category)
 	def userLogin (self,email,password):
@@ -26,12 +26,17 @@ class CategoryTestCase(APITestCase):
 		return webClient.post('/login/', {'email': email, 'password': password})
 
 	def test_default_categories_are_created(self):
-		default_categories = ['Impuestos y servicios', 'Entretenimiento y ocio', 'Hogar y mercado', 'Buen vivir y antojos', 'Electrodomésticos', 'Otros']
+		default_categories = [('Bills and taxes', 'IoReceipt'),
+		('Workout and leisure', 'IoGameController'), 
+		('Market and home', 'IoCart'), 
+		('Wellness and cravings', 'IoWineSharp'), 
+		('Home appliances', 'IoDesktopSharp'), 
+		('Other', 'IoShapes')]
 		self.assertEqual(len(default_categories),6)
 		self.assertEqual(len(Category.getAllWith()),6)
 
-		for category_name in default_categories:
-			category = Category.get(name = category_name)
+		for category_data in default_categories:
+			category = Category.get(name = category_data[0],icon = category_data[1])
 			self.assertTrue(category != None)
 
 	def test_default_categories_creation_is_unique(self):
@@ -82,7 +87,7 @@ class CategoryTestCase(APITestCase):
 		user1 = User.get(email = 'f@gmail.com')
 		categories = Category.getAllWithTotalsFor(user1)
 		self.assertEqual(len(categories), 6)
-		categories_with_expenses = ['Otros','Impuestos y servicios']
+		categories_with_expenses = ['Other','Bills and taxes']
 		for category in categories:
 			if category.name in categories_with_expenses:
 				self.assertEqual(category.total,750)
@@ -100,7 +105,7 @@ class CategoryTestCase(APITestCase):
 		self.assertEqual(response.status_code,200)
 		categories = response.data
 		self.assertEqual(len(categories),7)
-		categories_with_expenses = ['Otros','Impuestos y servicios','Gimnasio']
+		categories_with_expenses = ['Other','Bills and taxes','Gimnasio']
 		for category in categories:
 			if category['name'] in categories_with_expenses:
 				self.assertEqual(category['total'],750)
@@ -112,7 +117,7 @@ class CategoryTestCase(APITestCase):
 		user_id = loginResponse.data.get('user_id')
 		user = User.get(id= user_id)
 		webClient = self.client
-		response = webClient.post('/category_expenses/' + str(user_id) + '/', {'code' : loginCode, 'category': 'Otros'})
+		response = webClient.post('/category_expenses/' + str(user_id) + '/', {'code' : loginCode, 'category': 'Other'})
 		self.assertEqual(response.status_code , 200)
 		self.assertEqual(len(response.data),2)
 	def test_user_create_category_success(self):

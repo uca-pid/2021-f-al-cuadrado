@@ -64,12 +64,18 @@ class ExpenseManager(models.Manager):
 
 class CategoryManager(models.Manager):
     def create_default(self):
-        default_categories = ['Impuestos y servicios', 'Entretenimiento y ocio', 'Hogar y mercado', 
-        'Buen vivir y antojos', 'Electrodomésticos', 'Otros']
-        for category_name in default_categories:
+        default_categories = [('Bills and taxes', 'IoReceipt'), 
+        ('Workout and leisure', 'IoGameController'), 
+        ('Market and home', 'IoCart'),
+        ('Wellness and cravings', 'IoWineSharp'), 
+        ('Home appliances', 'IoDesktopSharp'), 
+        ('Other', 'IoShapes')]
+        for category_data in default_categories:
+            category_name = category_data[0]
+            category_icon = category_data[1]
             category = self.model.get(name = category_name)
             if not category:
-                category = self.model(name= category_name, icon = 'i')
+                category = self.model(name= category_name, icon = category_icon)
                 category.save()
 
     def create_category(self,**fields):
