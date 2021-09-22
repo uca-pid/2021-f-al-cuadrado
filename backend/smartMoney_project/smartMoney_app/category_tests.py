@@ -6,7 +6,11 @@ from django.contrib.auth.hashers import make_password,check_password
 from django.core import mail
 from .models import Category,Expense
 from django.utils import timezone
+import datetime
 
+
+date = datetime.datetime.now()
+date = date.strftime("%Y") + '-' + date.strftime("%m") + '-' + date.strftime("%d")
 
 User = get_user_model()
 
@@ -14,7 +18,6 @@ class CategoryTestCase(APITestCase):
 	def setUp(self):
 		user2 = User.create_user(first_name='Francisco',email='f2@gmail.com',last_name='Stulich',password='admin')
 		user = User.create_user(first_name='Francisco',email='f@gmail.com',last_name='Stulich',password='admin')
-		date = '2021-09-18'
 		category = Category.get(name = 'Other')
 		Expense.create_expense(value = 500,description = 'Entrada cine',owner = user,date = date,category = category)
 		Expense.create_expense(value = 250,description = 'Entrada teatro',owner = user,date = date,category = category)
@@ -99,7 +102,7 @@ class CategoryTestCase(APITestCase):
 		user_id = loginResponse.data.get('user_id')
 		user = User.get(id= user_id)
 		category = Category.create(name = 'Gimnasio', icon = 'Rocket', user = user) #seria necesario validar q la categoria elegida sea de ese usuario? O con el codigo alcanza?
-		Expense.create_expense(value = 750,description = 'Primer mes',owner = user,date = '2021-07-01',category = category)
+		Expense.create_expense(value = 750,description = 'Primer mes',owner = user,date = date,category = category)
 		webClient = self.client
 		response = webClient.post('/categories/' + str(user_id) + '/', {'code' : loginCode})
 		self.assertEqual(response.status_code,200)

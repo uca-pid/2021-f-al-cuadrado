@@ -7,6 +7,8 @@ from django.contrib.auth.hashers import make_password,check_password
 from .managers import CustomUserManager,SecurityCodeManager,ExpenseManager,CategoryManager
 from datetime import datetime, timedelta
 from django.utils import timezone
+import datetime
+
 
 from django.db.models import Q
 from django.db.models.functions import Coalesce
@@ -145,9 +147,10 @@ class Category(models.Model,baseModel):
         return super().getAllWith(*arg,**fields)
 
     @classmethod
-    def getAllWithTotalsFor(cls,user):
-        categories = cls.getAllWith(user = user).filter(Q(expense__owner = user) | Q(expense__owner = None))
-        categories = categories.annotate(total= Coalesce(models.Sum('expense__value'),0.0)).order_by('-total')
+    def getAllWithTotalsFor(cls,user, month = datetime.datetime.now().strftime("%m")):
+        categories = cls.getAllWith(user = user).filter((Q(expense__owner = user) | Q(expense__owner = None)))
+        #categories = categories.filter()
+        categories = categories.annotate(total= Coalesce(models.Sum('expense__value',filter =  (Q(expense__date__month = month) | Q(expense__date__month = None))),0.0)).order_by('-total')
         return categories
 
 
@@ -166,7 +169,7 @@ class Expense(models.Model,baseModel):
 
     @classmethod
     def getAllWith(cls,**extra_fields):
-        return cls.objects.filter(**extra_fields).values('owner','value','description','date','category__name','category__icon').order_by('-date')
+        return cls.objects.filter(**extra_fields).select_related('category').order_by('-date')
     @classmethod
     def create_expense(cls,**fields):
         return cls.objects.create_expense(**fields)
