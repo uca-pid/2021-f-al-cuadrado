@@ -54,10 +54,10 @@ const Categories = () => {
             {/* <TableScrollbar> */}
             <div className="cardTitleContainer">
                 <p className="cardTitle">Current month</p>
-                <button className="cardViewAll">
+                {/* <button className="cardViewAll">
                     <p>See all</p>
                     {icons("IoArrowForwardOutline")}
-                </button>
+                </button> */}
             </div>
             <table className = "categoriesHomeTable">
                 <thead className = "categoriesHomeTableHead">

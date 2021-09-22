@@ -17,8 +17,12 @@
     background-color:#FFFFFF;
     border:0px
 }
-.formNewCategory{
+.divNewCategory{
     display: flex;
     flex-direction: column;
     width:85%;
+}
+.selectedIcon{
+    width: 25px;
+    height: 25px;
 }

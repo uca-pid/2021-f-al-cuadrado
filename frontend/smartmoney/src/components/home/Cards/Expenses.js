@@ -29,7 +29,7 @@ const Expenses = () => {
         return (
           <tr className = "categoriesRow">
               {/* #TODO Sacar parche */}
-            <th className = "categoriesValue tableIcon">{icons(item.icon)}</th> 
+            <th className = "categoriesValue tableIcon">{icons(item.category__icon)}</th> 
             <th className = "categoriesValue tableDescription">{item.description}</th>
             <th className = "categoriesValue tableDate">{item.date.substring(0,10)}</th>
             <th className = "categoriesValue tableTotal">$ {item.value}</th>
@@ -39,13 +39,12 @@ const Expenses = () => {
 
     return(
         <div className="tableContainer">
-            {/* <TableScrollbar> */}
             <div className="cardTitleContainer">
                 <p className="cardTitle">Latest expenses</p>
-                <button className="cardViewAll">
+                {/* <button className="cardViewAll">
                     <p>See all</p>
                     {icons("IoArrowForwardOutline")}
-                </button>
+                </button> */}
             </div>
             <table className = "categoriesHomeTable">
                 <thead className = "categoriesHomeTableHead">
@@ -65,7 +64,6 @@ const Expenses = () => {
                     />
                 </tbody>
             </table>
-            {/* </TableScrollbar> */}
         </div>
     )
 }

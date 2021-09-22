@@ -81,10 +81,11 @@ import { IoFlame } from "@react-icons/all-files/io5/IoFlame";
 import { IoLibraryOutline } from "@react-icons/all-files/io5/IoLibraryOutline"; 
 import { IoCashOutline } from "@react-icons/all-files/io5/IoCashOutline"; 
 
-const IconList = ({numberColumns}) => {
+const IconList = ({numberColumns, setIcon}) => {
 
-    const fun = () => {
-        console.log("qwe")
+
+    function selectedIcon(icon){
+        setIcon(icon)
     }
 
     const createTable = () => {
@@ -92,84 +93,84 @@ const IconList = ({numberColumns}) => {
         let iconsExtraRow = 78 - (completeRows*numberColumns);
         console.log(iconsExtraRow)
         console.log(completeRows)
-        let icons = [{label:"IoReceipt",component:<IoReceipt/>},
-            {label:"IoCashOutline",component:<IoCashOutline/>},
-            {label:"IoGameController", component:<IoGameController/>},
-            {label:"IoCart",component:<IoCart/>},
-            {label:"IoDesktopSharp",component:<IoDesktopSharp/>},
-            {label:"IoCarSportSharp", component:<IoCarSportSharp/>},
-            {label:"IoAccessibility",component:<IoAccessibility/>},
-            {label:"IoArrowForwardOutline", component:<IoArrowForwardOutline/>},
-            {label:"IoWineSharp",component:<IoWineSharp/>},
-            {label:"IoAlarm",component:<IoAlarm/>},
-            {label:"IoAirplane",component:<IoAirplane/>},
-            {label:"IoAmericanFootball",component:<IoAmericanFootball/>},
-            {label:"IoBag",component:<IoBag/>},
-            {label:"IoAnalyticsOutline", component:<IoAnalyticsOutline/>},
-            {label:"IoAttachSharp",component:<IoAttachSharp/>},
-            {label:"IoBarChart",component:<IoBarChart/>},
-            {label:"IoBarbell",component:<IoBarbell/>},
-            {label:"IoBasketball",component:<IoBasketball/>},
-            {label:"IoBed",component:<IoBed/>},
-            {label:"IoBeerOutline",component:<IoBeerOutline/>},
-            {label:"IoBicycle",component:<IoBicycle/>},
-            {label:"IoBoat",component:<IoBoat/>},
-            {label:"IoBook",component:<IoBook/>},
-            {label:"IoBriefcase",component:<IoBriefcase/>},
-            {label:"IoBrushOutline",component:<IoBrushOutline/>},
-            {label:"IoBulbOutline",component:<IoBulbOutline/>},
-            {label:"IoBus",component:<IoBus/>},
-            {label:"IoBusiness",component:<IoBusiness/>},
-            {label:"IoCafe",component:<IoCafe/>},
-            {label:"IoCalculator",component:<IoCalculator/>},
-            {label:"IoCallSharp",component:<IoCallSharp/>},
-            {label:"IoCamera",component:<IoCamera/>},
-            {label:"IoCarSport",component:<IoCarSport/>},
-            {label:"IoCardOutline",component:<IoCardOutline/>},
-            {label:"IoChatbubblesOutline", component:<IoChatbubblesOutline/>},
-            {label:"IoCloudUploadOutline", component:<IoCloudUploadOutline/>},
-            {label:"IoCodeSlash",component:<IoCodeSlash/>},
-            {label:"IoColorFillOutline", component:<IoColorFillOutline/>},
-            {label:"IoColorPaletteSharp", component:<IoColorPaletteSharp/>},
-            {label:"IoConstructOutline",component:<IoConstructOutline/>},
-            {label:"IoCutSharp",component:<IoCutSharp/>},
-            {label:"IoDice",component:<IoDice/>},
-            {label:"IoDocumentText",component:<IoDocumentText/>},
-            {label:"IoEarOutline", component:<IoEarOutline/>},
-            {label:"IoEarthSharp",component:<IoEarthSharp/>},
-            {label:"IoExtensionPuzzleOutl", component:<IoExtensionPuzzleOutline/>},
-            {label:"IoFastFoodOutline",component:<IoFastFoodOutline/>},
-            {label:"IoFilmOutline",component:<IoFilmOutline/>},
-            {label:"IoFingerPrintOutline", component:<IoFingerPrintOutline/>},
-            {label:"IoTicketOutline", component:<IoTicketOutline/>},
-            {label:"IoShirtOutline",component:<IoShirtOutline/>},
-            {label:"IoSchool",component:<IoSchool/>},
-            {label:"IoRocketOutline",component:<IoRocketOutline/>},
-            {label:"IoRestaurantOutline", component:<IoRestaurantOutline/>},
-            {label:"IoPrintOutline",component:<IoPrintOutline/>},
-            {label:"IoPizzaOutline",component:<IoPizzaOutline/>},
-            {label:"IoPhonePortrait", component:<IoPhonePortrait/>},
-            {label:"IoPawSharp", component:<IoPawSharp/>},
-            {label:"IoNewspaperOutline", component:<IoNewspaperOutline/>},
-            {label:"IoNavigate", component:<IoNavigate/>},
-            {label:"IoMusicalNotes", component:<IoMusicalNotes/>},
-            {label:"IoMegaphoneOutline", component:<IoMegaphoneOutline/>},
-            {label:"IoMedalOutline", component:<IoMedalOutline/>},
-            {label:"IoFlag", component:<IoFlag/>},
-            {label:"IoGolfOutline", component:<IoGolfOutline/>},
-            {label:"IoFlame",component:<IoFlame/>},
-            {label:"IoFlaskSharp", component:<IoFlaskSharp/>},
-            {label:"IoFootballSharp", component:<IoFootballSharp/>},
-            {label:"IoGiftSharp", component:<IoGiftSharp/>},
-            {label:"IoHammer", component:<IoHammer/>},
-            {label:"IoHeadset", component:<IoHeadset/>},
-            {label:"IoHeartSharp",component:<IoHeartSharp/>},
-            {label:"IoHeartHalfSharp", component:<IoHeartHalfSharp/>},
-            {label:"IoHourglassOutline", component:<IoHourglassOutline/>},
-            {label:"IoIceCreamOutline",component:<IoIceCreamOutline/>},
-            {label:"IoKeyOutline",component:<IoKeyOutline/>},
-            {label:"IoLibraryOutline",component:<IoLibraryOutline/>},
-            {label:"IoShapes", component:<IoShapes/>}
+        let icons = [<IoReceipt onClick={()=>selectedIcon("IoReceipt")}/>,
+            <IoCashOutline onClick={()=>selectedIcon("IoCashOutline")}/>,
+            <IoGameController onClick={()=>selectedIcon("IoGameController")}/>,
+            <IoCart onClick={()=>selectedIcon("IoCart")}/>,
+            <IoDesktopSharp onClick={()=>selectedIcon("IoDesktopSharp")}/>,
+            <IoCarSportSharp onClick={()=>selectedIcon("IoCarSportSharp")}/>,
+            <IoAccessibility onClick={()=>selectedIcon("IoAccessibility")}/>,
+            <IoArrowForwardOutline onClick={()=>selectedIcon("IoArrowForwardOutline")}/>,
+            <IoWineSharp onClick={()=>selectedIcon("IoWineSharp")}/>,
+            <IoAlarm onClick={()=>selectedIcon("IoAlarm")}/>,
+            <IoAirplane onClick={()=>selectedIcon("IoAirplane")}/>,
+            <IoAmericanFootball onClick={()=>selectedIcon("IoAmericanFootball")}/>,
+            <IoBag onClick={()=>selectedIcon("IoBag")}/>,
+            <IoAnalyticsOutline onClick={()=>selectedIcon("IoAnalyticsOutline")}/>,
+            <IoAttachSharp onClick={()=>selectedIcon("IoAttachSharp")}/>,
+            <IoBarChart onClick={()=>selectedIcon("IoBarChart")}/>,
+            <IoBarbell onClick={()=>selectedIcon("IoBarbell")}/>,
+            <IoBasketball onClick={()=>selectedIcon("IoBasketball")}/>,
+            <IoBed onClick={()=>selectedIcon("IoBed")}/>,
+            <IoBeerOutline onClick={()=>selectedIcon("IoBeerOutline")}/>,
+            <IoBicycle onClick={()=>selectedIcon("IoBicycle")}/>,
+            <IoBoat onClick={()=>selectedIcon("IoBoat")}/>,
+            <IoBook onClick={()=>selectedIcon("IoBook")}/>,
+            <IoBriefcase onClick={()=>selectedIcon("IoBriefcase")}/>,
+            <IoBrushOutline onClick={()=>selectedIcon("IoBrushOutline")}/>,
+            <IoBulbOutline onClick={()=>selectedIcon("IoBulbOutline")}/>,
+            <IoBus onClick={()=>selectedIcon("IoBus")}/>,
+            <IoBusiness onClick={()=>selectedIcon("IoBusiness")}/>,
+            <IoCafe onClick={()=>selectedIcon("IoCafe")}/>,
+            <IoCalculator onClick={()=>selectedIcon("IoCalculator")}/>,
+            <IoCallSharp onClick={()=>selectedIcon("IoCallSharp")}/>,
+            <IoCamera onClick={()=>selectedIcon("IoCamera")}/>,
+            <IoCarSport onClick={()=>selectedIcon("IoCarSport")}/>,
+            <IoCardOutline onClick={()=>selectedIcon("IoCardOutline")}/>,
+            <IoChatbubblesOutline onClick={()=>selectedIcon("IoChatbubblesOutline")}/>,
+            <IoCloudUploadOutline onClick={()=>selectedIcon("IoCloudUploadOutline")}/>,
+            <IoCodeSlash onClick={()=>selectedIcon("IoCodeSlash")}/>,
+            <IoColorFillOutline onClick={()=>selectedIcon("IoColorFillOutline")}/>,
+            <IoColorPaletteSharp onClick={()=>selectedIcon("IoColorPaletteSharp")}/>,
+            <IoConstructOutline onClick={()=>selectedIcon("IoConstructOutline")}/>,
+            <IoCutSharp onClick={()=>selectedIcon("IoCutSharp")}/>,
+            <IoDice onClick={()=>selectedIcon("IoDice")}/>,
+            <IoDocumentText onClick={()=>selectedIcon("IoDocumentText")}/>,
+            <IoEarOutline onClick={()=>selectedIcon("IoEarOutline")}/>,
+            <IoEarthSharp onClick={()=>selectedIcon("IoEarthSharp")}/>,
+            <IoExtensionPuzzleOutline onClick={()=>selectedIcon("IoExtensionPuzzleOutl")}/>,
+            <IoFastFoodOutline onClick={()=>selectedIcon("IoFastFoodOutline")}/>,
+            <IoFilmOutline onClick={()=>selectedIcon("IoFilmOutline")}/>,
+            <IoFingerPrintOutline onClick={()=>selectedIcon("IoFingerPrintOutline")}/>,
+            <IoTicketOutline onClick={()=>selectedIcon("IoTicketOutline")}/>,
+            <IoShirtOutline onClick={()=>selectedIcon("IoShirtOutline")}/>,
+            <IoSchool onClick={()=>selectedIcon("IoSchool")}/>,
+            <IoRocketOutline onClick={()=>selectedIcon("IoRocketOutline")}/>,
+            <IoRestaurantOutline onClick={()=>selectedIcon("IoRestaurantOutline")}/>,
+            <IoPrintOutline onClick={()=>selectedIcon("IoPrintOutline")}/>,
+            <IoPizzaOutline onClick={()=>selectedIcon("IoPizzaOutline")}/>,
+            <IoPhonePortrait onClick={()=>selectedIcon("IoPhonePortrait")}/>,
+            <IoPawSharp onClick={()=>selectedIcon("IoPawSharp")}/>,
+            <IoNewspaperOutline onClick={()=>selectedIcon("IoNewspaperOutline")}/>,
+            <IoNavigate onClick={()=>selectedIcon("IoNavigate")}/>,
+            <IoMusicalNotes onClick={()=>selectedIcon("IoMusicalNotes")}/>,
+            <IoMegaphoneOutline onClick={()=>selectedIcon("IoMegaphoneOutline")}/>,
+            <IoMedalOutline onClick={()=>selectedIcon("IoMedalOutline")}/>,
+            <IoFlag onClick={()=>selectedIcon("IoFlag")}/>,
+            <IoGolfOutline onClick={()=>selectedIcon("IoGolfOutline")}/>,
+            <IoFlame onClick={()=>selectedIcon("IoFlame")}/>,
+            <IoFlaskSharp onClick={()=>selectedIcon("IoFlaskSharp")}/>,
+            <IoFootballSharp onClick={()=>selectedIcon("IoFootballSharp")}/>,
+            <IoGiftSharp onClick={()=>selectedIcon("IoGiftSharp")}/>,
+            <IoHammer onClick={()=>selectedIcon("IoHammer")}/>,
+            <IoHeadset onClick={()=>selectedIcon("IoHeadset")}/>,
+            <IoHeartSharp onClick={()=>selectedIcon("IoHeartSharp")}/>,
+            <IoHeartHalfSharp onClick={()=>selectedIcon("IoHeartHalfSharp")}/>,
+            <IoHourglassOutline onClick={()=>selectedIcon("IoHourglassOutline")}/>,
+            <IoIceCreamOutline onClick={()=>selectedIcon("IoIceCreamOutline")}/>,
+            <IoKeyOutline onClick={()=>selectedIcon("IoKeyOutline")}/>,
+            <IoLibraryOutline onClick={()=>selectedIcon("IoLibraryOutline")}/>,
+            <IoShapes onClick={()=>selectedIcon("IoShapes")}/>
         ];
         
             let table = [];
@@ -178,7 +179,7 @@ const IconList = ({numberColumns}) => {
                 let row = [];
                 for (let j = 0; j<numberColumns; j++){
                     // row.push(<th key={'th-'+index}><button className="selectableIcon" onClick={fun}>{icons[index].component}</button></th>);
-                    row.push(<th key={'th-'+index}>{icons[index].component}</th>);
+                    row.push(<th key={'th-'+index}>{icons[index]}</th>);
 
                     index ++;
                 }
@@ -187,7 +188,7 @@ const IconList = ({numberColumns}) => {
             if(iconsExtraRow>0){
                 let row = [];
                 for (let k = 0; k<iconsExtraRow; k++){
-                    row.push(<th key={'th-'+index}><button className="selectableIcon" >{icons[index].component}</button></th>);
+                    row.push(<th key={'th-'+index}>{icons[index]}</th>);
                     index ++;
                 }
                 table.push(<tr key={'tr-'+index} >{row}</tr>)
@@ -203,8 +204,7 @@ const IconList = ({numberColumns}) => {
     }
     return(
         <div className="iconsContainer">
-            {/* <button >hola</button> */}
-                {createTable()}
+            {createTable()}
         </div>
     )
 }

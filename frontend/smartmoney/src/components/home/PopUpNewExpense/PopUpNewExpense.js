@@ -33,7 +33,8 @@ const PopUpNewExpense = ({closePopUp}) => {
 
     const submitExpense = () => {
         const onlyNumbers = /^[0-9]*$/;
-        if(onlyNumbers.test(newExpense)){
+        if(description==='')setDescriptionEmpty(true);
+        if(onlyNumbers.test(newExpense) && description!==''){
           const session = JSON.parse(localStorage.session);
           const requestOptionsNewExpense = {
             method: 'POST',
