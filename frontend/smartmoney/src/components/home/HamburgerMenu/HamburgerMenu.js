@@ -9,15 +9,7 @@ import { IoCashOutline } from "@react-icons/all-files/io5/IoCashOutline";
 import { IoLogOutOutline } from "@react-icons/all-files/io5/IoLogOutOutline"; 
 import { IoSettingsSharp } from "@react-icons/all-files/io5/IoSettingsSharp"; 
 
-const HamburgerMenu = ({hamburger, changePassword, newExpense}) => {
-
-
-    // const addExpense = () => {
-
-    // }
-    const addCategory = () => {
-
-    }
+const HamburgerMenu = ({hamburger, changePassword, newExpense, newCategory}) => {
 
     const categoriesSummary = () => {
 
@@ -59,7 +51,7 @@ const HamburgerMenu = ({hamburger, changePassword, newExpense}) => {
                     <p className = "hamburgerMenuText">Expenses record</p>
                 }
                 </button>
-            <button className="hamburgerMenuButton" onClick={addCategory}>
+            <button className="hamburgerMenuButton" onClick={newCategory}>
                 <IoAddCircle className = "hamburgerMenuIcon" color="#8E29E0"/>
                 {hamburger && 
                     <p className = "hamburgerMenuText">Add category</p>
