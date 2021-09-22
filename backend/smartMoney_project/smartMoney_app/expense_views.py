@@ -91,8 +91,8 @@ def expense_list(request,user_id):
 	expected_code = Sc.get(user=user).getCode()
 	received_code = request.data.get('code')
 	if expected_code == received_code:
-		expenses = Expense.getAllWith(owner = user)
-		return Response(expenses.values(), status = status.HTTP_200_OK)
+		expenses = Expense.getAllWith(owner = user).order_by('-date')
+		return Response(expenses.values('id','owner_id','value','description','date','category__name','category__icon'), status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 

@@ -164,12 +164,6 @@ class Expense(models.Model,baseModel):
     attributes = ['owner','value','description','date','category']
     objects = ExpenseManager()
     
-
-
-
-    @classmethod
-    def getAllWith(cls,**extra_fields):
-        return cls.objects.filter(**extra_fields).select_related('category').order_by('-date')
     @classmethod
     def create_expense(cls,**fields):
         return cls.objects.create_expense(**fields)
