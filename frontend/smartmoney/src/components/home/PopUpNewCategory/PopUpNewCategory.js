@@ -52,6 +52,7 @@ const PopUpNewCategory = ({closePopUp}) => {
             <div className="newCategoryContainer">
                 <button className="closeNewCategory" onClick={closePopUp}>X</button>
                 <div className="divCenteredItems">
+                <p className="popUpTitle">New category</p>
                 <div className="divNewCategory">
                     <p className="label">Category name</p>
                     <input style={isMobileDevice ? (nameEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (nameEmpty ? webStyles.inputEmpty : webStyles.input)} type="text" value={name} onChange={e => setName(e.target.value)} onFocus={()=>setNameEmpty(false)} onBlur={()=>isEmpty(name,setNameEmpty)}/>

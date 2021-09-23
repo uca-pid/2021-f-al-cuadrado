@@ -49,8 +49,11 @@ const PopUpChangePassword = ({closePopUp}) => {
             <button className="popUpBackground" onClick={closePopUp}/>
             <div className="changePasswordContainer">
                 <button className="close" onClick={closePopUp}>X</button>
+                
                 <div className="divCenteredItems">
+                <p className="popUpTitle">Change password</p>
                 <form className="formChangePassword">
+                    
                     <p className="invalidCredentials" style={{display:invalidCredentials}}>Wrong credentials</p>
                     <p className="label" >Previous password</p>
                     <input style={isMobileDevice ? (previousPasswordEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (previousPasswordEmpty ? webStyles.inputEmpty : webStyles.input)} type="password" value={previousPassword} onChange={e => setPreviousPassword(e.target.value)}  onFocus={()=>setPreviousPasswordEmpty(false)} onBlur={()=>isEmpty(previousPassword,setPreviousPasswordEmpty)}/>

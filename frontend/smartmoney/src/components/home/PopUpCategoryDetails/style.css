@@ -1,0 +1,73 @@
+.categoryDetailsTable{
+    border-spacing:0px;
+    padding: 20px;
+    width:100%;
+}
+.categoryDetailsRow{
+    display: flex;
+    flex:1;
+    text-align:left;
+    height:40px;
+    width: 100%;
+
+}
+.categoryDetailsRow:hover{
+    background-color: #E3C9F7;
+}
+.headCategoryDetailsRow{
+    display: flex;
+    flex:1;
+    align-items: center;
+    text-align:left;
+    height:40px;
+    width: 100%;
+}
+.categoriesValue{
+    border-bottom-style:solid;
+    border-width:2px;
+    padding-top: 10px;
+    
+}
+.tableCategoryTotal{
+    width: 15%;
+}
+.tableCategoryDescription{
+    width: 40%;
+    padding-left: 15px;
+}
+.tableCategoryDate{
+    width: 45%;
+}
+.categoryDetailsTableHead{
+    text-align: left;
+    border-bottom-style:solid;
+    border-width:2px;
+    background-color: #8E29E0;
+    height: 40px;
+    color: #EEEEEE;
+    display: block;
+    width: 100%;
+}
+.categoryDetailsTableBody{
+    display: block;
+    width: 100%;
+    height: 300px;
+    overflow-y: auto;
+}
+.categoryDetailsContainer{
+    position:absolute;
+    top:20%;
+    left: 50%;
+    margin-left: -275px;
+    width:550px;
+    height:400px;
+    background-color:#FFFFFF;
+    border-radius:10px;
+}
+.closeCategoryDetails{
+    position:relative;
+    left:520px;
+    top:5px;
+    background-color:#FFFFFF;
+    border:0px
+}

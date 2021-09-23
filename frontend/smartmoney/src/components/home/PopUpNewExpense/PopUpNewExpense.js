@@ -1,6 +1,6 @@
 import React from 'react';
 import "./style.css";
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import RequiredField from '../../RequiredField/requiredField';
 import { useMediaQuery } from 'react-responsive';
 import webStyles from "../webStyles";
@@ -15,7 +15,7 @@ import 'react-dropdown/style.css';
 //   ];
 //   const defaultOption = categoryList[0];
 
-const PopUpNewExpense = ({closePopUp}) => {
+const PopUpNewExpense = ({closePopUp, state, expenseToEdit}) => {
 
     const isMobileDevice = useMediaQuery({
         query: "(max-device-width: 480px)",
@@ -23,25 +23,42 @@ const PopUpNewExpense = ({closePopUp}) => {
 
     const allCategories = localStorage.allCategories.split(',');
     const [selectedOption, setSelectedOption] = useState(allCategories[0]);
-
-    const [newExpense, setNewExpense] = useState('');
+    const [expenseValue, setExpenseValue] = useState('');
+    const [title, setTitle] = useState('New expense');
     const [description, setDescription] = useState('');
     const [date, setDate] = useState(new Date());
     const [newExpenseOnlyNumbers, setNewExpenseOnlyNumbers] = useState(false);
     const [descriptionEmpty, setDescriptionEmpty] = useState(false);
     const [newExpenseEmpty, setNewExpenseEmpty] = useState(false);
 
+    const loadEditFiles = () =>{
+      if(state==='Edit'){
+        let editDate = new Date(expenseToEdit.date.substring(0,10));
+        editDate.setDate(editDate.getDate() + 1);
+        setTitle("Edit expense")
+        setExpenseValue(expenseToEdit.value);
+        setDescription(expenseToEdit.description);
+        setSelectedOption(expenseToEdit.category__name);
+        setDate(editDate);
+      }
+    }
+    useEffect(() => loadEditFiles(),[state, expenseToEdit])
+
     const submitExpense = () => {
+      (state==='New') ? submitNewExpense() : submitEditExpense();
+    }
+
+    const submitNewExpense = () =>{
         const onlyNumbers = /^[0-9]*$/;
         if(description==='')setDescriptionEmpty(true);
-        if(onlyNumbers.test(newExpense) && description!==''){
+        if(onlyNumbers.test(expenseValue) && description!==''){
           const session = JSON.parse(localStorage.session);
           const requestOptionsNewExpense = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 code: session.code, 
-                value: newExpense,
+                value: expenseValue,
                 description: description,
                 category: selectedOption.value,
                 date: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate(),
@@ -66,6 +83,33 @@ const PopUpNewExpense = ({closePopUp}) => {
           setNewExpenseOnlyNumbers(true)
         }   
     } 
+    const submitEditExpense = () =>{
+      const onlyNumbers = /^[0-9]*$/;
+      if(description==='')setDescriptionEmpty(true);
+      if(onlyNumbers.test(expenseValue) && description!==''){
+        const session = JSON.parse(localStorage.session);
+        const requestOptionsNewExpense = {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+              code: session.code, 
+              expense_id: expenseToEdit.id,
+              value: expenseValue,
+              description: description,
+              category: selectedOption.value,
+              date: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate(),
+          })
+        };
+        fetch('https://smart-money-back.herokuapp.com/edit_expense/'+session.user_id+'/', requestOptionsNewExpense)
+          .then((response) => {
+            if(response.status===200){
+                closePopUp();
+            }
+          });
+      }else{
+        setNewExpenseOnlyNumbers(true)
+      }   
+    }
 
     function isEmpty(input, isEmpty){
         if(input==='')isEmpty(true)
@@ -77,9 +121,10 @@ const PopUpNewExpense = ({closePopUp}) => {
             <div className="newExpenseContainer">
                 <button className="closeNewExpense" onClick={closePopUp}>X</button>
                 <div className="divCenteredItems">
+                <p className="popUpTitle">{title}</p>
                 <form className="formNewExpense">
                     <p className="label">Value</p>
-                    <input style={isMobileDevice ? (newExpenseEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (newExpenseEmpty ? webStyles.inputEmpty : webStyles.input)} type="text" value={newExpense} onChange={e => setNewExpense(e.target.value)} onFocus={()=>setNewExpenseOnlyNumbers(false)} onBlur={()=>isEmpty(newExpense,setNewExpenseEmpty)}/>
+                    <input style={isMobileDevice ? (newExpenseEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (newExpenseEmpty ? webStyles.inputEmpty : webStyles.input)} type="text" value={expenseValue} onChange={e => setExpenseValue(e.target.value)} onFocus={()=>setNewExpenseOnlyNumbers(false)} onBlur={()=>isEmpty(expenseValue,setNewExpenseEmpty)}/>
                     {newExpenseOnlyNumbers&&<p className = "invalidCredentials">Only numbers</p>}
                     {newExpenseEmpty&&<RequiredField/>}
                     <p className="label">Description</p>

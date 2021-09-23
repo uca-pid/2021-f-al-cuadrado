@@ -6,12 +6,8 @@ import mobilStyles from "../mobilStyles";
 import { useMediaQuery } from 'react-responsive';
 import FlatList from 'flatlist-react';
 import icons from "../../../functions/icons";
-// import TableScrollbar from 'react-table-scrollbar';
 
-//#TODO sacar parche
-const iconsNames = ["IoReceipt","IoGameController","IoCart","IoWineSharp","IoDesktopSharp", "IoShapes"]
-
-const Categories = () => {
+const Categories = ({openPopUpCategoryDetails}) => {
 
     const [categories, setCategories] = useState([]);
 
@@ -26,14 +22,17 @@ const Categories = () => {
           .then(response => response.json())
           .then(data => {
               setCategories(data);
-              console.log(categories);
               let allCategories = [];
               data.map( obj => {allCategories.push(obj.name)});
               localStorage.setItem('allCategories',allCategories);
             });
     }
 
-   // useEffect(() => fetchCategories())
+   useEffect(() => fetchCategories(),[])
+
+   const categoryDetails = (categoryName) => {
+        openPopUpCategoryDetails(categoryName);
+   }
 
 
 
@@ -41,7 +40,7 @@ const Categories = () => {
         let total = 0;
         if (item.total!==null) total = item.total;
         return (
-          <tr className = "categoriesRow" key={item.id}>
+          <tr className = "categoriesRow" key={item.name} onClick={()=>categoryDetails(item.name)}>
             <th className = "categoriesValue tableIcon">{icons(item.icon)}</th> 
             <th className = "categoriesValue tableCategory">{item.name}</th>
             <th className = "categoriesValue tableTotal">$ {total}</th>
@@ -71,7 +70,7 @@ const Categories = () => {
                     <FlatList 
                         list={categories}
                         renderItem={renderCategories}
-                        renderWhenEmpty={() => <tr><th><button onClick={fetchCategories}>There is no expense yet!</button></th></tr>}
+                        renderWhenEmpty={() => <tr><th><p>There is no expense yet!</p></th></tr>}
                     />
                 </tbody>
             </table>

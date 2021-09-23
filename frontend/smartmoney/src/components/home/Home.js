@@ -7,6 +7,7 @@ import { useMediaQuery } from 'react-responsive';
 import PopUpChangePassword from "./PopUpChangePassword";
 import PopUpNewExpense from "./PopUpNewExpense";
 import PopUpNewCategory from "./PopUpNewCategory";
+import PopUpCategoryDetails from "./PopUpCategoryDetails";
 
 import Header from './Header';
 import Expenses from './Cards/Expenses';
@@ -21,8 +22,12 @@ const Home = () => {
   });
 
   const [popUpChangePassword, setPopUpChangePassword] = useState(false);
-  const [popUpNewExpense, setPopUpNewpopUpNewExpense] = useState(false);
-  const [popUpNewCategory, setPopUpNewpopUpNewCategory] = useState(false);
+  const [popUpNewExpense, setPopUpNewExpense] = useState(false);
+  const [popUpNewExpenseState, setPopUpNewExpenseState] = useState('');
+  const [popUpEditExpense, setPopUpEditExpense] = useState('');
+  const [popUpNewCategory, setPopUpNewCategory] = useState(false);
+  const [popUpCategoryDetails, setPopUpCategoryDetails] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [hamburgerMenu, setHamburgerMenu] = useState(true);
 
 
@@ -30,30 +35,48 @@ const Home = () => {
     setPopUpChangePassword(false)
   }
   function closePopUpNewExpense(){
-    setPopUpNewpopUpNewExpense(false)
+    setPopUpNewExpense(false)
   }
   function closePopUpNewCategory(){
-    setPopUpNewpopUpNewCategory(false)
+    setPopUpNewCategory(false)
   }
   function openPopUpChangePassword(){
     setPopUpChangePassword(true)
   }
   function openPopUpNewExpense(){
-    setPopUpNewpopUpNewExpense(true)
+    setPopUpNewExpenseState('New');
+    setPopUpEditExpense('');
+    setPopUpNewExpense(true)
   }
   function openPopUpNewCategory(){
-    setPopUpNewpopUpNewCategory(true)
+    setPopUpNewCategory(true)
   }
   function hamburger (){
     setHamburgerMenu(!hamburgerMenu)
     console.log(hamburgerMenu)
 }
+function openPopUpCategoryDetails(categoryName){
+    setSelectedCategory(categoryName);
+    setPopUpCategoryDetails(true);
+}
+function closePopUpCategoryDetails(){
+  setPopUpCategoryDetails(false)
+}
+const openPopUpEditExpense = (expense) =>{
+  setPopUpNewExpenseState('Edit');
+  setPopUpEditExpense(expense);
+  setPopUpNewExpense(true);
+  console.log(expense)
+}
+
+
 
   return (
     <div className="body bodyHome">
+      {popUpCategoryDetails && <PopUpCategoryDetails categoryName={selectedCategory} closePopUp={closePopUpCategoryDetails} openPopUpEditExpense={openPopUpEditExpense}/>}
 
       {popUpChangePassword && <PopUpChangePassword closePopUp= {closePopUpChangePassword}/>}
-      {popUpNewExpense && <PopUpNewExpense closePopUp= {closePopUpNewExpense}/>}
+      {popUpNewExpense && <PopUpNewExpense closePopUp= {closePopUpNewExpense} state={popUpNewExpenseState} expenseToEdit={popUpEditExpense}/>}
       {popUpNewCategory && <PopUpNewCategory closePopUp= {closePopUpNewCategory}/>}      
 
       
@@ -63,8 +86,8 @@ const Home = () => {
         {/* <Expenses /> */}
         <HamburgerMenu hamburger={hamburgerMenu} changePassword={openPopUpChangePassword} newExpense={openPopUpNewExpense} newCategory={openPopUpNewCategory}/>
         <div className="mainBody">
-          <Categories/>
-          <Expenses/>
+          <Categories openPopUpCategoryDetails={openPopUpCategoryDetails}/>
+          <Expenses openPopUpEditExpense={openPopUpEditExpense}/>
 
         </div>
       </div>
