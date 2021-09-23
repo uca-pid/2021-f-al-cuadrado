@@ -9,7 +9,7 @@
     display: flex;
 }
 .button1{
-    background-color:#3399ff;
+    background-color:#7346c7;
     height:40px;
     border-radius:5px;
     border:0px;
@@ -18,18 +18,19 @@
 }
 
 .button1:hover{
-    background-color: #005CB8;
+    background-color: #52347b ;
 }
 .button2{  
     border-radius:5px;
     background-color:#FFFFFF;
     border:0px;
-    color:#3399FF;
+    color:#7346c7;
     font-weight:bold;
     height:40px;
 }
 .button2:hover{
-    background-color:#AAAAAA;
+    background-color:#BBBBBB;
+    color:#52347b;
 }
 .invalidCredentials{
     color:red;
