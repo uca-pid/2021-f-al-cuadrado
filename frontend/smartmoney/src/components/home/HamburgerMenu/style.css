@@ -34,3 +34,11 @@
     margin-left: 9px;
 
 }
+@media only screen and (max-width: 600px) {
+    .hamburgerMenuContainer{
+        position: absolute;
+        height: calc(100% - 60px);
+
+       
+    }
+}

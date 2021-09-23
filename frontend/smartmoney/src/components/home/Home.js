@@ -81,10 +81,12 @@ const openPopUpEditExpense = (expense) =>{
 
       
       <Header hamburger = {hamburger}/>
+      
 
       <div style={isMobileDevice ? mobilStyles.main : webStyles.main}>
         {/* <Expenses /> */}
         <HamburgerMenu hamburger={hamburgerMenu} changePassword={openPopUpChangePassword} newExpense={openPopUpNewExpense} newCategory={openPopUpNewCategory}/>
+        {isMobileDevice && <button className="backgroundCloseMenu" onClick={hamburger} style={hamburgerMenu?{display:'block'}:{display:'none'}}/>}
         <div className="mainBody">
           <Categories openPopUpCategoryDetails={openPopUpCategoryDetails}/>
           <Expenses openPopUpEditExpense={openPopUpEditExpense}/>

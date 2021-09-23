@@ -7,7 +7,7 @@ import { useMediaQuery } from 'react-responsive';
 import RequiredField from '../RequiredField/requiredField';
 
 const Login = ({setLayoutForgotPassword,setLayoutRegister}) => {
-    
+  
   const isMobileDevice = useMediaQuery({
     query: "(max-device-width: 480px)",
   });

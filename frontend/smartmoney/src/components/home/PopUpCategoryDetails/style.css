@@ -69,5 +69,16 @@
     left:520px;
     top:5px;
     background-color:#FFFFFF;
-    border:0px
+    border:0px;
+}
+@media only screen and (max-width: 600px) {
+    .categoryDetailsContainer{
+        left: 0;
+        margin-left: 20px;
+        width:90%;
+    }
+    .closeCategoryDetails{
+        position:relative;
+        left:310px;
+    }
 }
