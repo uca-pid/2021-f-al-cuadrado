@@ -148,9 +148,11 @@ class Category(models.Model,baseModel):
 
     @classmethod
     def getAllWithTotalsFor(cls,user, month = datetime.datetime.now().strftime("%m")):
-        categories = cls.getAllWith(user = user).filter((Q(expense__owner = user) | Q(expense__owner = None)))
+        expense_owner_filter = (Q(expense__owner = user) | Q(expense__owner = None))
+        date_time_filter = (Q(expense__date__month = month) | Q(expense__date__month = None))
+        categories = cls.getAllWith(user = user)
         #categories = categories.filter()
-        categories = categories.annotate(total= Coalesce(models.Sum('expense__value',filter =  (Q(expense__date__month = month) | Q(expense__date__month = None))),0.0)).order_by('-total')
+        categories = categories.annotate(total= Coalesce(models.Sum('expense__value',filter = (expense_owner_filter & date_time_filter)),0.0)).order_by('-total')
         return categories
 
 
