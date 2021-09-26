@@ -123,16 +123,39 @@ class ConsumptionTestCase(APITestCase):
 		self.assertEqual(expense.getDescription(),'Supermercado')
 		response = webClient.put('/edit_expense/' + str(user_id) + '/', {'code' : loginCode, 'expense_id': expense_id,
 															  'value' : 750, 'description': 'Focos de luz',
+															  'category' : 'Bills and taxes',
 															  'date': '2020-09-18'},
 															  format = 'json')
 
 		expense = Expense.get(id = expense_id)
+		self.assertEqual(response.status_code,200)
 		self.assertEqual(expense.getValue(),750)
 		self.assertEqual(expense.getDescription(),'Focos de luz')
 		date = pytz.timezone("Europe/Paris").localize(datetime(2020, 9 , 18))
 		self.assertEqual(expense.getDate(),date)
-
-
+		self.assertEqual(expense.getCategory().getName(), 'Bills and taxes')
+	def test_user_edits_expense_with_invalid_credentials(self):
+		loginResponse = self.userLogin('f@gmail.com','admin')
+		self.assertEqual(loginResponse.status_code,200)
+		wrongLoginCode = loginResponse.data.get('code')[::-1]
+		loginCode = loginResponse.data.get('code')
+		user_id = loginResponse.data.get('user_id')
+		webClient = self.client
+		webClient.post('/new_expense/' + str(user_id) + '/', {'code' : loginCode, 'value' : 500,
+															 'description': 'Supermercado', 'category':'Market and home',
+															 'date': '2021-09-18'})
+		self.assertEqual(len(Expense.getAllWith()),1)
+		expense = Expense.get(value = 500)
+		expense_id = expense.id
+		self.assertEqual(expense.getValue(),500)
+		self.assertEqual(expense.getDescription(),'Supermercado')
+		response = webClient.put('/edit_expense/' + str(user_id) + '/', {'code' : wrongLoginCode, 'expense_id': expense_id,
+															  'Value' : 755.5},
+															  format = 'json')
+		self.assertEqual(response.status_code,401)
+		expense = Expense.get(id = expense_id)
+		self.assertEqual(expense.value, 500)
+		
 
 
 

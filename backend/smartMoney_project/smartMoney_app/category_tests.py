@@ -94,14 +94,16 @@ class CategoryTestCase(APITestCase):
 		for category in categories:
 			if category.name in categories_with_expenses:
 				self.assertEqual(category.total,750)
+			else:
+				self.assertEqual(category.total,0)
 
-	def test_get_all_categories_with_his_totals_for_an_user_endpoint(self):
+	def test_endpoint_get_all_categories_with_his_totals_for_an_user(self):
 		loginResponse = self.userLogin('f@gmail.com','admin')
 		self.assertEqual(loginResponse.status_code,200)
 		loginCode = loginResponse.data.get('code')
 		user_id = loginResponse.data.get('user_id')
 		user = User.get(id= user_id)
-		category = Category.create(name = 'Gimnasio', icon = 'Rocket', user = user) #seria necesario validar q la categoria elegida sea de ese usuario? O con el codigo alcanza?
+		category = Category.create(name = 'Gimnasio', icon = 'Rocket', user = user)
 		Expense.create_expense(value = 750,description = 'Primer mes',owner = user,date = date,category = category)
 		webClient = self.client
 		response = webClient.post('/categories/' + str(user_id) + '/', {'code' : loginCode})
@@ -112,6 +114,8 @@ class CategoryTestCase(APITestCase):
 		for category in categories:
 			if category['name'] in categories_with_expenses:
 				self.assertEqual(category['total'],750)
+			else:
+				self.assertEqual(category['total'],0)
 
 	def test_get_all_user_expenses_from_category(self):
 		loginResponse = self.userLogin('f@gmail.com','admin')
@@ -123,6 +127,7 @@ class CategoryTestCase(APITestCase):
 		response = webClient.post('/category_expenses/' + str(user_id) + '/', {'code' : loginCode, 'category': 'Other'})
 		self.assertEqual(response.status_code , 200)
 		self.assertEqual(len(response.data),2)
+
 	def test_user_create_category_success(self):
 		loginResponse = self.userLogin('f@gmail.com','admin')
 		self.assertEqual(loginResponse.status_code,200)
@@ -138,6 +143,49 @@ class CategoryTestCase(APITestCase):
 		self.assertEqual(category.getName(),'Gimnasio')
 		self.assertEqual(category.getIcon(),'Rocket')
 		self.assertEqual(category.getUser(), user)
+
+	def test_user_create_category_fails(self):
+		loginResponse = self.userLogin('f@gmail.com','admin')
+		self.assertEqual(loginResponse.status_code,200)
+		wrongLoginCode = loginResponse.data.get('code')[::-1]
+		user_id = loginResponse.data.get('user_id')
+		user = User.get(id= user_id)
+		webClient = self.client
+		self.assertEqual(len(Category.getAllWith(user = user)),6)
+		response = webClient.post('/new_category/' + str(user_id) + '/', {'code' : wrongLoginCode, 'category_name': 'Gimnasio','icon': 'Rocket'})
+		self.assertEqual(response.status_code , 401)
+		self.assertEqual(len(Category.getAllWith(user = user)),6)
+
+	def test_dont_get_all_user_expenses_from_category_with_invalid_credentials(self):
+		loginResponse = self.userLogin('f@gmail.com','admin')
+		self.assertEqual(loginResponse.status_code,200)
+		wrongLoginCode = loginResponse.data.get('code')[::-1]
+		user_id = loginResponse.data.get('user_id')
+		user = User.get(id= user_id)
+		webClient = self.client
+		response = webClient.post('/category_expenses/' + str(user_id) + '/', {'code' : wrongLoginCode, 'category': 'Other'})
+		self.assertEqual(response.status_code , 401)
+
+	def test_user_cant_create_expense_from_other_user_category(self):
+		user1 = User.get(email = 'f@gmail.com')
+		user2 = User.get(email = 'f2@gmail.com')
+		category = Category.create(name = 'Gimnasio', icon = 'Rocket', user = user2)
+		self.assertEqual(len(Category.getAllWith()),7)
+		self.assertEqual(len(Category.getAllWith(user = user1)),6)
+		self.assertEqual(len(Category.getAllWith(user = user2)),7)
+		loginResponse = self.userLogin('f@gmail.com','admin')
+		self.assertEqual(loginResponse.status_code,200)
+		webClient = self.client
+		loginCode = loginResponse.data.get('code')
+		user_id = loginResponse.data.get('user_id')
+		response = webClient.post('/new_expense/' + str(user_id) + '/', {'code' : loginCode, 'value' : 500,
+															 'description': 'Supermercado', 'category':'Gimnasio',
+															 'date': '2021-09-18'})
+		self.assertEqual(response.status_code,400)
+
+
+
+
 
 
 

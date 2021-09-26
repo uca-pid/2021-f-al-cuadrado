@@ -51,13 +51,18 @@ class ExpenseManager(models.Manager):
     def create_expense(self,**extra_fields):
         if extra_fields['date'] :
             extra_fields['date'] = self.dateFromString(extra_fields['date'])
-        expense = self.model(**extra_fields)
-        expense.save()
-        return expense
+        if self.validCategory(extra_fields['category'],extra_fields['owner']):
+            expense = self.model(**extra_fields)
+            expense.save()
+            return expense
+        raise ValueError(_('Invalid information'))
+ 
     def dateFromString(self,stringDate): #Format 'AAAA-MM-DD'
         paris_tz = pytz.timezone("Europe/Paris")
         parsedString = stringDate.split('-')
         return paris_tz.localize(datetime(int(parsedString[0]), int(parsedString[1]), int(parsedString[2])))
+    def validCategory(self,category,owner):
+        return category.user == owner or category.user == None
 
 
 

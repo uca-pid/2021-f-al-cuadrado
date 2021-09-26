@@ -58,7 +58,7 @@ def validCode(user_id,received_code):
 							'date' : date
 							},
 						),
-					responses={201: 'Expense created',401: 'Invalid Credentials'})
+					responses={201: 'Expense created',400: 'Invalid request',401: 'Invalid Credentials'})
 @api_view(['POST'])
 def new_expense(request,user_id):
 	user = User.get(id = user_id)
@@ -69,8 +69,11 @@ def new_expense(request,user_id):
 	date = (request.data.get('date'))
 	category = Category.get(name = request.data.get('category'))
 	if expected_code == received_code:
-		expense = Expense.create_expense(value = value, owner = user,description = description, date = date,category = category)
-		return Response(status = status.HTTP_201_CREATED)
+		try:
+			expense = Expense.create_expense(value = value, owner = user,description = description, date = date,category = category)
+			return Response(status = status.HTTP_201_CREATED)
+		except Exception as e:
+			return Response(status = status.HTTP_400_BAD_REQUEST)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 

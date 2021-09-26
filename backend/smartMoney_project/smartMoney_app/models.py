@@ -15,11 +15,15 @@ from django.db.models.functions import Coalesce
 
 class baseModel():
     @classmethod
-    def getAllWith(cls,**extra_fields):
+    def getAllWith(cls,filter = None,**extra_fields):
+        if filter:
+            return cls.objects.filter(filter)
         return cls.objects.filter(**extra_fields)
 
     @classmethod
-    def get(cls, **extra_fields):
+    def get(cls, filter = None, **extra_fields):
+        if filter:
+            return cls.objects.filter(filter).first()
         return cls.objects.filter(**extra_fields).first()
     def save(self,*arg,**args):
         self.full_clean()
@@ -184,6 +188,9 @@ class Expense(models.Model,baseModel):
         keys = args_to_change.keys()
         if 'date' in keys:
             args_to_change['date'] = Expense.objects.dateFromString(args_to_change['date'])
+        if 'category' in keys:
+            category_filter = (Q(name = args_to_change['category']) & (Q(user = None) | Q(user = self.owner)))
+            args_to_change['category'] = Category.get(category_filter)
         for argument in keys:
             if argument in self.attributes:
                 setattr(self, argument, args_to_change[argument])
