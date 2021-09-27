@@ -183,6 +183,74 @@ class CategoryTestCase(APITestCase):
 															 'date': '2021-09-18'})
 		self.assertEqual(response.status_code,400)
 
+	def test_cant_edit_default_category(self):
+		category = Category.get(name = 'Bills and taxes')
+		with self.assertRaises(ValueError):
+			category.modify(name = 'Impuestos')
+		self.assertEqual(category.getName(),'Bills and taxes')
+
+	def test_edit_category(self):
+		user1 = User.get(email = 'f@gmail.com')
+		category = Category.create(name = 'Gimnasio', icon = 'Rocket', user = user1)
+		category_id = category.id
+		self.assertEqual(len(Category.getAllWith()),7)
+		category.modify(name = 'Pets', icon = 'Dog')
+		category = Category.get(id = category_id)
+		self.assertEqual(category.getName(),'Pets')
+		self.assertEqual(category.getIcon(),'Dog')
+		self.assertEqual(len(Category.getAllWith()),7)
+
+
+	def test_user_edits_category(self):
+		user1 = User.get(email = 'f@gmail.com')
+		category = Category.create(name = 'Gimnasio', icon = 'Rocket', user = user1)
+		category_id = category.id
+		webClient = self.client
+		loginResponse = self.userLogin('f@gmail.com','admin')
+		self.assertEqual(loginResponse.status_code,200)
+		loginCode = loginResponse.data.get('code')
+		user_id = loginResponse.data.get('user_id')
+		response = webClient.put('/edit_category/' + str(user_id) + '/', {'code' : loginCode, 'category_id' : category_id  ,
+			'name' : 'pets', 'icon' : 'Dog'},format = 'json')
+		self.assertEqual(response.status_code,200)
+		category = Category.get(id = category_id)
+		self.assertEqual(category.getName(),'pets')
+		self.assertEqual(category.getIcon(),'Dog')
+
+	def test_user_cant_edit_category_with_invalid_credentials(self):
+		user1 = User.get(email = 'f@gmail.com')
+		category = Category.create(name = 'Gimnasio', icon = 'Rocket', user = user1)
+		category_id = category.id
+		webClient = self.client
+		loginResponse = self.userLogin('f@gmail.com','admin')
+		self.assertEqual(loginResponse.status_code,200)
+		wrongLoginCode = loginResponse.data.get('code')[::-1]
+		user_id = loginResponse.data.get('user_id')
+		response = webClient.put('/edit_category/' + str(user_id) + '/', {'code' : wrongLoginCode, 'category_id' : category_id  ,
+			'name' : 'pets', 'icon' : 'Dog'},format = 'json')
+		self.assertEqual(response.status_code,401)
+		category = Category.get(id = category_id)
+		self.assertEqual(category.getName(),'Gimnasio')
+		self.assertEqual(category.getIcon(),'Rocket')
+
+	def test_user_cant_edit_other_user_category(self):
+		user1 = User.get(email = 'f@gmail.com')
+		user2 = User.get(email = 'f2@gmail.com')
+		category = Category.create(name = 'Gimnasio', icon = 'Rocket', user = user2)
+		category_id = category.id
+		webClient = self.client
+		loginResponse = self.userLogin('f@gmail.com','admin') #login user1
+		self.assertEqual(loginResponse.status_code,200)
+		self.assertEqual(len(Category.getAllWith(user = user1)),6)
+		loginCode = loginResponse.data.get('code')
+		user_id = loginResponse.data.get('user_id')
+		response = webClient.put('/edit_category/' + str(user_id) + '/', {'code' : loginCode, 'category_id' : category_id  ,
+			'name' : 'pets', 'icon' : 'Dog'},format = 'json')
+		self.assertEqual(response.status_code,401)
+		category = Category.get(id = category_id)
+		self.assertEqual(category.getName(),'Gimnasio')
+		self.assertEqual(category.getIcon(),'Rocket')
+
 
 
 

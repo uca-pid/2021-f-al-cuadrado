@@ -28,6 +28,12 @@ class baseModel():
     def save(self,*arg,**args):
         self.full_clean()
         super().save(*arg,**args)
+    def modify(self, **args_to_change):
+        keys = args_to_change.keys()
+        for argument in keys:\
+            setattr(self, argument, args_to_change[argument])
+        self.save()
+        return self
 
 
 class Sm_user(AbstractUser,baseModel): 
@@ -158,6 +164,12 @@ class Category(models.Model,baseModel):
         #categories = categories.filter()
         categories = categories.annotate(total= Coalesce(models.Sum('expense__value',filter = (expense_owner_filter & date_time_filter)),0.0)).order_by('-total')
         return categories
+    def modify(self, **args_to_change):
+        keys = args_to_change.keys()
+        if 'user' not in keys and self.user:
+            return super().modify(**args_to_change)
+        raise ValueError(_('You cant change this category'))
+
 
 
 
@@ -167,7 +179,6 @@ class Expense(models.Model,baseModel):
     description = models.CharField(max_length = 150,blank= True)
     date = models.DateTimeField(default = timezone.now)
     category = models.ForeignKey(Category, on_delete=models.CASCADE,default = Category.other)
-    attributes = ['owner','value','description','date','category']
     objects = ExpenseManager()
     
     @classmethod
@@ -191,8 +202,4 @@ class Expense(models.Model,baseModel):
         if 'category' in keys:
             category_filter = (Q(name = args_to_change['category']) & (Q(user = None) | Q(user = self.owner)))
             args_to_change['category'] = Category.get(category_filter)
-        for argument in keys:
-            if argument in self.attributes:
-                setattr(self, argument, args_to_change[argument])
-        self.save()
-        return self
+        return super().modify(**args_to_change)

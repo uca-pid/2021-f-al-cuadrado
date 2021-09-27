@@ -36,6 +36,8 @@ code = openapi.Schema(title = 'session_code',type=openapi.TYPE_STRING)
 description = openapi.Schema(title = 'description',type=openapi.TYPE_STRING)
 category = openapi.Schema(title = 'category',type=openapi.TYPE_STRING)
 date = openapi.Schema(title = 'date',type=openapi.TYPE_STRING)
+expense_id = openapi.Schema(title = 'expense_ids',type=openapi.TYPE_STRING)
+
 
 
 
@@ -116,10 +118,42 @@ def expense_list(request,user_id):
 def edit_expense(request,user_id):
 	user = User.get(id = user_id)
 	received_code = request.data.get('code')
-	if validCode(user_id,received_code):
-		expense = Expense.get(id= request.data.get('expense_id'))
+	expense = Expense.get(id= request.data.get('expense_id'))
+	if validCode(user_id,received_code) and expense.getOwner() == user:
 		expense.modify(**request.data)
 		return Response(status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
+
+
+@swagger_auto_schema(methods=['delete'],
+					request_body=openapi.Schema(
+						type=openapi.TYPE_OBJECT,
+						required=['version'],
+						properties={
+							'code': code,
+							'expense_id': value,
+							},
+						),
+					responses={200: 'Expense deleted',401: 'Invalid Credentials'})
+@api_view(['DELETE'])
+def delete_expense(request,user_id):
+	user = User.get(id = user_id)
+	received_code = request.data.get('code')
+	if validCode(user_id,received_code):
+		expense = Expense.get(id= request.data.get('expense_id'))
+		expense.delete()
+		return Response(status = status.HTTP_200_OK)
+	return Response(status = status.HTTP_401_UNAUTHORIZED)
+ 
+ 
+
+
+
+	
+
+
+
+
+	
 
 

@@ -155,7 +155,39 @@ class ConsumptionTestCase(APITestCase):
 		self.assertEqual(response.status_code,401)
 		expense = Expense.get(id = expense_id)
 		self.assertEqual(expense.value, 500)
-		
+
+	def test_user_delete_expenses(self):
+		loginResponse = self.userLogin('f@gmail.com','admin')
+		webClient = self.client
+		self.assertEqual(loginResponse.status_code,200)
+		loginCode = loginResponse.data.get('code')
+		user_id = loginResponse.data.get('user_id')
+		webClient.post('/new_expense/' + str(user_id) + '/', {'code' : loginCode, 'value' : 500,
+															 'description': 'Supermercado', 'category':'Market and home',
+															 'date': '2021-09-18'})
+		self.assertEqual(len(Expense.getAllWith()),1)
+		expense_id = Expense.get(value = 500).id
+		response = webClient.delete('/delete_expense/' + str(user_id) +'/',{'code' : loginCode,
+																			'expense_id' : expense_id})
+		self.assertEqual(response.status_code,200)
+		self.assertEqual(len(Expense.getAllWith()),0)
+
+	def test_user_dont_delete_expenses_bc_invalid_credentials(self):
+		loginResponse = self.userLogin('f@gmail.com','admin')
+		webClient = self.client
+		self.assertEqual(loginResponse.status_code,200)
+		loginCode = loginResponse.data.get('code')
+		user_id = loginResponse.data.get('user_id')
+		webClient.post('/new_expense/' + str(user_id) + '/', {'code' : loginCode, 'value' : 500,
+															 'description': 'Supermercado', 'category':'Market and home',
+															 'date': '2021-09-18'})
+		self.assertEqual(len(Expense.getAllWith()),1)
+		expense_id = Expense.get(value = 500).id
+		wrongLoginCode = loginCode [::-1]
+		response = webClient.delete('/delete_expense/' + str(user_id) +'/',{'code' : wrongLoginCode,
+																			'expense_id' : expense_id})
+		self.assertEqual(response.status_code,401)
+		self.assertEqual(len(Expense.getAllWith()),1)
 
 
 
