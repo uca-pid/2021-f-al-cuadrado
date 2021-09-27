@@ -161,14 +161,20 @@ class Category(models.Model,baseModel):
         expense_owner_filter = (Q(expense__owner = user) | Q(expense__owner = None))
         date_time_filter = (Q(expense__date__month = month) | Q(expense__date__month = None))
         categories = cls.getAllWith(user = user)
-        #categories = categories.filter()
         categories = categories.annotate(total= Coalesce(models.Sum('expense__value',filter = (expense_owner_filter & date_time_filter)),0.0)).order_by('-total')
         return categories
     def modify(self, **args_to_change):
         keys = args_to_change.keys()
-        if 'user' not in keys and self.user:
+        if 'user' not in keys and not self.isDefault():
             return super().modify(**args_to_change)
         raise ValueError(_('You cant change this category'))
+    def delete(self):
+        if not self.isDefault():
+            super().delete()
+        else:
+            raise ValueError(_('You cant delete this category'))
+    def isDefault(self):
+        return self.user == None
 
 
 
@@ -178,7 +184,7 @@ class Expense(models.Model,baseModel):
     value = models.FloatField()
     description = models.CharField(max_length = 150,blank= True)
     date = models.DateTimeField(default = timezone.now)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE,default = Category.other)
+    category = models.ForeignKey(Category, on_delete=models.SET_DEFAULT,default = Category.other)
     objects = ExpenseManager()
     
     @classmethod

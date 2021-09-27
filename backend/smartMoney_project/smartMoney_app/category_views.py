@@ -127,4 +127,25 @@ def edit_category(request,user_id):
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 
-	
+
+@swagger_auto_schema(methods=['delete'],
+					request_body=openapi.Schema(
+						type=openapi.TYPE_OBJECT,
+						required=['version'],
+						properties={
+							'code': code,
+							'category_id': category_id,
+							},
+						),
+					responses={200: 'Category deleted',401: 'Invalid Credentials'})
+@api_view(['DELETE'])
+def delete_category(request,user_id):
+	user = User.get(id = user_id)
+	received_code = request.data.get('code')
+	category = Category.get(id = request.data.get('category_id'))
+	if validCode(user_id,received_code) and category.getUser() == user:
+		category.delete()
+		return Response(status = status.HTTP_200_OK)
+	return Response(status = status.HTTP_401_UNAUTHORIZED)
+ 
+ 

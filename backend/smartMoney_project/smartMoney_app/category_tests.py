@@ -251,6 +251,74 @@ class CategoryTestCase(APITestCase):
 		self.assertEqual(category.getName(),'Gimnasio')
 		self.assertEqual(category.getIcon(),'Rocket')
 
+	def test_cant_delete_default_categories(self):
+		self.assertEqual(len(Category.getAllWith()),6)
+		category = Category.get(name = 'Bills and taxes')
+		self.assertTrue(category != None)
+		with self.assertRaises(ValueError):
+			category.delete()
+
+	def test_user_delete_category(self):
+		user1 = User.get(email = 'f@gmail.com')
+		category = Category.create(name = 'Gimnasio', icon = 'Rocket', user = user1)
+		self.assertEqual(len(Category.getAllWith(user = user1)),7)
+		category_id = category.id
+		webClient = self.client
+		loginResponse = self.userLogin('f@gmail.com','admin')
+		self.assertEqual(loginResponse.status_code,200)
+		loginCode = loginResponse.data.get('code')
+		user_id = loginResponse.data.get('user_id')
+		response = webClient.delete('/delete_category/' + str(user_id) + '/', {'code' : loginCode, 'category_id' : category_id})
+		self.assertEqual(response.status_code,200)
+		self.assertEqual(len(Category.getAllWith(user = user1)),6)
+
+
+	def test_user_tries_delete_default_category_and_fails(self):
+		user1 = User.get(email = 'f@gmail.com')
+		category = Category.get(name = 'Bills and taxes')
+		self.assertEqual(len(Category.getAllWith(user = user1)),6)
+		category_id = category.id
+		webClient = self.client
+		loginResponse = self.userLogin('f@gmail.com','admin')
+		self.assertEqual(loginResponse.status_code,200)
+		loginCode = loginResponse.data.get('code')
+		user_id = loginResponse.data.get('user_id')
+		response = webClient.delete('/delete_category/' + str(user_id) + '/', {'code' : loginCode, 'category_id' : category_id})
+		self.assertEqual(response.status_code,401)
+		self.assertEqual(len(Category.getAllWith(user = user1)),6)
+
+	def test_user_cant_delete_category_invalid_credentials(self):
+		user1 = User.get(email = 'f@gmail.com')
+		category = Category.create(name = 'Gimnasio', icon = 'Rocket', user = user1)
+		self.assertEqual(len(Category.getAllWith(user = user1)),7)
+		category_id = category.id
+		webClient = self.client
+		loginResponse = self.userLogin('f@gmail.com','admin')
+		self.assertEqual(loginResponse.status_code,200)
+		wrongLoginCode = loginResponse.data.get('code')[::-1]
+		user_id = loginResponse.data.get('user_id')
+		response = webClient.delete('/delete_category/' + str(user_id) + '/', {'code' : wrongLoginCode, 'category_id' : category_id})
+		self.assertEqual(response.status_code,401)
+		self.assertEqual(len(Category.getAllWith(user = user1)),7)
+
+	def test_delete_category_with_expenses_go_to_other(self):
+		user1 = User.get(email = 'f@gmail.com')
+		category = Category.create(name = 'Gimnasio', icon = 'Rocket', user = user1)
+		self.assertEqual(len(Category.getAllWith(user = user1)),7)
+		expense = Expense.create_expense(value = 1500,description = 'Primer mes',owner = user1,date = date,category = category)
+		self.assertEqual(expense.getCategory().getName(),'Gimnasio')
+		category.delete()
+		self.assertEqual(len(Category.getAllWith(user = user1)),6)
+		expense = Expense.get(value = 1500,description = 'Primer mes')
+		self.assertEqual(expense.getCategory().getName(),'Other')
+
+
+
+
+
+
+
+
 
 
 

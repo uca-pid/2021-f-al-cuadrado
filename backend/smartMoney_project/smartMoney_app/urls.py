@@ -17,6 +17,9 @@ urlpatterns = [
     path('new_category/<int:user_id>/',views.new_category,name= 'create category'),
     path('delete_expense/<int:user_id>/',views.delete_expense, name = 'delete expenses'),
     path('edit_category/<int:user_id>/',views.edit_category, name = 'Edit an user category'),
+    path('delete_category/<int:user_id>/',views.delete_category, name = 'delete expenses'),
+
+
 
 
 ]
