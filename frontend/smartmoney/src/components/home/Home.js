@@ -109,7 +109,6 @@ function deletedCategory(){
 }
 
 function updateComponents(){
-  console.log("entro")
   setUpdateComponent(!updateComponent)
 }
 

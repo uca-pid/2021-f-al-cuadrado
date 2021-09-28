@@ -36,7 +36,7 @@ const PopUpCategoryDetails = ({category, closePopUp, openPopUpEditExpense,editCa
    const editExpense = (expense) => {
        let expenseToEdit = expense;
        expenseToEdit.category__name = category.name;
-       console.log(expenseToEdit)
+       
         openPopUpEditExpense(expenseToEdit);
 }
 
@@ -55,7 +55,7 @@ const PopUpCategoryDetails = ({category, closePopUp, openPopUpEditExpense,editCa
             <button className="popUpBackground" onClick={closePopUp}/>
             <div className="categoryDetailsContainer">
                 <IoArrowBack className="closeCategoryDetails" onClick={closePopUp}/>
-                {(category.user_id!==null)&& <IoPencil className="editCategoryIcon" onClick={()=>editCategory(category)}/>}
+                {(category.user_id!==null)&& <IoPencil className="editCategoryIcon" onClick={()=>{closePopUp();editCategory(category)}}/>}
                 {(category.user_id!==null)&& <IoTrashOutline className="deleteCategoryIcon" onClick={()=>deleteCategoryPopUp(category)}/>}
 
                 

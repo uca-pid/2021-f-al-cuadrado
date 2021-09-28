@@ -66,7 +66,7 @@ const PopUpNewCategory = ({closePopUp, state, categoryToEdit}) => {
             body: JSON.stringify({ 
                 code: session.code, 
                 category_id: categoryToEdit.id,
-                category_name: name,
+                name: name,
                 icon: selectedIcon
             })
           };

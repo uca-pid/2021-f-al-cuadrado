@@ -41,7 +41,7 @@ const PopUpDeleteCategory = ({closePopUp, categoryToDelete, deleted}) => {
 
                   <p className="categoryToDelete">{icons(categoryToDelete.icon)} {categoryToDelete.name}</p>
 
-                  <p style={{marginTop:20}}>Once you delete it all the expenses that were in this categpry will appear in "Others"!</p>
+                  <p style={{marginTop:20}}>Once you delete it all the expenses that were in this category will appear in "Others"!</p>
                 </div>
 
                 <div style={{display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'space-around', width:'90%'}}>
