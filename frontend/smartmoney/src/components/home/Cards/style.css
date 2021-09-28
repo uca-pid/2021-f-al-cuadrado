@@ -39,7 +39,7 @@
 }
 .tableIcon{
     padding-left: 5px;
-    width: 16%;
+    width: 10%;
 }
 .tableCategory{
     width: 65%;
@@ -48,10 +48,15 @@
     width: 15%;
 }
 .tableDescription{
-    width: 39%;
+    width: 35%;
 }
 .tableDate{
     width: 30%;
+}
+.tableDelete{
+    width: 10%;
+    text-align:right;
+    padding-right: 5px;
 }
 .categoriesHomeTableHead{
     text-align: left;
@@ -96,4 +101,29 @@
 }
 .cardViewAll:hover{
     background-color: #BBBBBB;
+}
+@media only screen and (max-width: 600px) {
+    .tableContainer{
+        height: 300px;
+        margin: 25px;
+    }
+    .categoriesHomeTableBody{
+        height: 200px;
+    }
+    .tableCategory{
+        font-size: 12px;
+
+    }
+    .tableTotal{
+        font-size: 12px;
+
+    }
+    .tableDescription{
+        font-size: 12px;
+
+    }
+    .tableDate{
+        font-size: 12px;
+        width: 25%;
+    }
 }

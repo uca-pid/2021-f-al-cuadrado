@@ -13,7 +13,7 @@ import Stack from '@mui/material/Stack';
 
 
 const Login = ({setLayoutForgotPassword,setLayoutRegister}) => {
-    
+  
   const isMobileDevice = useMediaQuery({
     query: "(max-device-width: 480px)",
   });

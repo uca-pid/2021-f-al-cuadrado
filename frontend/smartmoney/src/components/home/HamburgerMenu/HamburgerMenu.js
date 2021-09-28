@@ -8,8 +8,14 @@ import { IoDocumentText } from "@react-icons/all-files/io5/IoDocumentText";
 import { IoCashOutline } from "@react-icons/all-files/io5/IoCashOutline"; 
 import { IoLogOutOutline } from "@react-icons/all-files/io5/IoLogOutOutline"; 
 import { IoSettingsSharp } from "@react-icons/all-files/io5/IoSettingsSharp"; 
+import { useMediaQuery } from 'react-responsive';
+
 
 const HamburgerMenu = ({hamburger, changePassword, newExpense, newCategory}) => {
+
+    const isMobileDevice = useMediaQuery({
+        query: "(max-device-width: 480px)",
+      });
 
     const categoriesSummary = () => {
 
@@ -25,7 +31,7 @@ const HamburgerMenu = ({hamburger, changePassword, newExpense, newCategory}) => 
         window.location.href = "./"
     }
     return (
-        <div className="hamburgerMenuContainer" style={hamburger ? {width:230}:{width:60}}>
+        <div className="hamburgerMenuContainer" style={isMobileDevice ? (hamburger ? {width:230}:{display:'none'}) : (hamburger ? {width:230}:{width:60})}>
 
             <button className="hamburgerMenuButton" onClick={home}>
                 <IoHome className = "hamburgerMenuIcon" color="#8E29E0"/>

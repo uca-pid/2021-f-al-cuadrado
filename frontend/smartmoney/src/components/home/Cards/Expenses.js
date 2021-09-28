@@ -6,10 +6,9 @@ import mobilStyles from "../mobilStyles";
 import { useMediaQuery } from 'react-responsive';
 import FlatList from 'flatlist-react';
 import icons from "../../../functions/icons";
+import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline"; 
 
-const iconsNames = ["IoReceipt","IoGameController","IoCart","IoWineSharp","IoDesktopSharp", "IoShapes"]
-
-const Expenses = () => {
+const Expenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) => {
 
     const [expenses, setExpenses] = useState([]);
 
@@ -22,17 +21,26 @@ const Expenses = () => {
         };
         fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptions)
           .then(response => response.json())
-          .then(data => {setExpenses(data);console.log(expenses)});
+          .then(data => {setExpenses(data)});
 
     }
-    const renderCategories = (item, index)=> {
+    useEffect(() => fetchExpenses(),[update])
+
+    const editExpense = (expense) => {
+        openPopUpEditExpense(expense);
+   }
+   const deleteExpense = (expense) => {
+    openPopUpDeleteExpense(expense);
+}
+
+    const renderExpenses = (item, index)=> {
         return (
-          <tr className = "categoriesRow">
-              {/* #TODO Sacar parche */}
-            <th className = "categoriesValue tableIcon">{icons(item.category__icon)}</th> 
-            <th className = "categoriesValue tableDescription">{item.description}</th>
-            <th className = "categoriesValue tableDate">{item.date.substring(0,10)}</th>
-            <th className = "categoriesValue tableTotal">$ {item.value}</th>
+          <tr className = "categoriesRow" >
+            <th className = "categoriesValue tableIcon" onClick={()=>editExpense(item)}>{icons(item.category__icon)}</th> 
+            <th className = "categoriesValue tableDescription" onClick={()=>editExpense(item)}>{item.description}</th>
+            <th className = "categoriesValue tableDate" onClick={()=>editExpense(item)}>{item.date.substring(0,10)}</th>
+            <th className = "categoriesValue tableTotal" onClick={()=>editExpense(item)}>$ {item.value}</th>
+            <th className = "categoriesValue tableDelete"><IoTrashOutline onClick={()=>deleteExpense(item)}/></th>
           </tr>        
         )  
     }
@@ -44,7 +52,7 @@ const Expenses = () => {
                 {/* <button className="cardViewAll">
                     <p>See all</p>
                     {icons("IoArrowForwardOutline")}
-                </button> */}
+                </button> */} 
             </div>
             <table className = "categoriesHomeTable">
                 <thead className = "categoriesHomeTableHead">
@@ -53,14 +61,15 @@ const Expenses = () => {
                         <th className = "tableDescription">Description</th>
                         <th className = "tableDate">Date</th>
                         <th className = "tableTotal">Value</th>
+                        <th className = "tableDelete"></th>
                     </tr>
                 </thead>
                 <tbody className = "categoriesHomeTableBody">
                     <FlatList 
                         list={expenses}
-                        renderItem={renderCategories}
+                        renderItem={renderExpenses}
                         keyExtractor={(item) =>  item.id}
-                        renderWhenEmpty={() => <tr><th><button onClick={fetchExpenses}>There is no expense yet!</button></th></tr>}
+                        renderWhenEmpty={() => <tr><th><p>There is no expense yet!</p></th></tr>}
                     />
                 </tbody>
             </table>

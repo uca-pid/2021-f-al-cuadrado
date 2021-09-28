@@ -8,3 +8,18 @@
     flex-direction: row;
     width: 100%;
 }
+@media only screen and (max-width: 600px) {
+    .mainBody{
+        flex-direction: column;
+        overflow-y: auto;
+    }
+    .backgroundCloseMenu{
+        position: absolute;
+        left: 230px;
+        height: 100%;
+        background-color:#111111;
+        opacity:0.5;
+        border: 0px;
+        width: calc(100% - 230px);
+    }
+}
