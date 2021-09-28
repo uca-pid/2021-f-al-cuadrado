@@ -6,9 +6,13 @@ import mobilStyles from "../mobilStyles";
 import { useMediaQuery } from 'react-responsive';
 import FlatList from 'flatlist-react';
 import icons from "../../../functions/icons";
-// import TableScrollbar from 'react-table-scrollbar';
+import { IoArrowBack } from "@react-icons/all-files/io5/IoArrowBack"; 
+import { IoPencil} from "@react-icons/all-files/io5/IoPencil"; 
+import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline"; 
 
-const PopUpCategoryDetails = ({categoryName, closePopUp, openPopUpEditExpense}) => {
+
+// import TableScrollbar from 'react-table-scrollbar';
+const PopUpCategoryDetails = ({category, closePopUp, openPopUpEditExpense,editCategory,deleteCategoryPopUp, update}) => {
 
     const [expenses, setExpenses] = useState([]);
 
@@ -19,7 +23,7 @@ const PopUpCategoryDetails = ({categoryName, closePopUp, openPopUpEditExpense}) 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
             code: session.code,
-            category:categoryName})
+            category:category.name})
         };
         fetch('https://smart-money-back.herokuapp.com/category_expenses/'+session.user_id+'/', requestOptions)
         .then(response => response.json())
@@ -27,11 +31,11 @@ const PopUpCategoryDetails = ({categoryName, closePopUp, openPopUpEditExpense}) 
             setExpenses(data);
             });
    }
-   useEffect(() => categoryDetails(),[])
+   useEffect(() => categoryDetails(),[update])
 
    const editExpense = (expense) => {
        let expenseToEdit = expense;
-       expenseToEdit.category__name = categoryName;
+       expenseToEdit.category__name = category.name;
        console.log(expenseToEdit)
         openPopUpEditExpense(expenseToEdit);
 }
@@ -50,10 +54,13 @@ const PopUpCategoryDetails = ({categoryName, closePopUp, openPopUpEditExpense}) 
         <div className="popUpComponent">
             <button className="popUpBackground" onClick={closePopUp}/>
             <div className="categoryDetailsContainer">
-                <button className="closeCategoryDetails" onClick={closePopUp}>X</button>
+                <IoArrowBack className="closeCategoryDetails" onClick={closePopUp}/>
+                {(category.user_id!==null)&& <IoPencil className="editCategoryIcon" onClick={()=>editCategory(category)}/>}
+                {(category.user_id!==null)&& <IoTrashOutline className="deleteCategoryIcon" onClick={()=>deleteCategoryPopUp(category)}/>}
+
                 
                 <div className="divCenteredItems">
-                <p className="popUpTitle">{categoryName}</p>
+                <p className="popUpTitle">{icons(category.icon)} {category.name}</p>
             <table className = "categoryDetailsTable">
                 <thead className = "categoryDetailsTableHead">
                     <tr className = "headCategoryDetailsRow">

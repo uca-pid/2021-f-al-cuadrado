@@ -6,8 +6,9 @@ import mobilStyles from "../mobilStyles";
 import { useMediaQuery } from 'react-responsive';
 import FlatList from 'flatlist-react';
 import icons from "../../../functions/icons";
+import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline"; 
 
-const Expenses = ({openPopUpEditExpense}) => {
+const Expenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) => {
 
     const [expenses, setExpenses] = useState([]);
 
@@ -23,19 +24,23 @@ const Expenses = ({openPopUpEditExpense}) => {
           .then(data => {setExpenses(data)});
 
     }
-    useEffect(() => fetchExpenses(),[])
+    useEffect(() => fetchExpenses(),[update])
 
     const editExpense = (expense) => {
         openPopUpEditExpense(expense);
    }
+   const deleteExpense = (expense) => {
+    openPopUpDeleteExpense(expense);
+}
 
     const renderExpenses = (item, index)=> {
         return (
-          <tr className = "categoriesRow" onClick={()=>editExpense(item)}>
-            <th className = "categoriesValue tableIcon">{icons(item.category__icon)}</th> 
-            <th className = "categoriesValue tableDescription">{item.description}</th>
-            <th className = "categoriesValue tableDate">{item.date.substring(0,10)}</th>
-            <th className = "categoriesValue tableTotal">$ {item.value}</th>
+          <tr className = "categoriesRow" >
+            <th className = "categoriesValue tableIcon" onClick={()=>editExpense(item)}>{icons(item.category__icon)}</th> 
+            <th className = "categoriesValue tableDescription" onClick={()=>editExpense(item)}>{item.description}</th>
+            <th className = "categoriesValue tableDate" onClick={()=>editExpense(item)}>{item.date.substring(0,10)}</th>
+            <th className = "categoriesValue tableTotal" onClick={()=>editExpense(item)}>$ {item.value}</th>
+            <th className = "categoriesValue tableDelete"><IoTrashOutline onClick={()=>deleteExpense(item)}/></th>
           </tr>        
         )  
     }
@@ -56,6 +61,7 @@ const Expenses = ({openPopUpEditExpense}) => {
                         <th className = "tableDescription">Description</th>
                         <th className = "tableDate">Date</th>
                         <th className = "tableTotal">Value</th>
+                        <th className = "tableDelete"></th>
                     </tr>
                 </thead>
                 <tbody className = "categoriesHomeTableBody">

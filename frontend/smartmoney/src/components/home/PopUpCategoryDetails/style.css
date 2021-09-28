@@ -66,10 +66,24 @@
 }
 .closeCategoryDetails{
     position:relative;
-    left:520px;
-    top:5px;
+    left:15px;
+    top:15px;
     background-color:#FFFFFF;
     border:0px;
+}
+.editCategoryIcon{
+    position:absolute;
+    left:465px;
+    top:15px;
+    width: 20px;
+    height: 20px;
+}
+.deleteCategoryIcon{
+    position:absolute;
+    left:500px;
+    top:15px;
+    width: 20px;
+    height: 20px;
 }
 @media only screen and (max-width: 600px) {
     .categoryDetailsContainer{

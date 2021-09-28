@@ -6,8 +6,12 @@ import mobilStyles from "./mobilStyles";
 import { useMediaQuery } from 'react-responsive';
 import PopUpChangePassword from "./PopUpChangePassword";
 import PopUpNewExpense from "./PopUpNewExpense";
+import PopUpDeleteExpense from "./PopUpDeleteExpense";
 import PopUpNewCategory from "./PopUpNewCategory";
 import PopUpCategoryDetails from "./PopUpCategoryDetails";
+import PopUpDeleteCategory from "./PopUpDeleteCategory";
+
+
 
 import Header from './Header';
 import Expenses from './Cards/Expenses';
@@ -29,16 +33,25 @@ const Home = () => {
   const [popUpCategoryDetails, setPopUpCategoryDetails] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [hamburgerMenu, setHamburgerMenu] = useState(true);
+  const [popUpDeleteExpense, setPopUpDeleteExpense] = useState('');
+  const [popUpDeleteExpenseDisplay, setPopUpDeleteExpenseDisplay] = useState(false);
+  const [popUpDeleteCategory, setPopUpDeleteCategory] = useState('');
+  const [popUpDeleteCategoryDisplay, setPopUpDeleteCategoryDisplay] = useState(false);
+  const [popUpNewCategoryState, setPopUpNewCategoryState] = useState('');
+  const [popUpEditCategory, setPopUpEditCategory] = useState('');
+  const [updateComponent, setUpdateComponent] = useState(false);
 
 
   function closePopUpChangePassword(){
-    setPopUpChangePassword(false)
+    setPopUpChangePassword(false);
   }
   function closePopUpNewExpense(){
-    setPopUpNewExpense(false)
+    setPopUpNewExpense(false);
+    updateComponents();
   }
   function closePopUpNewCategory(){
-    setPopUpNewCategory(false)
+    setPopUpNewCategory(false);
+    updateComponents();
   }
   function openPopUpChangePassword(){
     setPopUpChangePassword(true)
@@ -46,38 +59,74 @@ const Home = () => {
   function openPopUpNewExpense(){
     setPopUpNewExpenseState('New');
     setPopUpEditExpense('');
-    setPopUpNewExpense(true)
+    setPopUpNewExpense(true);
   }
   function openPopUpNewCategory(){
+    setPopUpNewCategoryState('New');
+    setPopUpEditCategory('');
     setPopUpNewCategory(true)
   }
   function hamburger (){
-    setHamburgerMenu(!hamburgerMenu)
-    console.log(hamburgerMenu)
+    setHamburgerMenu(!hamburgerMenu);
+    console.log(hamburgerMenu);
 }
-function openPopUpCategoryDetails(categoryName){
-    setSelectedCategory(categoryName);
+function openPopUpCategoryDetails(category){
+    setSelectedCategory(category);
     setPopUpCategoryDetails(true);
 }
 function closePopUpCategoryDetails(){
-  setPopUpCategoryDetails(false)
+  setPopUpCategoryDetails(false);
 }
 const openPopUpEditExpense = (expense) =>{
   setPopUpNewExpenseState('Edit');
   setPopUpEditExpense(expense);
   setPopUpNewExpense(true);
-  console.log(expense)
+}
+const openPopUpEditCategory = (category) =>{
+  setPopUpNewCategoryState('Edit');
+  setPopUpEditCategory(category);
+  setPopUpNewCategory(true);
+}
+const openPopUpDeleteExpense = (expense) =>{
+  setPopUpDeleteExpense(expense);
+  setPopUpDeleteExpenseDisplay(true);
+}
+function closePopUpDeleteExpense(){
+  setPopUpDeleteExpenseDisplay(false);
+  updateComponents();
+}
+const openPopUpDeleteCategory = (category) =>{
+  setPopUpDeleteCategory(category);
+  setPopUpDeleteCategoryDisplay(true);
+}
+function closePopUpDeleteCategory(){
+  setPopUpDeleteCategoryDisplay(false);
+}
+function deletedCategory(){
+  setSelectedCategory('');
+  setPopUpCategoryDetails(false);
+  updateComponents();
+}
+
+function updateComponents(){
+  console.log("entro")
+  setUpdateComponent(!updateComponent)
 }
 
 
 
   return (
     <div className="body bodyHome">
-      {popUpCategoryDetails && <PopUpCategoryDetails categoryName={selectedCategory} closePopUp={closePopUpCategoryDetails} openPopUpEditExpense={openPopUpEditExpense}/>}
-
+      {popUpCategoryDetails && <PopUpCategoryDetails category={selectedCategory} closePopUp={closePopUpCategoryDetails} openPopUpEditExpense={openPopUpEditExpense} editCategory={openPopUpEditCategory} deleteCategoryPopUp={openPopUpDeleteCategory} update ={updateComponent}/>}
       {popUpChangePassword && <PopUpChangePassword closePopUp= {closePopUpChangePassword}/>}
       {popUpNewExpense && <PopUpNewExpense closePopUp= {closePopUpNewExpense} state={popUpNewExpenseState} expenseToEdit={popUpEditExpense}/>}
-      {popUpNewCategory && <PopUpNewCategory closePopUp= {closePopUpNewCategory}/>}      
+      {popUpNewCategory && <PopUpNewCategory closePopUp= {closePopUpNewCategory} state={popUpNewCategoryState} categoryToEdit={popUpEditCategory}/>}
+      {/* {popUpNewCategory && <PopUpNewCategory closePopUp= {closePopUpNewCategory}/>}       */}
+      {popUpDeleteExpenseDisplay && <PopUpDeleteExpense closePopUp= {closePopUpDeleteExpense} expenseToDelete={popUpDeleteExpense}/>}
+      {popUpDeleteCategoryDisplay && <PopUpDeleteCategory closePopUp= {closePopUpDeleteCategory} categoryToDelete={popUpDeleteCategory} deleted={deletedCategory}/>}
+
+
+
 
       
       <Header hamburger = {hamburger}/>
@@ -88,8 +137,8 @@ const openPopUpEditExpense = (expense) =>{
         <HamburgerMenu hamburger={hamburgerMenu} changePassword={openPopUpChangePassword} newExpense={openPopUpNewExpense} newCategory={openPopUpNewCategory}/>
         {isMobileDevice && <button className="backgroundCloseMenu" onClick={hamburger} style={hamburgerMenu?{display:'block'}:{display:'none'}}/>}
         <div className="mainBody">
-          <Categories openPopUpCategoryDetails={openPopUpCategoryDetails}/>
-          <Expenses openPopUpEditExpense={openPopUpEditExpense}/>
+          <Categories openPopUpCategoryDetails={openPopUpCategoryDetails} update ={updateComponent}/>
+          <Expenses openPopUpEditExpense={openPopUpEditExpense}  openPopUpDeleteExpense={openPopUpDeleteExpense} update ={updateComponent}/>
 
         </div>
       </div>

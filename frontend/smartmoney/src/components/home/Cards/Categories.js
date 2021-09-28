@@ -7,7 +7,7 @@ import { useMediaQuery } from 'react-responsive';
 import FlatList from 'flatlist-react';
 import icons from "../../../functions/icons";
 
-const Categories = ({openPopUpCategoryDetails}) => {
+const Categories = ({openPopUpCategoryDetails, update}) => {
 
     const [categories, setCategories] = useState([]);
 
@@ -28,10 +28,10 @@ const Categories = ({openPopUpCategoryDetails}) => {
             });
     }
 
-   useEffect(() => fetchCategories(),[])
+   useEffect(() => fetchCategories(),[update])
 
-   const categoryDetails = (categoryName) => {
-        openPopUpCategoryDetails(categoryName);
+   const categoryDetails = (category) => {
+        openPopUpCategoryDetails(category);
    }
 
 
@@ -40,7 +40,7 @@ const Categories = ({openPopUpCategoryDetails}) => {
         let total = 0;
         if (item.total!==null) total = item.total;
         return (
-          <tr className = "categoriesRow" key={item.name} onClick={()=>categoryDetails(item.name)}>
+          <tr className = "categoriesRow" key={item.name} onClick={()=>categoryDetails(item)}>
             <th className = "categoriesValue tableIcon">{icons(item.icon)}</th> 
             <th className = "categoriesValue tableCategory">{item.name}</th>
             <th className = "categoriesValue tableTotal">$ {total}</th>

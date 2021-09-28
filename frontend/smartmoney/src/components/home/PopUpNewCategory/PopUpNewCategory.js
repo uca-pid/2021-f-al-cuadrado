@@ -1,6 +1,6 @@
 import React, { cloneElement } from 'react';
 import "./style.css";
-import {useState} from 'react';
+import {useState,useEffect} from 'react';
 import RequiredField from '../../RequiredField/requiredField';
 import { useMediaQuery } from 'react-responsive';
 import webStyles from "../webStyles";
@@ -8,18 +8,32 @@ import mobilStyles from "../mobilStyles";
 import icons from '../../../functions/icons';
 import IconList from '../../IconList';
 
-const PopUpNewCategory = ({closePopUp}) => {
+const PopUpNewCategory = ({closePopUp, state, categoryToEdit}) => {
 
     const isMobileDevice = useMediaQuery({
         query: "(max-device-width: 480px)",
     });
 
+    const [title, setTitle] = useState('New category');
     const [name, setName] = useState('');
     const [nameEmpty, setNameEmpty] = useState('');
     const [iconEmpty, setIconEmpty] = useState('');
     const [selectedIcon, setSelectedIcon] = useState('');
 
+    const loadEditFiles = () =>{
+        if(state==='Edit'){
+          setTitle("Edit category")
+          setName(categoryToEdit.name);
+          setSelectedIcon(categoryToEdit.icon);
+        }
+      }
+    useEffect(() => loadEditFiles(),[state, categoryToEdit])
+
     const submitCategory = () => {
+        (state==='New') ? submitNewCategory() : submitEditCategory();
+      }
+
+    const submitNewCategory = () => {
         if(name==='')setNameEmpty(true);
         if(selectedIcon==='')setIconEmpty(true);
         if(name!==''&&selectedIcon!==''){
@@ -41,6 +55,30 @@ const PopUpNewCategory = ({closePopUp}) => {
             });
         } 
     }
+    const submitEditCategory = () =>{
+        if(name==='')setNameEmpty(true);
+        if(selectedIcon==='')setIconEmpty(true);
+        if(name!==''&&selectedIcon!==''){
+          const session = JSON.parse(localStorage.session);
+          const requestOptionsNewExpense = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                code: session.code, 
+                category_id: categoryToEdit.id,
+                category_name: name,
+                icon: selectedIcon
+            })
+          };
+          console.log(requestOptionsNewExpense.body)
+          fetch('https://smart-money-back.herokuapp.com/edit_category/'+session.user_id+'/', requestOptionsNewExpense)
+            .then((response) => {
+              if(response.status===200){
+                  closePopUp();
+              }
+            });
+        } 
+      }
 
     function isEmpty(input, isEmpty){
         if(input==='')isEmpty(true)
@@ -52,7 +90,7 @@ const PopUpNewCategory = ({closePopUp}) => {
             <div className="newCategoryContainer">
                 <button className="closeNewCategory" onClick={closePopUp}>X</button>
                 <div className="divCenteredItems">
-                <p className="popUpTitle">New category</p>
+                <p className="popUpTitle">{title}</p>
                 <div className="divNewCategory">
                     <p className="label">Category name</p>
                     <input style={isMobileDevice ? (nameEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (nameEmpty ? webStyles.inputEmpty : webStyles.input)} type="text" value={name} onChange={e => setName(e.target.value)} onFocus={()=>setNameEmpty(false)} onBlur={()=>isEmpty(name,setNameEmpty)}/>
