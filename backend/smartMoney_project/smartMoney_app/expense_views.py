@@ -103,9 +103,9 @@ def expense_list(request,user_id):
 					request_body=openapi.Schema(
 						type=openapi.TYPE_OBJECT,
 						required=['version'],
-						properties={
+						properties = {
 							'code': code,
-							'expense_id' : expense_id
+							'expense_id' : expense_id,
 							'value': value,
 							'description' : description,
 							'category' : category,
