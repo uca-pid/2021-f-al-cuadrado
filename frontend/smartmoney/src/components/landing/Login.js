@@ -88,7 +88,11 @@ const Login = ({setLayoutForgotPassword,setLayoutRegister}) => {
               </Button>
 
               <Stack   
-                    style={{minWidth: '70%'}} direction="row" justifyContent="center" alignItems="center" spacing={2}>
+                    style={{minWidth: '70%'}}
+                    direction="row" 
+                    justifyContent="center" 
+                    alignItems="center" 
+                    spacing={2}>
                  <Button 
                     style={{minWidth: '50%'}}
                     variant = "contained"
