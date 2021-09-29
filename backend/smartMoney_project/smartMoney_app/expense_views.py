@@ -47,7 +47,6 @@ def validCode(user_id,received_code):
 	return expected_code == received_code
 
 
-#@swagger_auto_schema(method='post',manual_parameters=[code,value], responses={201: 'Expense created',401: 'Invalid Credentials'})
 @swagger_auto_schema(methods=['post'],
 					request_body=openapi.Schema(
 						type=openapi.TYPE_OBJECT,
@@ -80,7 +79,6 @@ def new_expense(request,user_id):
 
 
 
-#@swagger_auto_schema(method='post', manual_parameters=[code],responses={200: 'Expenses sended',401: 'Invalid Credentials'})
 @swagger_auto_schema(methods=['post'],
 					request_body=openapi.Schema(
 						type=openapi.TYPE_OBJECT,
@@ -107,6 +105,7 @@ def expense_list(request,user_id):
 						required=['version'],
 						properties={
 							'code': code,
+							'expense_id' : expense_id
 							'value': value,
 							'description' : description,
 							'category' : category,

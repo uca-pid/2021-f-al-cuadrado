@@ -50,7 +50,7 @@ category_id = openapi.Schema(title = 'category_id',type=openapi.TYPE_STRING)
 							'code': code,
 							},
 						),
-					responses={200: 'Expenses sended',401: 'Invalid Credentials'})
+					responses={200: 'Categories sended',401: 'Invalid Credentials'})
 @api_view(['POST'])
 def category_list(request,user_id):
 	user = User.get(id = user_id)
@@ -78,7 +78,7 @@ def expenses_from_category(request,user_id):
 	received_code = request.data.get('code')
 	category = Category.get(name = request.data.get('category'))
 	if validCode(user_id,received_code):
-		expenses = Expense.getAllWith(category = category)
+		expenses = Expense.getAllWith(category = category,owner = user)
 		return Response(expenses.values(), status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
 		
@@ -93,7 +93,7 @@ def expenses_from_category(request,user_id):
 							'icon' : icon,
 							},
 						),
-					responses={201: 'Expense created',401: 'Invalid Credentials'})
+					responses={201: 'Category created',401: 'Invalid Credentials'})
 @api_view(['POST'])
 def new_category(request,user_id):
 	user = User.get(id = user_id)
@@ -111,7 +111,7 @@ def new_category(request,user_id):
 						properties={
 							'code': code,
 							'category_id' : category_id,
-							'category_name': category_name,
+							'name': category_name,
 							'icon' : icon,
 							},
 						),
