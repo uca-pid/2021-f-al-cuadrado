@@ -10,6 +10,9 @@ import "react-datepicker/dist/react-datepicker.css";
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+
 // const categoryList=[
 //     'one', 'two', 'three'
 //   ];
@@ -51,13 +54,23 @@ const PopUpDeleteExpense = ({closePopUp, expenseToDelete}) => {
 
                   <p style={{marginTop:20}}>Once you delete it there's no coming back!</p>
                 </div>
+                <Stack 
+                direction = 'row'
+                justifyContent = 'center'
+                alignItems="center" 
+                spacing={2}>
+                  <Button 
+                  variant = 'contained'
+                  size = 'small'
+                  //className="button1 popUpDeleteButton" 
+                  onClick={closePopUp}>Don't delete it</Button>
+                  <Button 
+                  variant ='outlined'
+                  size = 'small'
+                  //className="buttonDeleteCategory popUpDeleteButton" 
+                  onClick={deleteExpense}>Yes, delete it</Button>
 
-                <div style={{display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'space-around', width:'90%'}}>
-                  <button className="button1 popUpDeleteButton" onClick={closePopUp}>Don't delete it</button>
-                  <button className="buttonDeleteExpense popUpDeleteButton" onClick={deleteExpense}>Yes, delete it</button>
-
-                </div>
-
+                </Stack>
               </div>
             </div>
         </div>

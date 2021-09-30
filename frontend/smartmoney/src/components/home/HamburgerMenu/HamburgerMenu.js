@@ -34,44 +34,44 @@ const HamburgerMenu = ({hamburger, changePassword, newExpense, newCategory}) => 
         <div className="hamburgerMenuContainer" style={isMobileDevice ? (hamburger ? {width:230}:{display:'none'}) : (hamburger ? {width:230}:{width:60})}>
 
             <button className="hamburgerMenuButton" onClick={home}>
-                <IoHome className = "hamburgerMenuIcon" color="#8E29E0"/>
+                <IoHome className = "hamburgerMenuIcon" color="#7346c7"/>
                 {hamburger && 
                     <p className = "hamburgerMenuText">Home</p>
                 }
             </button>
             <button className="hamburgerMenuButton" onClick={newExpense}>
-                <IoCashOutline className = "hamburgerMenuIcon" color="#8E29E0"/>
+                <IoCashOutline className = "hamburgerMenuIcon" color="#7346c7"/>
                 {hamburger && 
                     <p className = "hamburgerMenuText">Add expense</p>
                 }
                 </button>
             <button className="hamburgerMenuButton" onClick={categoriesSummary}>
-                <IoBarChart className = "hamburgerMenuIcon" color="#8E29E0"/>
+                <IoBarChart className = "hamburgerMenuIcon" color="#7346c7"/>
                 {hamburger && 
                     <p className = "hamburgerMenuText">Categories summary</p>
                 }
                 </button>
             <button className="hamburgerMenuButton" onClick={expensesRecord}>
-                <IoDocumentText className = "hamburgerMenuIcon" color="#8E29E0"/>
+                <IoDocumentText className = "hamburgerMenuIcon" color="#7346c7"/>
                 {hamburger && 
                     <p className = "hamburgerMenuText">Expenses record</p>
                 }
                 </button>
             <button className="hamburgerMenuButton" onClick={newCategory}>
-                <IoAddCircle className = "hamburgerMenuIcon" color="#8E29E0"/>
+                <IoAddCircle className = "hamburgerMenuIcon" color="#7346c7"/>
                 {hamburger && 
                     <p className = "hamburgerMenuText">Add category</p>
                 }
                 </button>
             <div className="hamburgerMenuBottomButtonsContainer">
                 <button className="hamburgerMenuButton" onClick={changePassword}>
-                    <IoSettingsSharp className = "hamburgerMenuIcon" color="#8E29E0"/>
+                    <IoSettingsSharp className = "hamburgerMenuIcon" color="#7346c7"/>
                     {hamburger && 
                         <p className = "hamburgerMenuText">Change password</p>
                     }
                     </button>
                 <button className="hamburgerMenuButton" onClick={logout}>
-                    <IoLogOutOutline className = "hamburgerMenuIcon" color="#8E29E0"/>
+                    <IoLogOutOutline className = "hamburgerMenuIcon" color="#7346c7"/>
                     {hamburger && 
                         <p className = "hamburgerMenuText">Logout</p>
                     }

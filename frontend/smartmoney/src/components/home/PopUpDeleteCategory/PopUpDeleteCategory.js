@@ -11,6 +11,10 @@ import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import icons from '../../../functions/icons';
 
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+
+
 const PopUpDeleteCategory = ({closePopUp, categoryToDelete, deleted}) => {
 
     const deleteCategory = () => {
@@ -30,7 +34,7 @@ const PopUpDeleteCategory = ({closePopUp, categoryToDelete, deleted}) => {
     }
 
     return (
-        <div className="popUpComponent">
+        <div  className="popUpComponent">
             <button className="popUpBackground" onClick={closePopUp}/>
             <div className="deleteCategoryContainer">
                 <button className="closeDeleteCategory" onClick={closePopUp}>X</button>
@@ -44,11 +48,23 @@ const PopUpDeleteCategory = ({closePopUp, categoryToDelete, deleted}) => {
                   <p style={{marginTop:20}}>Once you delete it all the expenses that were in this category will appear in "Others"!</p>
                 </div>
 
-                <div style={{display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'space-around', width:'90%'}}>
-                  <button className="button1 popUpDeleteButton" onClick={closePopUp}>Don't delete it</button>
-                  <button className="buttonDeleteCategory popUpDeleteButton" onClick={deleteCategory}>Yes, delete it</button>
+                <Stack 
+                direction = 'row'
+                justifyContent = 'center'
+                alignItems="center" 
+                spacing={2}>
+                  <Button 
+                  variant = 'contained'
+                  size = 'small'
+                  //className="button1 popUpDeleteButton" 
+                  onClick={closePopUp}>Don't delete it</Button>
+                  <Button 
+                  variant ='outlined'
+                  size = 'small'
+                  //className="buttonDeleteCategory popUpDeleteButton" 
+                  onClick={deleteCategory}>Yes, delete it</Button>
 
-                </div>
+                </Stack>
 
               </div>
             </div>

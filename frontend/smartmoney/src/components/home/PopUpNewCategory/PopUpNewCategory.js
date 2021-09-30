@@ -8,6 +8,12 @@ import mobilStyles from "../mobilStyles";
 import icons from '../../../functions/icons';
 import IconList from '../../IconList';
 
+
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+
+
+
 const PopUpNewCategory = ({closePopUp, state, categoryToEdit}) => {
 
     const isMobileDevice = useMediaQuery({
@@ -92,8 +98,16 @@ const PopUpNewCategory = ({closePopUp, state, categoryToEdit}) => {
                 <div className="divCenteredItems">
                 <p className="popUpTitle">{title}</p>
                 <div className="divNewCategory">
-                    <p className="label">Category name</p>
-                    <input style={isMobileDevice ? (nameEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (nameEmpty ? webStyles.inputEmpty : webStyles.input)} type="text" value={name} onChange={e => setName(e.target.value)} onFocus={()=>setNameEmpty(false)} onBlur={()=>isEmpty(name,setNameEmpty)}/>
+                    <TextField
+                    label = "Category name" variant = 'outlined' 
+                    margin = "dense"
+                    size ="small"
+                    //style={isMobileDevice ? (nameEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (nameEmpty ? webStyles.inputEmpty : webStyles.input)} 
+                    type="text" 
+                    value={name} 
+                    onChange={e => setName(e.target.value)} 
+                    onFocus={()=>setNameEmpty(false)} 
+                    onBlur={()=>isEmpty(name,setNameEmpty)}/>
                     {nameEmpty&&<RequiredField/>}
                     <div style={{display:'flex', flexDirection:'row', alignItems:'center', marginTop:10, marginBottom:10}}>
                         <p className="label" style={{margin:0}}>Category icon</p>
@@ -103,12 +117,16 @@ const PopUpNewCategory = ({closePopUp, state, categoryToEdit}) => {
                     </div>
                     <IconList numberColumns={4} setIcon={setSelectedIcon}/>
                     {iconEmpty&&<RequiredField/>}
-                    <input 
+                    <Button 
+                    style = {{marginTop: '5%'}}
+                    variant = 'contained'
+                    type="button" 
                     className="button1"
                     type="button" 
-                    onClick={submitCategory} 
-                    value="Save" 
-                    disabled={nameEmpty||iconEmpty}/>
+                    onClick={submitCategory}  
+                    disabled={nameEmpty||iconEmpty}>
+                    Save
+                    </Button>
                     
                 </div>
                 </div>
