@@ -5,10 +5,23 @@ import RequiredField from '../../RequiredField/requiredField';
 import { useMediaQuery } from 'react-responsive';
 import webStyles from "../webStyles";
 import mobilStyles from "../mobilStyles";
-import DatePicker from "react-datepicker";
+//import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
+
+
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import MenuItem from '@mui/material/MenuItem';
+
+import DatePicker from '@mui/lab/DatePicker';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+
+
+
+
 
 const PopUpNewExpense = ({closePopUp, state, expenseToEdit}) => {
 
@@ -26,6 +39,14 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit}) => {
     const [descriptionEmpty, setDescriptionEmpty] = useState(false);
     const [categoryEmpty, setCategoryEmpty] = useState(false);
     const [newExpenseEmpty, setNewExpenseEmpty] = useState(false);
+
+  
+    const loadCategories = () => {
+          let items = allCategories.map((item, index) => {
+            return <MenuItem value={item}>{item}</MenuItem>
+          });
+          return items
+    }
 
     const loadEditFiles = () =>{
       if(state==='Edit'){
@@ -122,24 +143,61 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit}) => {
                 <div className="divCenteredItems">
                 <p className="popUpTitle">{title}</p>
                 <form className="formNewExpense">
-                    <p className="label">Value</p>
-                    <input style={isMobileDevice ? (newExpenseEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (newExpenseEmpty ? webStyles.inputEmpty : webStyles.input)} type="text" value={expenseValue} onChange={e => setExpenseValue(e.target.value)} onFocus={()=>{setNewExpenseOnlyNumbers(false);setNewExpenseEmpty(false)}} onBlur={()=>isEmpty(expenseValue,setNewExpenseEmpty)}/>
-                    {newExpenseOnlyNumbers&&<p className = "invalidCredentials">Only numbers</p>}
-                    {newExpenseEmpty&&<RequiredField/>}
-                    <p className="label">Description</p>
-                    <input style={isMobileDevice ? (descriptionEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (descriptionEmpty ? webStyles.inputEmpty : webStyles.input)} type="text" value={description} onChange={e => setDescription(e.target.value)}  onFocus={()=>setDescriptionEmpty(false)} onBlur={()=>isEmpty(description,setDescriptionEmpty)}/>
-                    {descriptionEmpty&&<RequiredField/>}
-                    <p className="label">Category</p>
-                    <Dropdown options={allCategories} value={selectedOption} onChange={value=>{setSelectedOption(value);setCategoryEmpty(false)}}/>
+                    <p className="label"></p>
+                    <TextField
+                    label = "Value" variant = 'outlined' 
+                    margin = "dense"
+                    size ="small"
+                    required
+                    error = {newExpenseOnlyNumbers || newExpenseEmpty}
+                    helperText = {newExpenseOnlyNumbers ? 'Only numbers' : newExpenseEmpty ? '* This field is required' : ''} 
+                    //style={isMobileDevice ? (newExpenseEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (newExpenseEmpty ? webStyles.inputEmpty : webStyles.input)} 
+                    type="text" 
+                    value={expenseValue} 
+                    onChange={e => setExpenseValue(e.target.value)} 
+                    onFocus={()=>{setNewExpenseOnlyNumbers(false);setNewExpenseEmpty(false)}} 
+                    onBlur={()=>isEmpty(expenseValue,setNewExpenseEmpty)}/>
+                    <TextField
+                    label = "Description" variant = 'outlined' 
+                    margin = "dense"
+                    size ="small" 
+                    required
+                    error = {descriptionEmpty}
+                    helperText = {descriptionEmpty ? '* This field is required' : ''} 
+                    //style={isMobileDevice ? (descriptionEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (descriptionEmpty ? webStyles.inputEmpty : webStyles.input)} 
+                    type="text" 
+                    value={description} 
+                    onChange={e => setDescription(e.target.value)}  
+                    onFocus={()=>setDescriptionEmpty(false)} 
+                    onBlur={()=>isEmpty(description,setDescriptionEmpty)}/>
+                    <TextField 
+                    label="Category" 
+                    select required
+                    margin = "dense"
+                    //options={allCategories} 
+                    labelId = 'label'
+                    size = 'small'
+                    value={selectedOption} 
+                    onChange={event=>{setSelectedOption(event.target.value);setCategoryEmpty(false)}}>
+                    {loadCategories()}
+                    </TextField>
                     {categoryEmpty&&<RequiredField/>}
-                    <p className="label">Date</p>
-                    <DatePicker selected={date} onChange={(date) => setDate(date)} />
-                    <input 
-                    className="button1"
-                    type="button" 
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DatePicker 
+                      label = 'Date'
+                      value={date} 
+                      onChange={(date) => setDate(date)} 
+                      renderInput={(params) => 
+                        <TextField margin = 'dense'
+                        size = "small" {...params} />}/>
+                    </LocalizationProvider>
+                    <Button 
+                    variant = 'contained'
+                    style = {{marginTop: '5%'}}
                     onClick={submitExpense} 
-                    value="Save" 
-                    disabled={newExpenseEmpty||descriptionEmpty}/>
+                    disabled={newExpenseEmpty||descriptionEmpty}>
+                      Save
+                    </Button>
                 </form>
                 </div>
             </div>

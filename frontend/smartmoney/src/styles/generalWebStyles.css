@@ -38,10 +38,7 @@
     margin:0px;
     font-weight:bold;
 }
-.label{
-    margin-bottom:5px;
-    font-weight:bold
-}
+
 .popUpBackground{
     position:absolute;
     width:100%;
@@ -66,14 +63,10 @@
     width:100%
 }
 .popUpTitle{
-    color: #8E29E0;
+    color: #52347b;
     font-size: 20px;
     font-weight: bolder;
     margin: 0px;
     margin-bottom: 5px;
 }
-@media only screen and (max-width: 600px) {
-    .label{
-        font-size: 12px;
-    }
-}
+
