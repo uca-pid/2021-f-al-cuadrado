@@ -91,8 +91,10 @@
         margin-left: 20px;
         width:90%;
     }
-    .closeCategoryDetails{
-        position:relative;
-        left:310px;
+    .editCategoryIcon{
+        left:265px;
+    }
+    .deleteCategoryIcon{
+        left:300px;
     }
 }
