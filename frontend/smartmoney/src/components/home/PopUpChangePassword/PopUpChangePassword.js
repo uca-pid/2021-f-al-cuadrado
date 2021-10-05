@@ -7,6 +7,12 @@ import { useMediaQuery } from 'react-responsive';
 import RequiredField from '../../RequiredField/requiredField';
 import isValidPassword from '../../../functions/passwordFormatValidation';
 
+
+
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+
+
 const PopUpChangePassword = ({closePopUp}) => {
 
     const isMobileDevice = useMediaQuery({
@@ -49,21 +55,42 @@ const PopUpChangePassword = ({closePopUp}) => {
             <button className="popUpBackground" onClick={closePopUp}/>
             <div className="changePasswordContainer">
                 <button className="close" onClick={closePopUp}>X</button>
+                
                 <div className="divCenteredItems">
+                <p className="popUpTitle">Change password</p>
                 <form className="formChangePassword">
-                    <p className="invalidCredentials" style={{display:invalidCredentials}}>Credenciales incorrectas</p>
-                    <p className="label" >Contraseña anterior</p>
-                    <input style={isMobileDevice ? (previousPasswordEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (previousPasswordEmpty ? webStyles.inputEmpty : webStyles.input)} type="password" value={previousPassword} onChange={e => setPreviousPassword(e.target.value)}  onFocus={()=>setPreviousPasswordEmpty(false)} onBlur={()=>isEmpty(previousPassword,setPreviousPasswordEmpty)}/>
-                    {previousPasswordEmpty&&<RequiredField/>}
-                    <p className="label">Nueva contraseña</p>
-                    <input style={isMobileDevice ? (newPasswordInvalid ? mobilStyles.inputEmpty : mobilStyles.input) : (newPasswordInvalid ? webStyles.inputEmpty : webStyles.input)} type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)}  onFocus={()=>setNewPasswordInvalid(false)} onBlur={()=>setNewPasswordInvalid(!isValidPassword(newPassword))}/>
-                    {newPasswordInvalid&&<p className="invalidCredentials">La contraseña debe tener minimo 8 caracteres, 1 número, 1 mayúscula y 1 minúscula</p>}
-                    <input 
-                    className="button1"
+                    <p className="invalidCredentials" style={{display:invalidCredentials}}>Wrong credentials</p>
+                    <TextField 
+                    label = "Previous password" variant = 'outlined' 
+                    margin = "dense"
+                    size ="small"
+                    required
+                    error = {previousPasswordEmpty}
+                    helperText = {previousPasswordEmpty ? '* This field is required' : ''}
+
+                    //style={isMobileDevice ? (previousPasswordEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (previousPasswordEmpty ? webStyles.inputEmpty : webStyles.input)} 
+                    type="password" value={previousPassword} onChange={e => setPreviousPassword(e.target.value)}  onFocus={()=>setPreviousPasswordEmpty(false)} 
+                    onBlur={()=>isEmpty(previousPassword,setPreviousPasswordEmpty)}/>
+                    <TextField 
+                    label = "New password" variant = 'outlined' 
+                    margin = "dense"
+                    size ="small"
+                    error = {newPasswordInvalid}
+                    helperText = {newPasswordInvalid ? 'Password must have al least 8 caracters, 1 number, 1 uppercase and 1 lowercase' : ''} 
+                    //style={isMobileDevice ? (newPasswordInvalid ? mobilStyles.inputEmpty : mobilStyles.input) : (newPasswordInvalid ? webStyles.inputEmpty : webStyles.input)} 
+                    type="password" value={newPassword} 
+                    onChange={e => setNewPassword(e.target.value)} 
+                    onFocus={()=>setNewPasswordInvalid(false)} 
+                    onBlur={()=>setNewPasswordInvalid(!isValidPassword(newPassword))}/>
+
+                    <Button 
+                    style = {{marginTop: '5%'}}
+                    variant = 'contained'
                     type="button" 
                     onClick={updatePassword} 
-                    value="Actualizar" 
-                    disabled={previousPasswordEmpty||newPasswordInvalid}/>
+                    disabled={previousPasswordEmpty||newPasswordInvalid}>
+                    Update
+                    </Button>
                 </form>
                 </div>
             </div>

@@ -1,0 +1,43 @@
+@import "../../../styles/generalWebStyles.css";
+
+.deleteExpenseContainer{
+    position:absolute;
+    top:20%;
+    left: 50%;
+    margin-left: -125px;
+    width:300px;
+    height:340px;
+    background-color:#FFFFFF;
+    border-radius:10px;
+}
+.closeDeleteExpense{
+    position:relative;
+    left:270px;
+    top:5px;
+    background-color:#FFFFFF;
+    border:0px
+}
+.deleteExpenseContent{
+    width: 80%;
+}
+.expenseToDelete{
+    font-weight: bold;
+    margin: 2px;
+}
+.buttonDeleteExpense{
+    height:40px;
+    border-radius:5px;
+    border:0px;
+    color:#FFFFFF;
+    font-weight:bold;
+    background-color:#a59ba8;
+
+}
+.buttonDeleteExpense:hover{
+    background-color:#8a818d;
+
+}
+.popUpDeleteButton{
+    margin-top: 15px;
+    width: 100px;
+}

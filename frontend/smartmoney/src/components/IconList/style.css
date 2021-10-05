@@ -1,0 +1,17 @@
+.iconsContainer{
+    border-radius: 5px;
+    border: 2px;
+    border-style: solid;
+    height: 160px;
+    padding: 2px;
+    overflow-y: auto;
+}
+.iconsRow{
+    width: 100%;
+}
+.selectableIcon{
+    padding: 0px;
+    background:none;
+    border-style: none;
+    border: 0px;
+}
