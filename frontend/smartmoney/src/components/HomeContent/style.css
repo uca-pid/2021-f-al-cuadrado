@@ -1,0 +1,7 @@
+@import "../../styles/generalWebStyles.css";
+
+.container{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}

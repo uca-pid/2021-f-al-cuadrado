@@ -10,12 +10,12 @@ import PopUpDeleteExpense from "./PopUpDeleteExpense";
 import PopUpNewCategory from "./PopUpNewCategory";
 import PopUpCategoryDetails from "./PopUpCategoryDetails";
 import PopUpDeleteCategory from "./PopUpDeleteCategory";
-
-
-
+import HomeContent from '../HomeContent';
+import MonthSummary from '../MonthSummary';
+import ExpenseHistory from '../ExpenseHistory';
+import SearchExpenses from '../SearchExpenses';
 import Header from './Header';
-import Expenses from './Cards/Expenses';
-import Categories from './Cards/Categories';
+
 import "./style.css";
 import HamburgerMenu from './HamburgerMenu';
 
@@ -24,6 +24,8 @@ const Home = () => {
   const isMobileDevice = useMediaQuery({
     query: "(max-device-width: 480px)",
   });
+
+  const [screen, setScreen] = useState('homeContent');
 
   const [popUpChangePassword, setPopUpChangePassword] = useState(false);
   const [popUpNewExpense, setPopUpNewExpense] = useState(false);
@@ -133,11 +135,34 @@ function updateComponents(){
 
       <div style={isMobileDevice ? mobilStyles.main : webStyles.main}>
         {/* <Expenses /> */}
-        <HamburgerMenu hamburger={hamburgerMenu} changePassword={openPopUpChangePassword} newExpense={openPopUpNewExpense} newCategory={openPopUpNewCategory}/>
+        <HamburgerMenu 
+          hamburger={hamburgerMenu} 
+          changePassword={openPopUpChangePassword} 
+          newExpense={openPopUpNewExpense} 
+          newCategory={openPopUpNewCategory}
+          home={()=>setScreen('homeContent')}
+          monthSummary={()=>setScreen('monthSummary')}
+          expenseHistory={()=>setScreen('expenseHistory')}
+          searchExpenses={()=>setScreen('searchExpenses')}
+        />
         {isMobileDevice && <button className="backgroundCloseMenu" onClick={hamburger} style={hamburgerMenu?{display:'block'}:{display:'none'}}/>}
         <div className="mainBody">
-          <Categories openPopUpCategoryDetails={openPopUpCategoryDetails} update ={updateComponent}/>
-          <Expenses openPopUpEditExpense={openPopUpEditExpense}  openPopUpDeleteExpense={openPopUpDeleteExpense} update ={updateComponent}/>
+          {(screen === "homeContent")&&
+              <HomeContent 
+              openPopUpCategoryDetails={openPopUpCategoryDetails} 
+              openPopUpEditExpense={openPopUpEditExpense}  
+              openPopUpDeleteExpense={openPopUpDeleteExpense} 
+              update ={updateComponent}/>
+            ||
+            (screen === "monthSummary")&&
+              <MonthSummary />
+            ||
+            (screen === "expenseHistory")&&
+              <ExpenseHistory />
+            ||
+            (screen === "searchExpenses")&&
+              <SearchExpenses />
+          }
 
         </div>
       </div>
