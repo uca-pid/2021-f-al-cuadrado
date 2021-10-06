@@ -70,3 +70,14 @@
     margin-bottom: 5px;
 }
 
+.cardContainer{
+    display: flex;
+    flex: 1;
+    height: calc(100% - 100px);
+    margin: 40px;
+    box-shadow: 4px 4px 8px 4px #888888;
+    border-radius: 5px;
+    padding: 10px;
+    flex-direction: column;
+}
+

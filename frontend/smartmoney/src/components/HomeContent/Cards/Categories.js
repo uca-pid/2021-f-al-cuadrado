@@ -46,7 +46,7 @@ const Categories = ({openPopUpCategoryDetails, update}) => {
     }
 
     return(
-        <div className="tableContainer">
+        <div className="cardContainer cardContainerHomeContent">
             {/* <TableScrollbar> */}
             <div className="cardTitleContainer">
                 <p className="cardTitle">Current month</p>

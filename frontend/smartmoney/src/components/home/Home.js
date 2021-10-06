@@ -155,7 +155,9 @@ function updateComponents(){
               update ={updateComponent}/>
             ||
             (screen === "monthSummary")&&
-              <MonthSummary />
+              <MonthSummary 
+              openPopUpCategoryDetails={openPopUpCategoryDetails} 
+              update ={updateComponent}/>
             ||
             (screen === "expenseHistory")&&
               <ExpenseHistory />

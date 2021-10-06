@@ -43,7 +43,7 @@ const Expenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) => {
     }
 
     return(
-        <div className="tableContainer">
+        <div className="cardContainer cardContainerHomeContent">
             <div className="cardTitleContainer">
                 <p className="cardTitle">Latest expenses</p>
                 {/* <button className="cardViewAll">

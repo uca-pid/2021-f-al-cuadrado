@@ -78,7 +78,7 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit}) => {
                 code: session.code, 
                 value: expenseValue,
                 description: description,
-                category: selectedOption.value,
+                category: selectedOption,
                 date: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate(),
             })
           };
@@ -115,7 +115,7 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit}) => {
               expense_id: expenseToEdit.id,
               value: expenseValue,
               description: description,
-              category: selectedOption.value,
+              category: selectedOption,
               date: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate(),
           })
         };
@@ -178,7 +178,7 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit}) => {
                     labelId = 'label'
                     size = 'small'
                     value={selectedOption} 
-                    onChange={event=>{setSelectedOption(event.target.value);setCategoryEmpty(false)}}>
+                    onChange={event=>{setSelectedOption(event.target.value);setCategoryEmpty(false);console.log(event.target.value)}}>
                     {loadCategories()}
                     </TextField>
                     {categoryEmpty&&<RequiredField/>}
