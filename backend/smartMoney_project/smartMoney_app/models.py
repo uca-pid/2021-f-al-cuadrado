@@ -8,10 +8,12 @@ from .managers import CustomUserManager,SecurityCodeManager,ExpenseManager,Categ
 from datetime import datetime, timedelta
 from django.utils import timezone
 import datetime
+from dateutil.relativedelta import relativedelta
 
 
 from django.db.models import Q
 from django.db.models.functions import Coalesce
+from django.db.models.functions import TruncMonth
 
 class baseModel():
     @classmethod
@@ -200,6 +202,17 @@ class Expense(models.Model,baseModel):
         return self.date
     def getCategory(self):
         return self.category
+
+    @classmethod
+    def getTotalsPerMonth(cls,last_months = 12):
+        today = datetime.datetime.today()
+        today_date = datetime.datetime(today.year, today.month, 1)
+        relative_delta = relativedelta(months=+int(last_months))
+        from_date = today_date - relative_delta
+        last_months_filter = Q(month__gt= from_date)
+        months = cls.objects.annotate(month = TruncMonth('date',output_field = models.DateField())).values('month')
+        totals_per_month = months.filter(last_months_filter).annotate(total= models.Sum('value')).order_by('month')
+        return totals_per_month
 
     def modify(self, **args_to_change):
         keys = args_to_change.keys()

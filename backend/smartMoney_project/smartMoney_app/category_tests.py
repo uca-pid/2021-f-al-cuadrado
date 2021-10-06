@@ -10,7 +10,10 @@ import datetime
 
 
 date = datetime.datetime.now()
+last_month = str(int(date.strftime("%m")) -1)
+last_month_date = date.strftime("%Y") + '-' + last_month + '-' + date.strftime("%d")
 date = date.strftime("%Y") + '-' + date.strftime("%m") + '-' + date.strftime("%d")
+
 
 User = get_user_model()
 
@@ -312,11 +315,27 @@ class CategoryTestCase(APITestCase):
 		expense = Expense.get(value = 1500,description = 'Primer mes')
 		self.assertEqual(expense.getCategory().getName(),'Other')
 
-
-
-
-
-
+	def test_endpoint_get_all_categories_with_his_totals_for_an_user_for_last_month(self):
+		loginResponse = self.userLogin('f@gmail.com','admin')
+		self.assertEqual(loginResponse.status_code,200)
+		loginCode = loginResponse.data.get('code')
+		user_id = loginResponse.data.get('user_id')
+		user = User.get(id= user_id)
+		category = Category.create(name = 'Gimnasio', icon = 'Rocket', user = user)
+		Expense.create_expense(value = 750,description = 'Primer mes',owner = user,date = last_month_date,category = category)
+		webClient = self.client
+		response = webClient.post('/categories/' + str(user_id) + '/', {'code' : loginCode,
+																		'month' : last_month})
+		self.assertEqual(response.status_code,200)
+		categories = response.data
+		self.assertEqual(len(categories),7)
+		categories_with_expenses = ['Gimnasio']
+		for category in categories:
+			if category['name'] in categories_with_expenses:
+				self.assertEqual(category['total'],750)
+			else:
+				self.assertEqual(category['total'],0)
+	
 
 
 

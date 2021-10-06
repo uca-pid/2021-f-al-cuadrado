@@ -37,6 +37,7 @@ description = openapi.Schema(title = 'description',type=openapi.TYPE_STRING)
 category = openapi.Schema(title = 'category',type=openapi.TYPE_STRING)
 date = openapi.Schema(title = 'date',type=openapi.TYPE_STRING)
 expense_id = openapi.Schema(title = 'expense_ids',type=openapi.TYPE_STRING)
+month = openapi.Schema(title = 'last_months',type=openapi.TYPE_STRING)
 
 
 
@@ -143,11 +144,27 @@ def delete_expense(request,user_id):
 		expense.delete()
 		return Response(status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
- 
- 
 
-
-
+@swagger_auto_schema(methods=['post'],
+					request_body=openapi.Schema(
+						type=openapi.TYPE_OBJECT,
+						required=['version'],
+						properties={
+							'code': code,
+							'last_months' : month
+							},
+						),
+					responses={200: 'Totals sended',401: 'Invalid Credentials'})
+@api_view(['POST'])
+def expenses_per_month(request,user_id):
+	user = User.get(id = user_id)
+	expected_code = Sc.get(user=user).getCode()
+	received_code = request.data.get('code')
+	last_months = request.data.get('last_months')
+	if expected_code == received_code:
+		totals = Expense.getTotalsPerMonth(last_months = last_months or 12)
+		return Response(totals, status = status.HTTP_200_OK)
+	return Response(status = status.HTTP_401_UNAUTHORIZED)
 	
 
 

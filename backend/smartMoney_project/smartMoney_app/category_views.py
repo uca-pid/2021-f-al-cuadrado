@@ -15,6 +15,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from django.http import HttpResponse
 
+import datetime
 
 
 from smartMoney_project.settings import EMAIL_HOST_USER
@@ -39,6 +40,29 @@ date = openapi.Schema(title = 'date',type=openapi.TYPE_STRING)
 category_name = openapi.Schema(title = 'category_name',type=openapi.TYPE_STRING)
 icon = openapi.Schema(title = 'icons',type=openapi.TYPE_STRING)
 category_id = openapi.Schema(title = 'category_id',type=openapi.TYPE_STRING)
+month = openapi.Schema(title = 'month',type=openapi.TYPE_STRING)
+
+
+
+@swagger_auto_schema(methods=['post'],
+					request_body=openapi.Schema(
+						type=openapi.TYPE_OBJECT,
+						required=['version'],
+						properties={
+							'code': code,
+							'month': month
+							},
+						),
+					responses={200: 'Categories sended',401: 'Invalid Credentials'})
+@api_view(['POST'])
+def category_list(request,user_id):
+	user = User.get(id = user_id)
+	received_code = request.data.get('code')
+	month = request.data.get('month')
+	if validCode(user_id,received_code):
+		categories = Category.getAllWithTotalsFor(user = user, month = month or datetime.datetime.now().strftime("%m"))
+		return Response(categories.values(), status = status.HTTP_200_OK)
+	return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 
 
@@ -52,15 +76,14 @@ category_id = openapi.Schema(title = 'category_id',type=openapi.TYPE_STRING)
 						),
 					responses={200: 'Categories sended',401: 'Invalid Credentials'})
 @api_view(['POST'])
-def category_list(request,user_id):
+def category_list_name(request,user_id):
 	user = User.get(id = user_id)
 	received_code = request.data.get('code')
+	month = request.data.get('month')
 	if validCode(user_id,received_code):
 		categories = Category.getAllWithTotalsFor(user = user)
-		return Response(categories.values(), status = status.HTTP_200_OK)
+		return Response(categories.values('name'), status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
-
-
 
 @swagger_auto_schema(methods=['post'],
 					request_body=openapi.Schema(
