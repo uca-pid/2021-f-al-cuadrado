@@ -199,7 +199,7 @@ class ConsumptionTestCase(APITestCase):
 		Expense.create_expense(value = 1500,description = 'Entrada cine',owner = user,date = '2021-08-25',category = other_category)
 		Expense.create_expense(value = 500,description = 'ARBA',owner = user,date = '2021-08-5',category = bills_cat)
 		august_total = 2000
-		totals = Expense.getTotalsPerMonth()
+		totals = Expense.getTotalsPerMonth(user)
 		self.assertEqual(len(totals) ,2)
 		self.assertEqual((totals[0]['total']) ,august_total)
 		self.assertEqual(totals[1]['total'] ,september_total)

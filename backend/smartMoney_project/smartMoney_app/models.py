@@ -204,14 +204,15 @@ class Expense(models.Model,baseModel):
         return self.category
 
     @classmethod
-    def getTotalsPerMonth(cls,last_months = 12):
+    def getTotalsPerMonth(cls,user,last_months = 12):
+        expense_owner_filter = (Q(owner = user))
         today = datetime.datetime.today()
         today_date = datetime.datetime(today.year, today.month, 1)
         relative_delta = relativedelta(months=+int(last_months))
         from_date = today_date - relative_delta
         last_months_filter = Q(month__gt= from_date)
         months = cls.objects.annotate(month = TruncMonth('date',output_field = models.DateField())).values('month')
-        totals_per_month = months.filter(last_months_filter).annotate(total= models.Sum('value')).order_by('month')
+        totals_per_month = months.filter(last_months_filter & expense_owner_filter).annotate(total= models.Sum('value')).order_by('month')
         return totals_per_month
 
     def modify(self, **args_to_change):

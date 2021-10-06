@@ -162,7 +162,7 @@ def expenses_per_month(request,user_id):
 	received_code = request.data.get('code')
 	last_months = request.data.get('last_months')
 	if expected_code == received_code:
-		totals = Expense.getTotalsPerMonth(last_months = last_months or 12)
+		totals = Expense.getTotalsPerMonth(last_months = last_months or 12,user = user)
 		return Response(totals, status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
 	
