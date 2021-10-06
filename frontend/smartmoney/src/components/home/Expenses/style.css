@@ -1,0 +1,51 @@
+@import "../../../styles/generalWebStyles.css";
+
+.agregarConsumoContainer{
+    display:flex;
+    flex-direction:row;
+    margin:20px;
+}
+.buttonAgregarConsumo{
+    background-color:#3399ff;
+    border-radius:5px;
+    border:0px;
+    color:#FFFFFF;
+    font-weight:bold;
+    margin-left:20px;
+    width:200px;
+    height:27px;
+}
+.buttonAgregarConsumo:hover{
+    background-color: #005CB8;
+}
+.expensesContainer{
+    height:40%;
+    overflow:auto;
+    width:300px;
+}
+.expensesTable{
+    border-spacing:0px;
+    margin: 20px;
+    width:250px;
+}
+.expensesRow{
+    text-align:left;
+    height:40px;
+}
+.expensesValue{
+    border-bottom-style:solid;
+    border-width:2px;
+}
+
+@media only screen and (max-width: 600px) {
+    .buttonAgregarConsumo{
+        width:130px;
+        font-size: 12px;
+    }
+    .expensesContainer{
+        width:100%;
+    }
+    .expensesTable{
+        width:calc(100% - 40px);
+    }
+}

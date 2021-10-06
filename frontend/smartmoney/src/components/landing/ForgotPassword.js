@@ -7,11 +7,6 @@ import { useMediaQuery } from 'react-responsive';
 import RequiredField from '../RequiredField/requiredField';
 import isValidPassword from '../../functions/passwordFormatValidation';
 
-
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-
-
 const ForgotPassword = ({setLayoutLogin}) => {
 
     const isMobileDevice = useMediaQuery({
@@ -79,90 +74,54 @@ const ForgotPassword = ({setLayoutLogin}) => {
     return(
         <div className="formContainer"  name="ForgotPassword">     
             <form className="form">
-              <p className="invalidCredentials" style={{display:invalidUser}}>User doesn't exists</p>
-              <p className="invalidCredentials" style={{display:invalidCredentials}}>Wrong code</p>
-              <TextField 
-              label = "User" variant = 'outlined' 
-              margin="dense"
-              required
-              size = 'small'
-              error = {userEmpty}
-              helperText={userEmpty ? 'This field is required' : ' '}
-              //style={isMobileDevice ? (userEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (userEmpty ? webStyles.inputEmpty : webStyles.input)} 
-              type="text" value={user} onChange={e => setUser(e.target.value)} onFocus={()=>setUserEmpty(false)} onBlur={()=>isEmpty(user,setUserEmpty)}/>
+              <p className="invalidCredentials" style={{display:invalidUser}}>El usuario ingresado no existe</p>
+              <p className="invalidCredentials" style={{display:invalidCredentials}}>Código incorrecto</p>
+              <p className="label">Usuario</p>
+              <input style={isMobileDevice ? (userEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (userEmpty ? webStyles.inputEmpty : webStyles.input)} type="text" value={user} onChange={e => setUser(e.target.value)} onFocus={()=>setUserEmpty(false)} onBlur={()=>isEmpty(user,setUserEmpty)}/>
+              {userEmpty&&<RequiredField/>}
               {
                 !codigoEnviado &&
-                  <Button 
+                  <input 
                     className = "button1"
                     type="button" 
-                    variant = "contained"
                     onClick={forgotPasswordSubmit} 
-                    disabled={userEmpty}>
-                      Send email
-                    </Button>
-
+                    value="Enviar mail" 
+                    disabled={userEmpty}/>
               }
               {codigoEnviado &&
                 <div className="formCode">
-                    <p className="label">Code</p>
-                    <TextField 
-                    label = "Code" variant = 'outlined' 
-                    margin="dense"
-                    required
-                    size = 'small'
-                    error = {(codigoEnviado&&codeEmpty)}
-                    helperText={(codigoEnviado&&codeEmpty) ? 'Password must have al least 8 caracters, 1 number, 1 uppercase and 1 lowercase' : ' '}
-                    //style={isMobileDevice ? (codeEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (codeEmpty ? webStyles.inputEmpty : webStyles.input)} 
-                    type="text" value={codigoSeguridad} onChange={e => setCodigoSeguridad(e.target.value)} onFocus={()=>setCodeEmpty(false)} onBlur={()=>isEmpty(codigoSeguridad,setCodeEmpty)}/>              
+                    <p className="label">Código</p>
+                    <input style={isMobileDevice ? (codeEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (codeEmpty ? webStyles.inputEmpty : webStyles.input)} type="text" value={codigoSeguridad} onChange={e => setCodigoSeguridad(e.target.value)} onFocus={()=>setCodeEmpty(false)} onBlur={()=>isEmpty(codigoSeguridad,setCodeEmpty)}/>              
                     
                     {(codigoEnviado&&codeEmpty)&&<RequiredField/>}
             
-                    <p className="label">New password</p>
-                    <TextField
-                     label = "New password" variant = 'outlined' 
-                     margin="dense"
-                     required
-                     size = 'small'
-                     error = {invalidPassword}
-                     helperText={invalidPassword ? 'Password must have al least 8 caracters, 1 number, 1 uppercase and 1 lowercase' : ' '}
-                    //style={isMobileDevice ? (invalidPassword ? mobilStyles.inputEmpty : mobilStyles.input) : (invalidPassword ? webStyles.inputEmpty : webStyles.input)} 
-                    type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} onFocus={()=>setInvalidPassword(true)} onBlur={()=>setInvalidPassword(!isValidPassword(newPassword))}/>
-                    
-                    <Button 
-                      variant = "contained"
+                    <p className="label">Nueva contraseña</p>
+                    <input style={isMobileDevice ? (invalidPassword ? mobilStyles.inputEmpty : mobilStyles.input) : (invalidPassword ? webStyles.inputEmpty : webStyles.input)} type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} onFocus={()=>setInvalidPassword(true)} onBlur={()=>setInvalidPassword(!isValidPassword(newPassword))}/>
+
+                    {invalidPassword&&<p className="invalidCredentials">La contraseña debe tener minimo 8 caracteres, 1 número, 1 mayúscula y 1 minúscula</p>}
+
+                    <input 
                       className = "button1"
                       type="button" 
                       onClick={updatePasswordSubmit} 
-                      value="" 
-                      disabled={userEmpty||codeEmpty||invalidPassword}>
-                      Update password
-                  </Button>
-
+                      value="Actualizar contraseña" 
+                      disabled={userEmpty||codeEmpty||invalidPassword}/>
                     <div style={{height:10}}></div>
-                    <Button 
-                      variant="outlined"
+                    <input 
                       className = "button2" 
                       type="button" 
                       onClick={forgotPasswordSubmit} 
-                      value="Resend code"
-                      disabled={userEmpty}>
-                      Resend code
-                  </Button>
-
+                      value="Reenviar código"
+                      disabled={userEmpty}/>
                 </div>
                   
               }
               <div className="line"></div>
-              <Button 
-                variant="outlined"
+              <input 
                 className = "button2"
                 type="button" 
                 onClick={setLayoutLogin} 
-                value="Back">
-                Back
-              </Button>
-
-
+                value="Volver" />
             </form>
           </div> 
     )

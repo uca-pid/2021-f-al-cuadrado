@@ -10,7 +10,7 @@ const webStyles = {
         padding: 3,
         borderColor:'red'
     },
-    main:{backgroundColor:"#D7D7D6", display:'flex',flexDirection:'row', height:window.innerHeight-70},
+    main:{backgroundColor:"#D7D7D6", display:'flex',flexDirection:'column', height:window.innerHeight-70},
 }
 
 export default webStyles;

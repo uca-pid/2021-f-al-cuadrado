@@ -11,7 +11,7 @@ const RequiredField = () => {
 
     return(
         <p style={isMobileDevice ? mobilStyles.requiredFieldText : webStyles.requiredFieldText}>
-            * This field is required
+            * Este campo es obligatorio
         </p>
     )
 }
