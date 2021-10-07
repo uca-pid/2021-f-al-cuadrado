@@ -18,7 +18,8 @@
     font-weight: bolder;
 }
 .pieChartContainer{
-    height: 300px;
+    top: 40px;
+    height: 280px;
     align-items: center;
     justify-content: center;
 }
@@ -26,6 +27,7 @@
 @media only screen and (min-width: 600px) {
     .monthSummaryFirstDiv{
         flex: 1;
+
     }
     .monthSummarySecondtDiv{
         flex: 1;
