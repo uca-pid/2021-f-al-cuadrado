@@ -28,6 +28,10 @@ from .models import Expense,Category
 from django.db.models import Q
 
 
+from datetime import datetime
+import pytz
+from django.utils import timezone
+
 
 def dateFromString(stringDate): #Format 'AAAA-MM-DD'
         paris_tz = pytz.timezone("Europe/Paris")
@@ -35,10 +39,10 @@ def dateFromString(stringDate): #Format 'AAAA-MM-DD'
         return paris_tz.localize(datetime(int(parsedString[0]), int(parsedString[1]), int(parsedString[2])))
 
 
-def makeCatFilter(categoryNamesList):
+def makeCatFilter(categoryNamesList): #Rompe con contenido el arreglo.
 	catFilter = None
 	for cat_name in categoryNamesList:
-		category = Category.get(name = request.data.get('category'))
+		category = Category.get(name = cat_name)
 		if catFilter:
 			catFilter = catFilter | Q(category = category)
 		else:

@@ -234,8 +234,32 @@ class ConsumptionTestCase(APITestCase):
 																				'last_months' : 3})
 		self.assertEqual(response.status_code,200)
 		self.assertEqual(len(response.data),3)
-	
 
+
+	def test_user_filter_expenses(self):
+		user = User.get(email= 'f@gmail.com')
+		other_category = Category.get(name = 'Other')
+		bills_cat = Category.get(name = 'Bills and taxes')
+		date = datetime.now()
+		month = (int(date.strftime("%m")))
+		Expense.create_expense(value = 500,description = 'Entrada cine',owner = user,date = '2021-' + str(month) + '-20',category = other_category)
+		Expense.create_expense(value = 1500,description = 'Entrada cine',owner = user,date = '2021-' + str(month-1) + '-20',category = other_category)
+		Expense.create_expense(value = 1500,description = 'Entrada cine',owner = user,date = '2021-' + str(month-2) + '-20',category = other_category)
+		Expense.create_expense(value = 500,description = 'Entrada cine',owner = user,date = '2021-' + str(month) + '-20',category = other_category)
+		Expense.create_expense(value = 1500,description = 'Arba',owner = user,date = '2021-08-20',category = bills_cat)
+		loginResponse = self.userLogin('f@gmail.com','admin')
+		self.assertEqual(loginResponse.status_code,200)
+		loginCode = loginResponse.data.get('code')
+		user_id = loginResponse.data.get('user_id')
+		webClient = self.client
+		response = webClient.post('/expenses/' + str(user_id) + '/',{
+			'code' : loginCode,
+			'category':[],
+			'upTo_date': '2021-'+ str(month-1) + '-21'
+			},format = 'json')
+		self.assertEqual(len(response.data),3)
+
+		
 
 
 
