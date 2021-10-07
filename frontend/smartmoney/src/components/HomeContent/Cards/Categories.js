@@ -4,7 +4,7 @@ import "./style.css";
 import FlatList from 'flatlist-react';
 import icons from "../../../functions/icons";
 
-const Categories = ({openPopUpCategoryDetails, update}) => {
+const Categories = ({openPopUpCategoryDetails, update, month}) => {
 
     const [categories, setCategories] = useState([]);
 
@@ -13,7 +13,8 @@ const Categories = ({openPopUpCategoryDetails, update}) => {
         const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code: session.code})
+          body: JSON.stringify({ code: session.code,
+                                month: month})
         };
         fetch('https://smart-money-back.herokuapp.com/categories/'+session.user_id+'/', requestOptions)
           .then(response => response.json())

@@ -10,6 +10,7 @@ import PopUpDeleteExpense from "./PopUpDeleteExpense";
 import PopUpNewCategory from "./PopUpNewCategory";
 import PopUpCategoryDetails from "./PopUpCategoryDetails";
 import PopUpDeleteCategory from "./PopUpDeleteCategory";
+import PopUpCategory from "./PopUpCategory"
 import HomeContent from '../HomeContent';
 import MonthSummary from '../MonthSummary';
 import ExpenseHistory from '../ExpenseHistory';
@@ -42,6 +43,8 @@ const Home = () => {
   const [popUpNewCategoryState, setPopUpNewCategoryState] = useState('');
   const [popUpEditCategory, setPopUpEditCategory] = useState('');
   const [updateComponent, setUpdateComponent] = useState(false);
+  const [popUpCategories,setPopUpCategories] = useState(false);
+  const [selectedMonth,setSelectedMonth] = useState('')
 
 
   function closePopUpChangePassword(){
@@ -78,6 +81,14 @@ function openPopUpCategoryDetails(category){
 }
 function closePopUpCategoryDetails(){
   setPopUpCategoryDetails(false);
+}
+function openPopUpCategories(month){
+    setSelectedMonth(month);
+    setPopUpCategories(true);
+}
+
+function closePopUpCategories(){
+  setPopUpCategories(false);
 }
 const openPopUpEditExpense = (expense) =>{
   setPopUpNewExpenseState('Edit');
@@ -118,6 +129,7 @@ function updateComponents(){
 
   return (
     <div className="body bodyHome">
+      {popUpCategories && <PopUpCategory month={selectedMonth} closePopUp={closePopUpCategories} openPopUpCategoryDetails={openPopUpCategoryDetails} update ={updateComponent}/>}
       {popUpCategoryDetails && <PopUpCategoryDetails category={selectedCategory} closePopUp={closePopUpCategoryDetails} openPopUpEditExpense={openPopUpEditExpense} editCategory={openPopUpEditCategory} deleteCategoryPopUp={openPopUpDeleteCategory} update ={updateComponent}/>}
       {popUpChangePassword && <PopUpChangePassword closePopUp= {closePopUpChangePassword}/>}
       {popUpNewExpense && <PopUpNewExpense closePopUp= {closePopUpNewExpense} state={popUpNewExpenseState} expenseToEdit={popUpEditExpense}/>}
@@ -161,6 +173,7 @@ function updateComponents(){
             ||
             (screen === "expenseHistory")&&
               <ExpenseHistory 
+              openPopUpCategories = {openPopUpCategories}
               update ={updateComponent}
               />
             ||

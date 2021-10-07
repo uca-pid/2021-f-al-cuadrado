@@ -5,12 +5,12 @@ import BarChart from "./BarChart.js";
 
 
 
-const ExpenseHistory = ({update}) => {
+const ExpenseHistory = ({openPopUpCategories,update}) => {
 
 useEffect(() => {},[update])
     return(
         <div>
-            <BarChart update = {update}/>
+            <BarChart openPopUpCategories = {openPopUpCategories} update = {update}/>
         </div>
     )
 }

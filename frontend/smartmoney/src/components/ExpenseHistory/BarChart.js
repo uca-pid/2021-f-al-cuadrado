@@ -54,7 +54,7 @@ const options = {
   },
 };
 
-const BarChart = ({update}) => {
+const BarChart = ({openPopUpCategories,update}) => {
     const [fromDate, setFromDate] = useState(new Date(new Date().getFullYear(), 0, 1));
     const [upToDate, setUpToDate] = useState(new Date());
     const [dataFrame,setDataFrame] = useState([])
@@ -67,6 +67,14 @@ const BarChart = ({update}) => {
         dataFrameAux.datasets[0].data.push(total)
         dataFrameAux.labels.push(month_letter + ' ' + year)
 
+    }
+
+    function getElementFromEvent(elem) {
+      let month = fromDate.getMonth()
+      if (elem[0]) 
+        {
+          openPopUpCategories((elem[0].index)+1+month)
+        }
     }
 
     function fetchTotals(){
@@ -93,7 +101,7 @@ const BarChart = ({update}) => {
             //Math.min(...dataFrameAux.datasets[0].data)
     })
 }
-    useEffect(() => fetchTotals(),[fromDate,upToDate])
+    useEffect(() => fetchTotals(),[fromDate,upToDate,update])
 
     return(
     <Stack 
@@ -105,7 +113,7 @@ const BarChart = ({update}) => {
         setFromDate = {setFromDate}
         setUptoDate = {setUpToDate}/>
         <Bar 
-        getElementAtEvent={(elem) => console.log(elem)}
+        getElementAtEvent={getElementFromEvent}
         data={dataFrame} options={options} />
       </Stack>
 
