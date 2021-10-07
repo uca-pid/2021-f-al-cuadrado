@@ -145,7 +145,7 @@ def expense_list(request,user_id):
 				if cat_filters:
 					expense_filter = expense_filter & cat_filters
 			elif field == 'description' and request.data.get(field): #distingue mayusq y minusc
-				expense_filter = expense_filter & Q(description__contains = request.data.get('description'))
+				expense_filter = expense_filter & Q(description__icontains = request.data.get('description'))
 		expenses = Expense.getAllWith(expense_filter).order_by('-date')
 		return Response(expenses.values('id','owner_id','value','description','date','category__name','category__icon'), status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
