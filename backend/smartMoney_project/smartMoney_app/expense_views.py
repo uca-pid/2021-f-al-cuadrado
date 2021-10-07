@@ -25,6 +25,14 @@ from .models import Sm_user as User
 from .models import SecurityCode as Sc
 from .models import Expense,Category
 
+from django.db.models import Q
+
+
+
+def dateFromString(self,stringDate): #Format 'AAAA-MM-DD'
+        paris_tz = pytz.timezone("Europe/Paris")
+        parsedString = stringDate.split('-')
+        return paris_tz.localize(datetime(int(parsedString[0]), int(parsedString[1]), int(parsedString[2])))
 
 #Usar property en Category, llamar una funcion de Expense que me devuelva el total de esa categoria y usuario, la funcion tendria la forma
 #GetAllWith(user = user,category = category);sum= 0; for i in consumos: sum += i.value
@@ -38,6 +46,10 @@ category = openapi.Schema(title = 'category',type=openapi.TYPE_STRING)
 date = openapi.Schema(title = 'date',type=openapi.TYPE_STRING)
 expense_id = openapi.Schema(title = 'expense_ids',type=openapi.TYPE_STRING)
 month = openapi.Schema(title = 'last_months',type=openapi.TYPE_STRING)
+from_date = openapi.Schema(title = 'from_date',type=openapi.TYPE_STRING)
+upTo_date = openapi.Schema(title = 'upTo_date',type=openapi.TYPE_STRING)
+valueFrom = openapi.Schema(title = 'valueFrom',type=openapi.FORMAT_FLOAT)
+upToValue = openapi.Schema(title = 'upToValue',type=openapi.FORMAT_FLOAT)
 
 
 
@@ -86,6 +98,12 @@ def new_expense(request,user_id):
 						required=['version'],
 						properties={
 							'code': code,
+							'from_date':from_date,
+							'upTo_date':upTo_date,
+							'valueFrom':valueFrom,
+							'upToValue':upToValue,
+							'category':category,
+							'description':description,
 							},
 						),
 					responses={200: 'Expenses sended',401: 'Invalid Credentials'})
@@ -95,7 +113,25 @@ def expense_list(request,user_id):
 	expected_code = Sc.get(user=user).getCode()
 	received_code = request.data.get('code')
 	if expected_code == received_code:
-		expenses = Expense.getAllWith(owner = user).order_by('-date')
+		expense_filter = Q(owner = user)
+		for field in request.data.keys():
+			if field == 'from_date':
+				date = dateFromString(request.data.get('from_date'))
+				expense_filter = expense_filter & Q(date__gte = date)
+			elif field == 'upTo_date':
+				date = dateFromString(request.data.get('upTo_date'))
+				expense_filter = expense_filter & Q(date__lte = date)
+			elif field == 'valueFrom':
+				expense_filter = expense_filter & Q(value__gte = request.data.get('valueFrom'))
+			elif field == 'upToValue':
+				expense_filter = expense_filter & Q(value__lte = request.data.get('upToValue'))
+			elif field == 'category':
+				category = Category.get(name = request.data.get('category'))
+				expense_filter = expense_filter & Q(category = category)
+			elif field == 'description':
+				expense_filter = expense_filter & Q(description__contains = description)
+
+		expenses = Expense.getAllWith(expense_filter).order_by('-date')
 		return Response(expenses.values('id','owner_id','value','description','date','category__name','category__icon'), status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
 
