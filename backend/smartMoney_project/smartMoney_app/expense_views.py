@@ -40,7 +40,7 @@ def makeCatFilter(categoryNamesList):
 	for cat_name in categoryNamesList:
 		category = Category.get(name = request.data.get('category'))
 		if catFilter:
-			catFilter = catFilter & Q(category = category)
+			catFilter = catFilter | Q(category = category)
 		else:
 			catFilter = Q(category = category)
 	return catFilter
