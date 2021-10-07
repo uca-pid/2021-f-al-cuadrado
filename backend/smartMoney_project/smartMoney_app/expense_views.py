@@ -29,10 +29,20 @@ from django.db.models import Q
 
 
 
-def dateFromString(self,stringDate): #Format 'AAAA-MM-DD'
+def dateFromString(stringDate): #Format 'AAAA-MM-DD'
         paris_tz = pytz.timezone("Europe/Paris")
         parsedString = stringDate.split('-')
         return paris_tz.localize(datetime(int(parsedString[0]), int(parsedString[1]), int(parsedString[2])))
+
+
+def makeCatFilter(categoryNamesList):
+	catFilter = None
+	for cat_name in categoryNamesList:
+		category = Category.get(name = request.data.get('category'))
+		if catFilter:
+			catFilter = catFilter & Q(category = category)
+		else:
+			catFilter = Q(category = category)
 
 #Usar property en Category, llamar una funcion de Expense que me devuelva el total de esa categoria y usuario, la funcion tendria la forma
 #GetAllWith(user = user,category = category);sum= 0; for i in consumos: sum += i.value
@@ -106,7 +116,7 @@ def new_expense(request,user_id):
 							'description':description,
 							},
 						),
-					responses={200: 'Expenses sended',401: 'Invalid Credentials'})
+					responses={200: 'Expenses sended',401: 'Invalid Credentials'}) #TODO Cambiar nombres.
 @api_view(['POST'])
 def expense_list(request,user_id):
 	user = User.get(id = user_id)
@@ -115,22 +125,21 @@ def expense_list(request,user_id):
 	if expected_code == received_code:
 		expense_filter = Q(owner = user)
 		for field in request.data.keys():
-			if field == 'from_date':
+			if field == 'from_date' and request.data.get(field):
 				date = dateFromString(request.data.get('from_date'))
 				expense_filter = expense_filter & Q(date__gte = date)
-			elif field == 'upTo_date':
+			elif field == 'upTo_date' and request.data.get(field):
 				date = dateFromString(request.data.get('upTo_date'))
 				expense_filter = expense_filter & Q(date__lte = date)
-			elif field == 'valueFrom':
+			elif field == 'valueFrom' and request.data.get(field):
 				expense_filter = expense_filter & Q(value__gte = request.data.get('valueFrom'))
-			elif field == 'upToValue':
+			elif field == 'upToValue' and request.data.get(field):
 				expense_filter = expense_filter & Q(value__lte = request.data.get('upToValue'))
-			elif field == 'category':
-				category = Category.get(name = request.data.get('category'))
-				expense_filter = expense_filter & Q(category = category)
-			elif field == 'description':
-				expense_filter = expense_filter & Q(description__contains = description)
-
+			elif field == 'category' and request.data.get(field): #mas de una category
+				cat_filters = makeCatFilter(request.data.get('category'))
+				expense_filter = expense_filter & cat_filters
+			elif field == 'description' and request.data.get(field): 
+				expense_filter = expense_filter & Q(description__contains = request.data.get('description'))
 		expenses = Expense.getAllWith(expense_filter).order_by('-date')
 		return Response(expenses.values('id','owner_id','value','description','date','category__name','category__icon'), status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
