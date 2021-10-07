@@ -7,14 +7,6 @@ import { IoChevronForwardSharp } from "@react-icons/all-files/io5/IoChevronForwa
 import { style } from "@mui/system";
 import icons from "../../functions/icons";
 import { Pie } from 'react-chartjs-2';
-// import {
-//     Chart,
-//     ChartLegend,
-//     ChartSeries,
-//     ChartSeriesItem,
-//     ChartTitle,
-//     ChartSeriesLabels,
-//   } from "@progress/kendo-react-charts";
 
 const colors = ['rgba(255, 99, 132, 1)',
 'rgba(54, 162, 235, 1)',
@@ -99,10 +91,7 @@ const MonthSummary = ({openPopUpCategoryDetails, update}) => {
               setChartCategories(dataFrame);
               setCategories(categoriesFetch);
               console.log(dataFrame)
-              //#TODO: SACAR LAS SIGUIETNES 3 LINEAS, CAMBIAR POR RUTA CORRESPONDIENTE
-              let allCategories = [];
-              data.map( obj => {allCategories.push(obj.name)});
-              localStorage.setItem('allCategories',allCategories);
+
             });
     }
 
