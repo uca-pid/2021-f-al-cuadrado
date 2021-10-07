@@ -43,6 +43,7 @@ def makeCatFilter(categoryNamesList):
 			catFilter = catFilter & Q(category = category)
 		else:
 			catFilter = Q(category = category)
+	return catFilter
 
 #Usar property en Category, llamar una funcion de Expense que me devuelva el total de esa categoria y usuario, la funcion tendria la forma
 #GetAllWith(user = user,category = category);sum= 0; for i in consumos: sum += i.value
@@ -125,10 +126,10 @@ def expense_list(request,user_id):
 	if expected_code == received_code:
 		expense_filter = Q(owner = user)
 		for field in request.data.keys():
-			if field == 'from_date' and request.data.get(field):
+			if field == 'from_date' and request.data.get(field): #rompe
 				date = dateFromString(request.data.get('from_date'))
 				expense_filter = expense_filter & Q(date__gte = date)
-			elif field == 'upTo_date' and request.data.get(field):
+			elif field == 'upTo_date' and request.data.get(field): #rompe
 				date = dateFromString(request.data.get('upTo_date'))
 				expense_filter = expense_filter & Q(date__lte = date)
 			elif field == 'valueFrom' and request.data.get(field):
@@ -137,8 +138,9 @@ def expense_list(request,user_id):
 				expense_filter = expense_filter & Q(value__lte = request.data.get('upToValue'))
 			elif field == 'category' and request.data.get(field): #mas de una category
 				cat_filters = makeCatFilter(request.data.get('category'))
-				expense_filter = expense_filter & cat_filters
-			elif field == 'description' and request.data.get(field): 
+				if cat_filters:
+					expense_filter = expense_filter & cat_filters
+			elif field == 'description' and request.data.get(field): #distingue mayusq y minusc
 				expense_filter = expense_filter & Q(description__contains = request.data.get('description'))
 		expenses = Expense.getAllWith(expense_filter).order_by('-date')
 		return Response(expenses.values('id','owner_id','value','description','date','category__name','category__icon'), status = status.HTTP_200_OK)
