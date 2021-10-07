@@ -19,11 +19,11 @@ import DatePicker from '@mui/lab/DatePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
+import { IoArrowBack } from "@react-icons/all-files/io5/IoArrowBack"; 
+import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline"; 
 
 
-
-
-const PopUpNewExpense = ({closePopUp, state, expenseToEdit}) => {
+const PopUpNewExpense = ({closePopUp, state, expenseToEdit, openPopUpDeleteExpense}) => {
 
     const isMobileDevice = useMediaQuery({
         query: "(max-device-width: 480px)",
@@ -79,7 +79,7 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit}) => {
                 value: expenseValue,
                 description: description,
                 category: selectedOption,
-                date: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate(),
+                date: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+(date.getDate()+1),
             })
           };
           console.log(requestOptionsNewExpense)
@@ -139,7 +139,9 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit}) => {
         <div className="popUpComponent">
             <button className="popUpBackground" onClick={closePopUp}/>
             <div className="newExpenseContainer">
-                <button className="closeNewExpense" onClick={closePopUp}>X</button>
+                {(state==='New')&&<button className="closeNewExpense" onClick={closePopUp}>X</button>}
+                {(state==='Edit')&&<IoArrowBack className="closeEditExpense" onClick={closePopUp}/>}
+                {(state==='Edit')&& <IoTrashOutline className="editPopUpDeleteExpense" onClick={()=>{closePopUp();openPopUpDeleteExpense(expenseToEdit)}}/>}
                 <div className="divCenteredItems">
                 <p className="popUpTitle">{title}</p>
                 <form className="formNewExpense">

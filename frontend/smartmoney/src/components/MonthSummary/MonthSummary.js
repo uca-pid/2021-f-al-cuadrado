@@ -85,13 +85,13 @@ const MonthSummary = ({openPopUpCategoryDetails, update}) => {
                 });
               setChartTotalValue(chartTotal);
               setChartSubTotalValue(chartTotal);
+              setSubTotalVisible(false);
               let dataFrame = {...dataFrameAux};
               dataFrame.labels = categoriesChartName;
               dataFrame.datasets[0].data = categoriesChartValue;
               setChartCategories(dataFrame);
+              setCategories([]);
               setCategories(categoriesFetch);
-              console.log(dataFrame)
-
             });
     }
 

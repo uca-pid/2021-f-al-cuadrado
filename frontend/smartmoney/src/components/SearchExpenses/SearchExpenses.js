@@ -81,7 +81,11 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) 
       }
 
       function fetchExpenses(){
+        let from_date = null;
+        let upTo_date = null;
         let fetchCategories = categories;
+        if(fromDate)from_date=fromDate.getFullYear()+'-'+(fromDate.getMonth()+1)+'-'+(fromDate.getDate()+1);
+        if(upToDate)upTo_date=upToDate.getFullYear()+'-'+(upToDate.getMonth()+1)+'-'+(upToDate.getDate()+1);
         if(fetchCategories[0]=='Categories')fetchCategories=[];
         const session = JSON.parse(localStorage.session);
         const requestOptions = {
@@ -89,8 +93,8 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) 
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
                 code: session.code,
-                from_date: fromDate,
-                upTo_date: upToDate,
+                from_date: from_date,
+                upTo_date: upTo_date,
                 description: description,
                 category: fetchCategories,
                 valueFrom:minValue,

@@ -33,7 +33,6 @@ const Categories = ({categories,changeSelectedCategories, openPopUpCategoryDetai
    }
 
     const renderCategories = (item, index)=> {
-        let isChecked = true;
         let total = 0;
         if (item.total!==null) total = item.total;
         return (

@@ -33,10 +33,10 @@ const Expenses = ({searchExpenses,openPopUpEditExpense, openPopUpDeleteExpense, 
     const renderExpenses = (item, index)=> {
         return (
           <tr className = "categoriesRow" >
-            <th className = "categoriesValue homeTableIcon" onClick={()=>editExpense(item)}>{icons(item.category__icon)}</th> 
-            <th className = "categoriesValue homeTableDescription" onClick={()=>editExpense(item)}>{item.description}</th>
-            <th className = "categoriesValue homeTableTotal" onClick={()=>editExpense(item)}>$ {item.value}</th>
-            <th className = "categoriesValue homeTableDelete"><IoTrashOutline onClick={()=>deleteExpense(item)}/></th>
+            <th className = "categoriesValue homeTableIcon" onClick={(event)=>{editExpense(item);event.stopPropagation()}}>{icons(item.category__icon)}</th> 
+            <th className = "categoriesValue homeTableDescription" onClick={(event)=>{editExpense(item);event.stopPropagation()}}>{item.description}</th>
+            <th className = "categoriesValue homeTableTotal" onClick={(event)=>{editExpense(item);event.stopPropagation()}}>$ {item.value}</th>
+            <th className = "categoriesValue homeTableDelete"><IoTrashOutline onClick={(event)=>{deleteExpense(item);event.stopPropagation()}}/></th>
           </tr>        
         )  
     }
