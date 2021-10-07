@@ -9,7 +9,7 @@ const ExpenseHistory = ({openPopUpCategories,update}) => {
 
 useEffect(() => {},[update])
     return(
-        <div>
+        <div className="cardContainer cardContainerExpenseHistory">
             <BarChart openPopUpCategories = {openPopUpCategories} update = {update}/>
         </div>
     )

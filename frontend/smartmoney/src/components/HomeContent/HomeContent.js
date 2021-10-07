@@ -1,14 +1,17 @@
 import React from "react";
 import Expenses from './Cards/Expenses';
-import Categories from './Cards/Categories';
+import MonthSummary from './Cards/MonthSummary';
+import ExpensesHistory from './Cards/ExpensesHistory';
 import "./style.css";
  
-const HomeContent = ({openPopUpCategoryDetails, openPopUpEditExpense, openPopUpDeleteExpense, update}) => {
+const HomeContent = ({monthSummary, expenseHistory,searchExpenses,openPopUpCategoryDetails, openPopUpEditExpense, openPopUpDeleteExpense, update}) => {
 
     return(
         <div className="container">
-            <Categories openPopUpCategoryDetails={openPopUpCategoryDetails} update ={update}/>
-            <Expenses openPopUpEditExpense={openPopUpEditExpense}  openPopUpDeleteExpense={openPopUpDeleteExpense} update ={update}/>
+            <MonthSummary monthSummary={monthSummary} update ={update}/>
+            <ExpensesHistory expenseHistory={expenseHistory} update ={update}/>
+            {/* <Categories openPopUpCategoryDetails={openPopUpCategoryDetails} update ={update}/> */}
+            <Expenses searchExpenses={searchExpenses} openPopUpEditExpense={openPopUpEditExpense}  openPopUpDeleteExpense={openPopUpDeleteExpense} update ={update}/>
         </div>
     )
 }

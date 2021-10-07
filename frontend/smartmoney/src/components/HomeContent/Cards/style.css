@@ -1,5 +1,12 @@
 @import "../../../styles/generalWebStyles.css";
 
+.cardContainerHomeContent{
+    height: 390px;
+    align-items:center;
+}
+.cardContainerHomeContent:hover{
+    background-color: #e2d9eb;
+}
 .categoriesHomeTable{
     border-spacing:0px;
     padding: 20px;
@@ -30,23 +37,17 @@
     padding-top: 10px;
     
 }
-.tableIcon{
+.homeTableIcon{
     padding-left: 5px;
-    width: 10%;
-}
-.tableCategory{
-    width: 65%;
-}
-.tableTotal{
     width: 15%;
 }
-.tableDescription{
-    width: 35%;
+.homeTableTotal{
+    width: 25%;
 }
-.tableDate{
-    width: 30%;
+.homeTableDescription{
+    width: 50%;
 }
-.tableDelete{
+.homeTableDelete{
     width: 10%;
     text-align:right;
     padding-right: 5px;

@@ -5,7 +5,7 @@ import FlatList from 'flatlist-react';
 import icons from "../../../functions/icons";
 import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline"; 
 
-const Expenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) => {
+const Expenses = ({searchExpenses,openPopUpEditExpense, openPopUpDeleteExpense, update}) => {
 
     const [expenses, setExpenses] = useState([]);
 
@@ -33,17 +33,16 @@ const Expenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) => {
     const renderExpenses = (item, index)=> {
         return (
           <tr className = "categoriesRow" >
-            <th className = "categoriesValue tableIcon" onClick={()=>editExpense(item)}>{icons(item.category__icon)}</th> 
-            <th className = "categoriesValue tableDescription" onClick={()=>editExpense(item)}>{item.description}</th>
-            <th className = "categoriesValue tableDate" onClick={()=>editExpense(item)}>{item.date.substring(0,10)}</th>
-            <th className = "categoriesValue tableTotal" onClick={()=>editExpense(item)}>$ {item.value}</th>
-            <th className = "categoriesValue tableDelete"><IoTrashOutline onClick={()=>deleteExpense(item)}/></th>
+            <th className = "categoriesValue homeTableIcon" onClick={()=>editExpense(item)}>{icons(item.category__icon)}</th> 
+            <th className = "categoriesValue homeTableDescription" onClick={()=>editExpense(item)}>{item.description}</th>
+            <th className = "categoriesValue homeTableTotal" onClick={()=>editExpense(item)}>$ {item.value}</th>
+            <th className = "categoriesValue homeTableDelete"><IoTrashOutline onClick={()=>deleteExpense(item)}/></th>
           </tr>        
         )  
     }
 
     return(
-        <div className="cardContainer cardContainerHomeContent">
+        <div className="cardContainer cardContainerHomeContent" onClick={searchExpenses}>
             <div className="cardTitleContainer">
                 <p className="cardTitle">Latest expenses</p>
                 {/* <button className="cardViewAll">
@@ -54,11 +53,10 @@ const Expenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) => {
             <table className = "categoriesHomeTable">
                 <thead className = "categoriesHomeTableHead">
                     <tr className = "headCategoriesRow">
-                        <th className = "tableIcon"></th>
-                        <th className = "tableDescription">Description</th>
-                        <th className = "tableDate">Date</th>
-                        <th className = "tableTotal">Value</th>
-                        <th className = "tableDelete"></th>
+                        <th className = "homeTableIcon"></th>
+                        <th className = "homeTableDescription">Description</th>
+                        <th className = "homeTableTotal">Value</th>
+                        <th className = "homeTableDelete"></th>
                     </tr>
                 </thead>
                 <tbody className = "categoriesHomeTableBody">

@@ -177,6 +177,9 @@ function updateComponents(){
         <div className="mainBody">
           {(screen === "homeContent")&&
               <HomeContent 
+              monthSummary={()=>setScreen('monthSummary')}
+              expenseHistory={()=>setScreen('expenseHistory')}
+              searchExpenses={()=>setScreen('searchExpenses')}
               openPopUpCategoryDetails={openPopUpCategoryDetails} 
               openPopUpEditExpense={openPopUpEditExpense}  
               openPopUpDeleteExpense={openPopUpDeleteExpense} 

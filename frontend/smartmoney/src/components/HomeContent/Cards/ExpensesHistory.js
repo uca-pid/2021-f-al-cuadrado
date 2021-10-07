@@ -1,9 +1,11 @@
 import React from 'react';
-import { Bar } from 'react-chartjs-2';
 import {useState, useEffect} from 'react';
+import "./style.css";
+import FlatList from 'flatlist-react';
+import icons from "../../../functions/icons";
+import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline"; 
+import { Bar } from 'react-chartjs-2';
 
-import Stack from '@mui/material/Stack';
-import YearSelection from "./Select_Year.js"
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 
@@ -48,16 +50,11 @@ const options = {
         position: 'right',
         display: false,
     },
-    title: {
-      display: true,
-      text: 'Monthly Chart',
-    },
   },
 };
 
-const BarChart = ({openPopUpCategories,update}) => {
-    const [fromDate, setFromDate] = useState(new Date(new Date().getFullYear(), 0, 1));
-    const [upToDate, setUpToDate] = useState(new Date());
+const ExpensesHistory = ({expenseHistory,update}) => {
+
     const [dataFrame,setDataFrame] = useState([])
 
     function month_totalProcess(monthTotal) {
@@ -70,18 +67,10 @@ const BarChart = ({openPopUpCategories,update}) => {
 
     }
 
-    function getElementFromEvent(elem) {
-      let month = fromDate.getMonth()
-      if (elem[0]) 
-        {
-          openPopUpCategories((elem[0].index)+1+month)
-        }
-    }
-
     function fetchTotals(){
-        const fromDateNumber = fromDate.getMonth()+1;
-        const upToDateNumber = upToDate.getMonth()+1;
-        let number = (upToDateNumber-fromDateNumber)+1+12*(upToDate.getYear()-fromDate.getYear());
+        const fromDateNumber = new Date().getMonth()+2;
+        const upToDateNumber = new Date().getMonth()+1;
+        let number = (upToDateNumber-fromDateNumber)+1+12*(0);
         const session = JSON.parse(localStorage.session);
         const requestOptions = {
           method: 'POST',
@@ -102,24 +91,20 @@ const BarChart = ({openPopUpCategories,update}) => {
             //Math.min(...dataFrameAux.datasets[0].data)
     })
 }
-    useEffect(() => fetchTotals(),[fromDate,upToDate,update])
-
+    useEffect(() => fetchTotals(),[update])
+   
     return(
-    <Stack 
-    style={{height:350}}
-    spacing={2}
-    alignItems="center">
-        <YearSelection 
-        fromYear={fromDate}
-        upToDate = {upToDate}
-        setFromDate = {setFromDate}
-        setUptoDate = {setUpToDate}/>
-        <Bar 
-        style={{height:300, width:'80%'}}
-        getElementAtEvent={getElementFromEvent}
-        data={dataFrame} options={options} />
-      </Stack>
+        <div className="cardContainer cardContainerHomeContent" onClick={expenseHistory}>
+            <div className="cardTitleContainer">
+                <p className="cardTitle">Expense history</p>
+            </div>
+            <div style={{width:'90%', height:'65%', marginTop:60}}>
+                <Bar 
+                    style={{height:300, width:'80%'}}
+                    data={dataFrame} options={options} />
+            </div>
+        </div>
+    )
+}
 
-)};
-
-export default BarChart;
+export default ExpensesHistory
