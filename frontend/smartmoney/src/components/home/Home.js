@@ -46,6 +46,22 @@ const Home = () => {
   const [popUpCategories,setPopUpCategories] = useState(false);
   const [selectedMonth,setSelectedMonth] = useState('')
 
+  function fetchCategories(){
+    const session = JSON.parse(localStorage.session);
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: session.code})
+    };
+    fetch('https://smart-money-back.herokuapp.com/categories/'+session.user_id+'/', requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        let allCategories = [];
+        data.map( obj => {allCategories.push(obj.name)});
+        localStorage.setItem('allCategories',allCategories);
+    });
+  }
+  useEffect(() => fetchCategories(),[])
 
   function closePopUpChangePassword(){
     setPopUpChangePassword(false);
@@ -178,7 +194,10 @@ function updateComponents(){
               />
             ||
             (screen === "searchExpenses")&&
-              <SearchExpenses />
+              <SearchExpenses 
+                openPopUpEditExpense={openPopUpEditExpense}  
+                openPopUpDeleteExpense={openPopUpDeleteExpense} 
+                update ={updateComponent}/>
           }
 
         </div>
