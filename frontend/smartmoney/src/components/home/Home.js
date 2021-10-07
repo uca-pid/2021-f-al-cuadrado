@@ -91,7 +91,8 @@ const Home = () => {
     setHamburgerMenu(!hamburgerMenu);
     console.log(hamburgerMenu);
 }
-function openPopUpCategoryDetails(category){
+function openPopUpCategoryDetails(category,month){
+    setSelectedMonth(month);
     setSelectedCategory(category);
     setPopUpCategoryDetails(true);
 }
@@ -146,7 +147,7 @@ function updateComponents(){
   return (
     <div className="body bodyHome">
       {popUpCategories && <PopUpCategory month={selectedMonth} closePopUp={closePopUpCategories} openPopUpCategoryDetails={openPopUpCategoryDetails} update ={updateComponent}/>}
-      {popUpCategoryDetails && <PopUpCategoryDetails category={selectedCategory} closePopUp={closePopUpCategoryDetails} openPopUpEditExpense={openPopUpEditExpense} editCategory={openPopUpEditCategory} deleteCategoryPopUp={openPopUpDeleteCategory} update ={updateComponent}/>}
+      {popUpCategoryDetails && <PopUpCategoryDetails month={selectedMonth} category={selectedCategory} closePopUp={closePopUpCategoryDetails} openPopUpEditExpense={openPopUpEditExpense} editCategory={openPopUpEditCategory} deleteCategoryPopUp={openPopUpDeleteCategory} update ={updateComponent}/>}
       {popUpChangePassword && <PopUpChangePassword closePopUp= {closePopUpChangePassword}/>}
       {popUpNewExpense && <PopUpNewExpense closePopUp= {closePopUpNewExpense} state={popUpNewExpenseState} expenseToEdit={popUpEditExpense}/>}
       {popUpNewCategory && <PopUpNewCategory closePopUp= {closePopUpNewCategory} state={popUpNewCategoryState} categoryToEdit={popUpEditCategory}/>}

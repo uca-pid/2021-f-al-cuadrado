@@ -135,7 +135,7 @@ const MonthSummary = ({openPopUpCategoryDetails, update}) => {
 
             </div>
             <div className="monthSummarySecondtDiv">
-                <Categories categories={categories} changeSelectedCategories={changeSelectedCategories} openPopUpCategoryDetails={openPopUpCategoryDetails}/>
+                <Categories month= {date.getMonth() +1} categories={categories} changeSelectedCategories={changeSelectedCategories} openPopUpCategoryDetails={openPopUpCategoryDetails}/>
             </div>
         </div>
     )

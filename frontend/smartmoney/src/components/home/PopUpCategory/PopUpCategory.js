@@ -36,15 +36,15 @@ const PopUpCategory = ({month, closePopUp, openPopUpCategoryDetails,update}) => 
     }
     useEffect(() => fetchCategories(),[update])
 
-   const categoryDetails = (category) => {
-        openPopUpCategoryDetails(category);
+   const categoryDetails = (category,month) => {
+        openPopUpCategoryDetails(category,month);
    }
 
     const renderCategories = (item, index)=> {
         let total = 0;
         if (item.total!==null) total = item.total;
         return (
-          <tr className = "categoriesRow" key={item.name} onClick={()=>categoryDetails(item)}>
+          <tr className = "categoriesRow" key={item.name} onClick={()=>categoryDetails(item,month)}>
             <th className = "categoriesValue tableIcon">{icons(item.icon)}</th> 
             <th className = "categoriesValue tableCategory">{item.name}</th>
             <th className = "categoriesValue tableTotal">$ {total}</th>

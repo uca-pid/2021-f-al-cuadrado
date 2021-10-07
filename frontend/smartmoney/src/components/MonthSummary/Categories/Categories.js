@@ -5,7 +5,7 @@ import icons from "../../../functions/icons";
 import Checkbox from "react-custom-checkbox";
 import { IoCheckmarkSharp } from "@react-icons/all-files/io5/IoCheckmarkSharp"; 
 
-const Categories = ({categories,changeSelectedCategories, openPopUpCategoryDetails}) => {
+const Categories = ({categories,changeSelectedCategories, openPopUpCategoryDetails,month}) => {
 
     // const [categories, setCategories] = useState([]);
 
@@ -29,7 +29,7 @@ const Categories = ({categories,changeSelectedCategories, openPopUpCategoryDetai
   // useEffect(() => fetchCategories(),[update])
 
    const categoryDetails = (category) => {
-        openPopUpCategoryDetails(category);
+        openPopUpCategoryDetails(category,month);
    }
 
     const renderCategories = (item, index)=> {

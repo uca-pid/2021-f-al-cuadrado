@@ -12,20 +12,30 @@ import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline";
 
 
 // import TableScrollbar from 'react-table-scrollbar';
-const PopUpCategoryDetails = ({category, closePopUp, openPopUpEditExpense,editCategory,deleteCategoryPopUp, update}) => {
+const PopUpCategoryDetails = ({category, month, closePopUp, openPopUpEditExpense,editCategory,deleteCategoryPopUp, update}) => {
 
     const [expenses, setExpenses] = useState([]);
 
     const categoryDetails = () => {
+        let from = null
+        let upTo = null
+        if (month){
+            const date = new Date()
+            from = new Date(date.getFullYear(), month-1, 1).toISOString().slice(0, 10);
+            upTo = new Date(date.getFullYear(),month, 0).toISOString().slice(0, 10);
+        }
         const session = JSON.parse(localStorage.session);
         const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
             code: session.code,
-            category:category.name})
+            category: [category.name],
+            from_date: from,
+            upTo_date: upTo,
+        })
         };
-        fetch('https://smart-money-back.herokuapp.com/category_expenses/'+session.user_id+'/', requestOptions)
+        fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptions)
         .then(response => response.json())
         .then(data => {
             setExpenses(data);
