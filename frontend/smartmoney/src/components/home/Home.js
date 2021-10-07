@@ -160,7 +160,9 @@ function updateComponents(){
               update ={updateComponent}/>
             ||
             (screen === "expenseHistory")&&
-              <ExpenseHistory />
+              <ExpenseHistory 
+              update ={updateComponent}
+              />
             ||
             (screen === "searchExpenses")&&
               <SearchExpenses />

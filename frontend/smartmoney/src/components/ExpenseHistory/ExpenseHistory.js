@@ -1,10 +1,16 @@
 import React from "react";
 import "./style.css";
- 
-const ExpenseHistory = ({}) => {
+import {useState, useEffect} from 'react';
+import BarChart from "./BarChart.js";
 
+
+
+const ExpenseHistory = ({update}) => {
+
+useEffect(() => {},[update])
     return(
-        <div>EXPENSE HISTORY
+        <div>
+            <BarChart update = {update}/>
         </div>
     )
 }
