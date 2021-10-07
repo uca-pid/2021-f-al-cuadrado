@@ -1,0 +1,45 @@
+@import "../../styles/generalWebStyles.css";
+
+.cardContainerMonthSummary{
+    display: flex;
+    flex-direction: row;
+}
+.monthYearText{
+    font-size: 25px;
+    font-weight: bolder;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.totalText{    
+    font-size: 25px;
+    font-weight: bolder;}
+.subtotalText{
+    font-size: 20px;
+    font-weight: bolder;
+}
+.pieChartContainer{
+    height: 300px;
+    align-items: center;
+    justify-content: center;
+}
+
+@media only screen and (min-width: 600px) {
+    .monthSummaryFirstDiv{
+        flex: 1;
+    }
+    .monthSummarySecondtDiv{
+        flex: 1;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .cardContainerMonthSummary{
+        flex-direction: column;
+    }
+    .monthSummaryFirstDiv{
+        height: 300px;
+    }
+    .monthSummarySecondtDiv{
+        height: 300px;
+    }
+}

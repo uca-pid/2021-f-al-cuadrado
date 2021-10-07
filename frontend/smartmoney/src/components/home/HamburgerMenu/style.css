@@ -34,6 +34,12 @@
     margin-left: 9px;
 
 }
+.menuSeparationLine{
+    height:1.5px;
+    width: 80%;
+    background-color: #CCCCCC;
+    align-self: center;
+}
 @media only screen and (max-width: 600px) {
     .hamburgerMenuContainer{
         position: absolute;
