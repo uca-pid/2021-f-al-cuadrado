@@ -4,35 +4,8 @@ import {useState, useEffect} from 'react';
 
 import Stack from '@mui/material/Stack';
 import YearSelection from "./Select_Year.js"
-
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
-
- let dataFrameAux = {
-  labels: [],
-  datasets: [
-    {
-      label: 'Amount expended',
-      data: [],
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.6)',
-        'rgba(54, 162, 235, 0.6)',
-        'rgba(255, 206, 86, 0.6)',
-        'rgba(75, 192, 192, 0.6)',
-        'rgba(153, 102, 255, 0.6)',
-        'rgba(255, 159, 64, 0.6)',
-      ],
-      borderColor: [
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 159, 64, 1)',
-      ],
-      borderWidth: 1,
-    },
-  ],
-}
+import { dataFrameBarChart } from '../../constants/dataFrameBarChart';
+import { monthsNamesShort } from '../../constants/monthsNamesShort';
 
 const options = {
   maintainAspectRatio: false,
@@ -62,11 +35,11 @@ const BarChart = ({openPopUpCategories,update}) => {
 
     function month_totalProcess(monthTotal) {
         let month_number = parseInt((monthTotal.month.slice(5,7)));
-        let month_letter = months[month_number-1];
+        let month_letter = monthsNamesShort[month_number-1];
         let year = monthTotal.month.slice(0,4);
         let total = monthTotal.total;
-        dataFrameAux.datasets[0].data.push(total)
-        dataFrameAux.labels.push(month_letter + ' ' + year)
+        dataFrameBarChart.datasets[0].data.push(total)
+        dataFrameBarChart.labels.push(month_letter + ' ' + year)
 
     }
 
@@ -95,11 +68,11 @@ const BarChart = ({openPopUpCategories,update}) => {
         fetch('https://smart-money-back.herokuapp.com/expenses_per_month/'+session.user_id+'/', requestOptions)
           .then(response => response.json())
           .then(data => {
-            dataFrameAux.labels = []
-            dataFrameAux.datasets[0].data = []
+            dataFrameBarChart.labels = []
+            dataFrameBarChart.datasets[0].data = []
             data.forEach(month => month_totalProcess(month))
-            setDataFrame({...dataFrameAux})
-            //Math.min(...dataFrameAux.datasets[0].data)
+            setDataFrame({...dataFrameBarChart})
+            //Math.min(...dataFrameBarChart.datasets[0].data)
     })
 }
     useEffect(() => fetchTotals(),[fromDate,upToDate,update])
