@@ -37,11 +37,19 @@
 @media only screen and (max-width: 600px) {
     .cardContainerMonthSummary{
         flex-direction: column;
+        height: 900px;
     }
     .monthSummaryFirstDiv{
         height: 300px;
     }
     .monthSummarySecondtDiv{
         height: 300px;
+        margin-top: 200px;
+    }
+    .pieChartContainer{
+        margin-top: 100px;
+        height: 280px;
+        align-items: center;
+        justify-content: center;
     }
 }

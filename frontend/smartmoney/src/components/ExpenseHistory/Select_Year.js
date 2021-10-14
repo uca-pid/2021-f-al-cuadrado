@@ -25,7 +25,8 @@ const YearSelection = ({fromYear,upToDate,setFromDate,setUptoDate}) => {
                     onChange={(date) => setFromDate(date)} 
                     renderInput={(params) => 
                         <TextField margin = 'dense'
-                        size = "small" {...params} />}/>
+                        size = "small" {...params} 
+                        />}/>
                 <DatePicker 
 					views={['year', 'month']}
                     label = 'Up to'
@@ -34,7 +35,8 @@ const YearSelection = ({fromYear,upToDate,setFromDate,setUptoDate}) => {
                     onChange={(date) => setUptoDate(date)} 
                     renderInput={(params) => 
                         <TextField margin = 'dense'
-                        size = "small" {...params} />}/>
+                        size = "small" {...params} 
+                        />}/>
             </LocalizationProvider>
         </div>
 		)

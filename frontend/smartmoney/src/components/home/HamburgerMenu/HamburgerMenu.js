@@ -32,7 +32,7 @@ const HamburgerMenu = ({
         window.location.href = "./"
     }
     return (
-        <div className="hamburgerMenuContainer" style={isMobileDevice ? (hamburger ? {width:230}:{display:'none'}) : (hamburger ? {width:230}:{width:60})}>
+        <div className="hamburgerMenuContainer" style={isMobileDevice ? (hamburger ? {width:230, zIndex:2}:{display:'none', zIndex:2}) : (hamburger ? {width:230}:{width:60})}>
 
             <button className="hamburgerMenuButton" onClick={home}>
                 <IoHome className = "hamburgerMenuIcon" color="#7346c7"/>

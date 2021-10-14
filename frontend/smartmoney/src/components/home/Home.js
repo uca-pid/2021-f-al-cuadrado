@@ -165,6 +165,7 @@ function updateComponents(){
       <div style={isMobileDevice ? mobilStyles.main : webStyles.main}>
         {/* <Expenses /> */}
         <HamburgerMenu 
+          
           hamburger={hamburgerMenu} 
           changePassword={openPopUpChangePassword} 
           newExpense={openPopUpNewExpense} 

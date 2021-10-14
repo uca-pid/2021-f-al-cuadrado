@@ -12,6 +12,12 @@ import DatePicker from '@mui/lab/DatePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import Button from '@mui/material/Button';
+import { useMediaQuery } from 'react-responsive';
+
+import { IoChevronDownSharp } from "@react-icons/all-files/io5/IoChevronDownSharp"; 
+import { IoChevronUpSharp } from "@react-icons/all-files/io5/IoChevronUpSharp"; 
+
+
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -28,6 +34,10 @@ const MenuProps = {
  
 const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) => {
 
+    const isMobileDevice = useMediaQuery({
+        query: "(max-device-width: 480px)",
+      });
+
     const categoryList = localStorage.allCategories.split(',');
 
     const [expenses, setExpenses] = useState([]);
@@ -37,6 +47,8 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) 
     const [maxValue, setMaxValue] = useState('');
     const [fromDate, setFromDate] = useState(null);
     const [upToDate, setUpToDate] = useState(null);
+
+    const [mobileFilterDisplay, setMobileFilterDisplay]= useState(false);
 
     const handleChange = (event) => {
         const {
@@ -74,10 +86,11 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) 
           
           fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptions)
             .then(response => response.json())
-            .then(data => {console.log(data);setExpenses({...data})});
+            .then(data => {setMobileFilterDisplay(false);setExpenses({...data})});
       }
       const applyFilters = () => {
         fetchExpenses()
+        setMobileFilterDisplay(false)
       }
 
       function fetchExpenses(){
@@ -110,11 +123,124 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) 
     useEffect(() => fetchExpenses(),[update])
 
     return(
-        <div style={{display:'flex', flexDirection:'row'}}>
+        <div className="searchExpensesContainer" >
+            {isMobileDevice&&
+            <div className="searchExpensesSecondtDiv">
+                <div className="cardContainer">
+                    <div className="cardTitleContainer" style={{marginBottom:10}}>
+                        <p className="cardTitle">Aply filters</p>
+                        {mobileFilterDisplay && <IoChevronUpSharp style={{marginRight:15}} onClick={()=>setMobileFilterDisplay(false)}/>}
+                        {!mobileFilterDisplay && <IoChevronDownSharp style={{marginRight:15}} onClick={()=>setMobileFilterDisplay(true)}/>}
+                    </div>
+                    {mobileFilterDisplay &&
+
+                    
+                    <div style={{display:'flex', flexDirection:'column', width:'100%', marginTop:15, alignItems:'center'}}>
+                        <TextField
+                            style={{width:'90%'}}
+                            inputProps={{ "data-testid": "user-input" }}
+                            label = "Description" variant = 'outlined' 
+                            margin="dense"
+                            type="text" value={description} 
+                            onChange={e => setDescription(e.target.value)} 
+                            size = 'small'
+                            />
+                        <Select
+                            labelId="demo-multiple-checkbox-label"
+                            id="demo-multiple-checkbox"
+                            multiple
+                            
+                            value={categories}
+                            onChange={handleChange}
+                            input={<OutlinedInput label="Categories" />}
+                            renderValue={(selected) => selected.join(', ')}
+                            MenuProps={MenuProps}
+                            style = {{width:'90%',maxWidth:238}}
+                            size = 'small'
+                            margin="dense"
+                            >
+                            {categoryList.map((category) => (
+                                <MenuItem key={category} value={category} >
+                                <Checkbox checked={categories.indexOf(category) > -1} />
+                                <ListItemText primary={category} />
+                                </MenuItem>
+                            ))}
+                        </Select>
+                        <TextField
+                            style={{width:'90%'}}
+                            inputProps={{ "data-testid": "user-input" }}
+                            label = "Min value" variant = 'outlined' 
+                            margin="dense"
+                            type="text" value={minValue} 
+                            onChange={e => setMinValue(e.target.value)} 
+                            size = 'small'
+                            />
+                        <TextField
+                            style={{width:'90%'}}
+                            inputProps={{ "data-testid": "user-input" }}
+                            label = "Max value" variant = 'outlined' 
+                            margin="dense"
+                            type="text" value={maxValue} 
+                            onChange={e => setMaxValue(e.target.value)} 
+                            size = 'small'
+                            />
+                        <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', width:'90%'}}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns} >
+                                <DatePicker 
+                                    label = 'Date'
+                                    value={fromDate} 
+                                    onChange={(date) => setFromDate(date)} 
+                                    error = {true}
+                                    renderInput={(params) => 
+                                        <TextField 
+                                            margin = 'dense'
+                                            size = "small" {...params} 
+                                            style={{width:'45%'}}/>} 
+                                />
+                            </LocalizationProvider>
+                            <LocalizationProvider dateAdapter={AdapterDateFns} >
+                                <DatePicker 
+                                    label = 'Date'
+                                    value={upToDate} 
+                                    onChange={(date) => setUpToDate(date)} 
+                                    error = {true}
+                                    renderInput={(params) => 
+                                        <TextField 
+                                            margin = 'dense'
+                                            size = "small" {...params} 
+                                            style={{width:'45%'}}/>} 
+                                />
+                            </LocalizationProvider>
+                        </div>
+                        <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', width:'95%', marginTop:20}}>
+                            <Button
+                                style={{width: '49%'}}
+                                variant="outlined"
+                                onClick={resetFields} > 
+                                Reset
+                            </Button>
+                            
+                            <Button 
+                                data-testid="login-button"
+                                style={{width: '49%'}}
+                                variant = "contained"
+                                onClick={applyFilters} 
+                                >
+                                Apply
+                            </Button>
+                        </div>
+                        
+
+                    </div>
+                    }
+                </div>
+            </div>
+            }
             <div className="searchExpensesFirstDiv">
                 <Expenses expenses={expenses} openPopUpEditExpense={openPopUpEditExpense}  openPopUpDeleteExpense={openPopUpDeleteExpense} update ={update}/>
 
             </div>
+            {!isMobileDevice&&
             <div className="searchExpensesSecondtDiv">
                 <div className="cardContainer">
                     <div className="cardTitleContainer">
@@ -220,6 +346,7 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) 
 
                 </div>
             </div>
+            }
         </div>
     )
 }

@@ -78,7 +78,7 @@ const ExpensesHistory = ({expenseHistory,update}) => {
           body: JSON.stringify(
             { 
                 code: session.code,
-                last_months: number,
+                last_months: 4,
             })
         };
         fetch('https://smart-money-back.herokuapp.com/expenses_per_month/'+session.user_id+'/', requestOptions)

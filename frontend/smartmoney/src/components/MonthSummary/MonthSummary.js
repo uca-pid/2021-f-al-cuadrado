@@ -7,6 +7,7 @@ import { IoChevronForwardSharp } from "@react-icons/all-files/io5/IoChevronForwa
 import { style } from "@mui/system";
 import icons from "../../functions/icons";
 import { Pie } from 'react-chartjs-2';
+import { useMediaQuery } from 'react-responsive';
 
 const colors = ['rgba(255, 99, 132, 1)',
 'rgba(54, 162, 235, 1)',
@@ -44,6 +45,11 @@ const dataFrameAux = {
   };
 
 const MonthSummary = ({openPopUpCategoryDetails, update}) => {
+
+  const isMobileDevice = useMediaQuery({
+    query: "(max-device-width: 480px)",
+  });
+
 
     const [date, setDate] = useState(new Date());
     const [updatte, setUpdate] = useState(new Date());
@@ -116,7 +122,7 @@ const MonthSummary = ({openPopUpCategoryDetails, update}) => {
     return(
         <div className="cardContainer cardContainerMonthSummary">
             <div className="monthSummaryFirstDiv">
-                <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', alignItems:'start', height:120}}>
+                <div style={isMobileDevice?{display:'flex', flexDirection:'column', justifyContent:'space-between', alignItems:'start', height:120}:{display:'flex', flexDirection:'row', justifyContent:'space-between', alignItems:'start', height:120}}>
                     <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
                         <IoChevronBackSharp onClick={()=>{date.setMonth(date.getMonth() - 1);setUpdate(!updatte)}}/>
                         <p className="monthYearText">{monthNames[date.getMonth()]}, {date.getFullYear()}</p>
