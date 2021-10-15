@@ -9,6 +9,9 @@ import { IoCashOutline } from "@react-icons/all-files/io5/IoCashOutline";
 import { IoLogOutOutline } from "@react-icons/all-files/io5/IoLogOutOutline"; 
 import { IoSettingsSharp } from "@react-icons/all-files/io5/IoSettingsSharp"; 
 import { IoPieChart } from "@react-icons/all-files/io5/IoPieChart"; 
+import { IoBuildOutline } from "@react-icons/all-files/io5/IoBuildOutline"; 
+import { IoReceipt } from "@react-icons/all-files/io5/IoReceipt"; 
+import { IoCut } from "@react-icons/all-files/io5/IoCut"; 
 import { useMediaQuery } from 'react-responsive';
 
 
@@ -17,6 +20,7 @@ const HamburgerMenu = ({
     changePassword, 
     newExpense, 
     newCategory,
+    editCategories,
     home,
     monthSummary,
     expenseHistory,
@@ -71,6 +75,24 @@ const HamburgerMenu = ({
                 <IoAddCircle className = "hamburgerMenuIcon" color="#7346c7"/>
                 {hamburger && 
                     <p className = "hamburgerMenuText">Add category</p>
+                }
+                </button>
+            <button className="hamburgerMenuButton" onClick={editCategories}>
+                <IoReceipt className = "hamburgerMenuIcon" color="#7346c7"/>
+                {hamburger && 
+                    <p className = "hamburgerMenuText">Add budget</p>
+                }
+                </button>
+            <button className="hamburgerMenuButton" onClick={editCategories}>
+                <IoBuildOutline className = "hamburgerMenuIcon" color="#7346c7"/>
+                {hamburger && 
+                    <p className = "hamburgerMenuText">Edit categories</p>
+                }
+                </button>
+            <button className="hamburgerMenuButton" onClick={editCategories}>
+                <IoCut className = "hamburgerMenuIcon" color="#7346c7"/>
+                {hamburger && 
+                    <p className = "hamburgerMenuText">Edit budgets</p>
                 }
                 </button>
             <div className="hamburgerMenuBottomButtonsContainer">

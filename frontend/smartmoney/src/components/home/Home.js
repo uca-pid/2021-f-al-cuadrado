@@ -10,7 +10,8 @@ import PopUpDeleteExpense from "./PopUpDeleteExpense";
 import PopUpNewCategory from "./PopUpNewCategory";
 import PopUpCategoryDetails from "./PopUpCategoryDetails";
 import PopUpDeleteCategory from "./PopUpDeleteCategory";
-import PopUpCategory from "./PopUpCategory"
+import PopUpCategory from "./PopUpCategory";
+import PopUpEditCategories from "./PopUpEditCategories";
 import HomeContent from '../HomeContent';
 import MonthSummary from '../MonthSummary';
 import ExpenseHistory from '../ExpenseHistory';
@@ -44,6 +45,7 @@ const Home = () => {
   const [popUpEditCategory, setPopUpEditCategory] = useState('');
   const [updateComponent, setUpdateComponent] = useState(false);
   const [popUpCategories,setPopUpCategories] = useState(false);
+  const [popUpEditCategories,setPopUpEditCategories] = useState(false);
   const [selectedMonth,setSelectedMonth] = useState('')
 
   function fetchCategories(){
@@ -137,6 +139,12 @@ function deletedCategory(){
   setPopUpCategoryDetails(false);
   updateComponents();
 }
+function closePopUpEditCategories(){
+  setPopUpEditCategories(false);
+}
+function openPopUpEditCategories(){
+  setPopUpEditCategories(true);
+}
 
 function updateComponents(){
   setUpdateComponent(!updateComponent)
@@ -150,6 +158,7 @@ function updateComponents(){
       {popUpCategoryDetails && <PopUpCategoryDetails month={selectedMonth} category={selectedCategory} closePopUp={closePopUpCategoryDetails} openPopUpEditExpense={openPopUpEditExpense} editCategory={openPopUpEditCategory} deleteCategoryPopUp={openPopUpDeleteCategory} update ={updateComponent}/>}
       {popUpChangePassword && <PopUpChangePassword closePopUp= {closePopUpChangePassword}/>}
       {popUpNewExpense && <PopUpNewExpense closePopUp= {closePopUpNewExpense} state={popUpNewExpenseState} expenseToEdit={popUpEditExpense} openPopUpDeleteExpense={openPopUpDeleteExpense} />}
+      {popUpEditCategories && <PopUpEditCategories closePopUp={closePopUpEditCategories} openPopUpEditCategory={openPopUpEditCategory} openPopUpDeleteCategory={openPopUpDeleteCategory} update ={updateComponent}/>}
       {popUpNewCategory && <PopUpNewCategory closePopUp= {closePopUpNewCategory} state={popUpNewCategoryState} categoryToEdit={popUpEditCategory}/>}
       {/* {popUpNewCategory && <PopUpNewCategory closePopUp= {closePopUpNewCategory}/>}       */}
       {popUpDeleteExpenseDisplay && <PopUpDeleteExpense closePopUp= {closePopUpDeleteExpense} expenseToDelete={popUpDeleteExpense}/>}
@@ -170,6 +179,7 @@ function updateComponents(){
           changePassword={openPopUpChangePassword} 
           newExpense={openPopUpNewExpense} 
           newCategory={openPopUpNewCategory}
+          editCategories={openPopUpEditCategories}
           home={()=>setScreen('homeContent')}
           monthSummary={()=>setScreen('monthSummary')}
           expenseHistory={()=>setScreen('expenseHistory')}
