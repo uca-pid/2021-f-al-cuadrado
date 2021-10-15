@@ -187,7 +187,7 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) 
                         <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', width:'90%'}}>
                             <LocalizationProvider dateAdapter={AdapterDateFns} >
                                 <DatePicker 
-                                    label = 'Date'
+                                    label = 'From'
                                     value={fromDate} 
                                     onChange={(date) => setFromDate(date)} 
                                     error = {true}
@@ -200,7 +200,7 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) 
                             </LocalizationProvider>
                             <LocalizationProvider dateAdapter={AdapterDateFns} >
                                 <DatePicker 
-                                    label = 'Date'
+                                    label = 'Up to'
                                     value={upToDate} 
                                     onChange={(date) => setUpToDate(date)} 
                                     error = {true}
@@ -298,7 +298,7 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) 
                         <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', width:'90%'}}>
                             <LocalizationProvider dateAdapter={AdapterDateFns} >
                                 <DatePicker 
-                                    label = 'Date'
+                                    label = 'From'
                                     value={fromDate} 
                                     onChange={(date) => setFromDate(date)} 
                                     error = {true}
@@ -311,7 +311,7 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) 
                             </LocalizationProvider>
                             <LocalizationProvider dateAdapter={AdapterDateFns} >
                                 <DatePicker 
-                                    label = 'Date'
+                                    label = 'Up to'
                                     value={upToDate} 
                                     onChange={(date) => setUpToDate(date)} 
                                     error = {true}

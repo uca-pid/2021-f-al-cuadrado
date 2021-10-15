@@ -34,6 +34,7 @@ const BarChart = ({openPopUpCategories,update}) => {
     const [dataFrame,setDataFrame] = useState([])
 
     function month_totalProcess(monthTotal) {
+      //#TODO: Revisar que no se este salteando un mes, en ese caso agregarlo con valor 0
         let month_number = parseInt((monthTotal.month.slice(5,7)));
         let month_letter = monthsNamesShort[month_number-1];
         let year = monthTotal.month.slice(0,4);
