@@ -1,0 +1,39 @@
+@import "../../styles/generalWebStyles.css";
+
+
+.cardContainerSearchExpenses{
+    display: flex;
+    flex-direction: row;
+}
+.cardContainerFilter{
+    margin: 15px;
+    height: calc(100% - 50px);
+    display: flex;
+    flex-direction: column;
+}
+.searchExpensesContainer{
+    display:flex;
+    flex-direction:row;
+}
+
+@media only screen and (min-width: 600px) {
+    .searchExpensesFirstDiv{
+        flex: 2;
+    }
+    .searchExpensesSecondtDiv{
+        flex: 1;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .cardContainerSearchExpenses{
+        flex-direction: column;
+    }
+    .searchExpensesFirstDiv{
+        height: 420px;
+    }
+
+    .searchExpensesContainer{
+        flex-direction:column;
+    }
+}

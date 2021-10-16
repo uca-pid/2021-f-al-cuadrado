@@ -1,0 +1,30 @@
+@import "../../../styles/generalWebStyles.css";
+
+.changePasswordContainer{
+    position:absolute;
+    top:20%;
+    left: 50%;
+    margin-left: -125px;
+    width:250px;
+    height:300px;
+    background-color:#FFFFFF;
+    border-radius:10px;
+}
+.close{
+    position:relative;
+    left:220px;
+    top:5px;
+    background-color:#FFFFFF;
+    border:0px
+}
+.formChangePassword{
+    display: flex;
+    flex-direction: column;
+    width:85%;
+}
+
+@media only screen and (max-width: 600px) {
+    .close{
+        left:210px;
+    }
+}

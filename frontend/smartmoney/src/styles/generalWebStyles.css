@@ -1,0 +1,83 @@
+.body{
+    position:fixed;
+    padding:0px;
+    margin:0px;
+    top:0px;
+    left:0px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+.button1{
+    background-color:#7346c7;
+    height:40px;
+    border-radius:5px;
+    border:0px;
+    color:#FFFFFF;
+    font-weight:bold;
+}
+
+.button1:hover{
+    background-color: #52347b ;
+}
+.button2{  
+    border-radius:5px;
+    background-color:#FFFFFF;
+    border:0px;
+    color:#7346c7;
+    font-weight:bold;
+    height:40px;
+}
+.button2:hover{
+    background-color:#BBBBBB;
+    color:#52347b;
+}
+.invalidCredentials{
+    color:red;
+    font-size:14px;
+    margin:0px;
+    font-weight:bold;
+}
+
+.popUpBackground{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background-color:#111111;
+    opacity:0.5;
+    border: 0px;
+}
+.popUpComponent{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+}
+.divCenteredItems{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    width:100%
+}
+.popUpTitle{
+    color: #52347b;
+    font-size: 20px;
+    font-weight: bolder;
+    margin: 0px;
+    margin-bottom: 5px;
+}
+
+.cardContainer{
+    display: flex;
+    flex: 1;
+    height: calc(100% - 100px);
+    margin: 40px;
+    box-shadow: 4px 4px 8px 4px #888888;
+    border-radius: 5px;
+    padding: 10px;
+    flex-direction: column;
+}
+
