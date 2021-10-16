@@ -4,6 +4,9 @@ from django.db import models
 from random import choice
 
 
+
+from datetime import datetime
+import pytz
 from django.utils import timezone
 
 
@@ -27,7 +30,7 @@ class CustomUserManager(BaseUserManager):
 
 
 class SecurityCodeManager(models.Manager):
-    def create_security_code(self,Sc,user):
+    def create_security_code(self,user):
         codes = self.filter(user = user)
         digits = [0,1,2,3,4,5,6,7,8,9]
         code = ''
@@ -40,6 +43,54 @@ class SecurityCodeManager(models.Manager):
             userCode.updateDate() #No esta Testeado
             return userCode
         else:
-            userCode = Sc(user = user, user_code = code, valid_from = todayDate)
+            userCode = self.model(user = user, user_code = code, valid_from = todayDate)
             userCode.save()
             return userCode
+
+class ExpenseManager(models.Manager):
+    def create_expense(self,**extra_fields):
+        if extra_fields['date'] :
+            extra_fields['date'] = self.dateFromString(extra_fields['date'])
+        if self.validCategory(extra_fields['category'],extra_fields['owner']):
+            expense = self.model(**extra_fields)
+            expense.save()
+            return expense
+        raise ValueError(_('Invalid information'))
+ 
+    def dateFromString(self,stringDate): #Format 'AAAA-MM-DD'
+        paris_tz = pytz.timezone("Europe/Paris")
+        parsedString = stringDate.split('-')
+        return paris_tz.localize(datetime(int(parsedString[0]), int(parsedString[1]), int(parsedString[2])))
+    def validCategory(self,category,owner):
+        return category.user == owner or category.user == None
+
+
+
+
+class CategoryManager(models.Manager):
+    def create_default(self):
+        default_categories = [('Bills and taxes', 'IoReceipt'), 
+        ('Entertainment and leisure', 'IoGameController'), 
+        ('Market and home', 'IoCart'),
+        ('Wellness and cravings', 'IoWineSharp'), 
+        ('Home appliances', 'IoDesktopSharp'), 
+        ('Other', 'IoShapes')]
+        for category_data in default_categories:
+            category_name = category_data[0]
+            category_icon = category_data[1]
+            category = self.model.get(name = category_name)
+            if not category:
+                category = self.model(name= category_name, icon = category_icon)
+                category.save()
+
+    def create_category(self,**fields):
+        category = self.model(**fields)
+        category.save()
+        return category
+
+    def getDefault(self):
+       return  self.filter(user = None)
+
+
+
+

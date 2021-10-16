@@ -4,25 +4,41 @@ from django.utils.translation import gettext_lazy as _
 
 from django.contrib.auth.hashers import make_password,check_password
 
-from .managers import CustomUserManager,SecurityCodeManager
+from .managers import CustomUserManager,SecurityCodeManager,ExpenseManager,CategoryManager
 from datetime import datetime, timedelta
 from django.utils import timezone
+import datetime
+from dateutil.relativedelta import relativedelta
 
+
+from django.db.models import Q
+from django.db.models.functions import Coalesce
+from django.db.models.functions import TruncMonth
 
 class baseModel():
     @classmethod
-    def getAllWith(cls,**extra_fields):
+    def getAllWith(cls,filter = None,**extra_fields):
+        if filter:
+            return cls.objects.filter(filter)
         return cls.objects.filter(**extra_fields)
 
     @classmethod
-    def get(cls, **extra_fields):
+    def get(cls, filter = None, **extra_fields):
+        if filter:
+            return cls.objects.filter(filter).first()
         return cls.objects.filter(**extra_fields).first()
     def save(self,*arg,**args):
         self.full_clean()
         super().save(*arg,**args)
+    def modify(self, **args_to_change):
+        keys = args_to_change.keys()
+        for argument in keys:\
+            setattr(self, argument, args_to_change[argument])
+        self.save()
+        return self
 
 
-class Sm_user(AbstractUser,baseModel):
+class Sm_user(AbstractUser,baseModel): 
     username = None
     email = models.EmailField(_('email address'), unique=True)
     first_name = models.CharField(max_length=150)
@@ -34,6 +50,7 @@ class Sm_user(AbstractUser,baseModel):
 
     def __str__(self):
         return self.email
+
     @classmethod
     def create_user(cls, email, password, **extra_fields):
         try:
@@ -84,7 +101,7 @@ class SecurityCode(models.Model,baseModel):
     @classmethod
     def instanceCreation(cls, user):
         try:
-            return cls.objects.create_security_code(cls,user)
+            return cls.objects.create_security_code(user)
         except Exception as e:
             raise e
     def getCode(self):
@@ -98,12 +115,111 @@ class SecurityCode(models.Model,baseModel):
         self.save()
 
 
+class Category(models.Model,baseModel):
+    name = models.CharField(max_length = 150) #deberia tener un custom validator...
+    icon = models.CharField(max_length = 150)
+    user = models.ForeignKey(Sm_user, on_delete=models.CASCADE, null = True)
+
+    class Meta: #identificamos el par unico de atributos clave
+        unique_together = ('name', 'user')
+
+    #Custom Manager
+    objects = CategoryManager()
+
+    
+    @classmethod
+    def create_default(cls):
+        return cls.objects.create_default()
+
+    @classmethod
+    def create(cls,**fields):
+        return cls.objects.create_category(**fields)
+    @classmethod
+    def other(cls): #devuelvo el objeto 'otros, para los consumos "huerfanos"'
+        cls.create_default()
+        return cls.get(name = 'Other').id
+
+    def getName(self):
+        return self.name 
+
+    def getIcon(self):
+        return self.icon
+
+    def getUser(self):
+        return self.user
+
+    @classmethod
+    def getAllWith(cls,*arg,**fields):
+        cls.objects.create_default()
+        keys = fields.keys()
+        if 'user' in keys:
+            default_categories = cls.objects.getDefault()
+            otherCategories = cls.objects.filter(user = fields['user'])
+            return default_categories | otherCategories
+        return super().getAllWith(*arg,**fields)
+
+    @classmethod
+    def getAllWithTotalsFor(cls,user, month = datetime.datetime.now().strftime("%m")):
+        expense_owner_filter = (Q(expense__owner = user) | Q(expense__owner = None))
+        date_time_filter = (Q(expense__date__month = month) | Q(expense__date__month = None))
+        categories = cls.getAllWith(user = user)
+        categories = categories.annotate(total= Coalesce(models.Sum('expense__value',filter = (expense_owner_filter & date_time_filter)),0.0)).order_by('-total')
+        return categories
+    def modify(self, **args_to_change):
+        keys = args_to_change.keys()
+        if 'user' not in keys and not self.isDefault():
+            return super().modify(**args_to_change)
+        raise ValueError(_('You cant change this category'))
+    def delete(self):
+        if not self.isDefault():
+            super().delete()
+        else:
+            raise ValueError(_('You cant delete this category'))
+    def isDefault(self):
+        return self.user == None
+
+
+
 
 class Expense(models.Model,baseModel):
     owner = models.ForeignKey(Sm_user, on_delete=models.CASCADE)
     value = models.FloatField()
+    description = models.CharField(max_length = 150,blank= True)
+    date = models.DateTimeField(default = timezone.now)
+    category = models.ForeignKey(Category, on_delete=models.SET_DEFAULT,default = Category.other)
+    objects = ExpenseManager()
     
+    @classmethod
+    def create_expense(cls,**fields):
+        return cls.objects.create_expense(**fields)
     def getOwner(self):
         return self.owner
     def getValue(self):
         return self.value
+    def getDescription(self):
+        return self.description
+    def getDate(self):
+        return self.date
+    def getCategory(self):
+        return self.category
+
+    @classmethod
+    def getTotalsPerMonth(cls,user,last_months = 12):
+        expense_owner_filter = (Q(owner = user))
+        today = datetime.datetime.today()
+        today_date = datetime.datetime(today.year, today.month, 1)
+        relative_delta = relativedelta(months=+int(last_months))
+        from_date = today_date - relative_delta
+        last_months_filter = Q(month__gt= from_date)
+        months = cls.objects.annotate(month = TruncMonth('date',output_field = models.DateField())).values('month')
+        totals_per_month = months.filter(last_months_filter & expense_owner_filter).annotate(total= models.Sum('value')).order_by('month')
+        return totals_per_month
+
+    def modify(self, **args_to_change):
+        keys = args_to_change.keys()
+        if 'date' in keys:
+            args_to_change['date'] = Expense.objects.dateFromString(args_to_change['date'])
+        if 'category' in keys:
+            category_filter = (Q(name = args_to_change['category']) & (Q(user = None) | Q(user = self.owner)))
+            args_to_change['category'] = Category.get(category_filter)
+        return super().modify(**args_to_change)

@@ -47,6 +47,7 @@ class UserTestCase(APITestCase):
         self.assertEqual(response.status_code,200)
         self.assertTrue(response.data.get('user_id'))
         self.assertTrue(len(response.data.get('code')) == 6)
+
     def test_user_tries_login_with_invalid_credentials(self):
         webClient = self.client
         response = webClient.post('/login/', {'email': 'f2@gmail.com', 'password': 'admin'})
@@ -81,6 +82,7 @@ class UserTestCase(APITestCase):
         webClient = self.client
         response = webClient.post('/register/',{'first_name': 'Federico','last_name' : 'De Grandis', 'email' : 'f@gmail.com', 'password' : 'f^2'})
         self.assertEqual(response.status_code,409)
+
     def test_user_changes_his_password_succesfully(self):
         loginResponse = self.userLogin('f@gmail.com','admin').data
         user = User.get(email = 'f@gmail.com')
@@ -91,7 +93,8 @@ class UserTestCase(APITestCase):
         self.assertEqual(response.status_code,200)
         user = User.get(email = 'f@gmail.com')
         self.assertTrue(check_password('f^2',user.getPassword()))
-    def test_user_cant_change_password(self): #se pueden agregar mas test de error.
+
+    def test_user_cant_change_password(self): #contrasenia incorrecta.
         loginResponse = self.userLogin('f@gmail.com','admin').data
         user = User.get(email = 'f@gmail.com')
         code = loginResponse.get('code')
@@ -123,21 +126,24 @@ class UserTestCase(APITestCase):
         response = client.post('/forgotPassword/',{'email' : 'f_cuadrado@gmail.com'})
         self.assertEqual(response.status_code,400)
         self.assertEqual(len(mail.outbox),0)
+
     def test_user_forgot_password_fails_bc_wrong_code(self):
         client = self.client
         response = client.post('/forgotPassword/',{'email' : 'f@gmail.com'})
         user_id = response.data.get('user_id')
-        code = response.data.get('code')
+        wrong_code = response.data.get('code')[::-1]
         self.assertEqual(response.status_code,200) #email enviado y codigo creado
         self.assertEqual(len(mail.outbox),1)
-        response =  client.put('/forgotPassword/' + str(user_id) + '/', {'new_password' : 'f^2', 'code' : code[::-1]})
+        response =  client.put('/forgotPassword/' + str(user_id) + '/', {'new_password' : 'f^2', 'code' : wrong_code})
         self.assertEqual(response.status_code,401)
+
     def test_user_has_only_one_code_after_2_logins(self):
         self.assertEqual(len(Sc.getAllWith()),0)
         self.userLogin('f@gmail.com','admin')
         self.assertEqual(len(Sc.getAllWith()),1)
         self.userLogin('f@gmail.com','admin')
         self.assertEqual(len(Sc.getAllWith()),1)
+        
     def test_user_code_changes_when_he_logins_again(self):
         self.assertEqual(len(Sc.getAllWith()),0)
         loginResponse = self.userLogin('f@gmail.com','admin')

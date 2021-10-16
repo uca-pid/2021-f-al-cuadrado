@@ -50,7 +50,8 @@ def sendEmail(receiver_email,code):
 							},
 						),
 					responses={200: 'Login success',400: 'Invalid credentials'})
-@api_view(['POST']) #creo que va con get
+@api_view(['POST'])
+
 def user_login(request):
 	email = request.data.get('email')
 	password = request.data.get('password')
