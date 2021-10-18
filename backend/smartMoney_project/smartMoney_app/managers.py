@@ -93,4 +93,13 @@ class CategoryManager(models.Manager):
 
 
 
+class BudgetManager(models.Manager):
+    def create_budget(self,user,month,year):
+        date = self.startOf(month,year)
+        budget = self.model(user = user,month =date)
+        budget.save()
+        return budget
 
+    def startOf(self,month,year):
+        paris_tz = pytz.timezone("Europe/Paris")
+        return paris_tz.localize(datetime(year,month,1))
