@@ -82,7 +82,7 @@ class Budget(models.Model,baseModel):
 		return Budget_Category.getAllWith(budget= self).values('category__name','total')
 	def getTotal(self):
 		budget_filter = Q(budget = self)
-		return Budget_Category.objects.all().values('budget').annotate(total_budget = Coalesce(models.Sum('total',filter = budget_filter),0.0))
+		return Budget_Category.objects.all().filter(budget_filter).values('budget').annotate(total_budget = Coalesce(models.Sum('total',filter = budget_filter),0.0))
 			
 
 
