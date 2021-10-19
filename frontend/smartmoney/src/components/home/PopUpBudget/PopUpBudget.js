@@ -11,8 +11,9 @@ import IconList from '../../IconList';
 
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
-import FlatList from 'flatlist-react';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';import FlatList from 'flatlist-react';
 
 
 
@@ -24,8 +25,10 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit}) => {
     // });
 
     const [title, setTitle] = useState('New budget');
-    const [month, setMonth] = useState(new Date(new Date().getFullYear(), 0, 1)); //#TODO: Revisar con fran
+    const [month, setMonth] = useState(new Date()); //#TODO: Revisar con fran
     const [categories, setCategories] = useState([]);
+    const [update, setUpdate] = useState(false);
+
 
     // const [name, setName] = useState('');
     // const [nameEmpty, setNameEmpty] = useState('');
@@ -47,7 +50,7 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit}) => {
                 data.map(category => {
                     category.budget = 0
                 })
-                setCategories({...data});
+                setCategories(data);
               })
         }else{
             setTitle("Edit category")
@@ -62,20 +65,72 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit}) => {
       }
 
     const submitNewBudget = () => {
+        let categoryList = [];
+        console.log(categories)
+        categories.map(category => {
+          if(category.budget>0)categoryList.push({category:category.name,value:parseInt(category.budget)})
+        })
+        const session = JSON.parse(localStorage.session);
+        const requestOptionsNewExpense = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+              code: session.code, 
+              month: month.getFullYear()+'-'+(month.getMonth()+1)+'-'+1,
+              categories: categoryList,
+          })
+        };
+        console.log(requestOptionsNewExpense.body)
+        fetch('https://smart-money-back.herokuapp.com/create_budget/'+session.user_id+'/', requestOptionsNewExpense)
+          .then((response) => {
+            if(response.status===200){
+                closePopUp();
+              //#TODO: Actualizar lista de consumos y de categorias
+              // const requestOptionsExpenses = {
+              //   method: 'POST',
+              //   headers: { 'Content-Type': 'application/json' },
+              //   body: JSON.stringify({ code: session.code})
+              // };
+              // fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptionsExpenses)
+              //   .then(response => response.json())
+              //   .then(data => setConsumos(data));
+            }
+          });  
     }
 
     const submitEditBudget = () =>{
       }
 
-    
-    const renderCategories = (item)=> {
-        // let total = 0;
-        // if (item.total!==null) total = item.total;
+    const isNumber = (value) => {
+      const numbers = /^[0-9]*$/;
+      return numbers.test(value);
+    }
+    const renderCategories = (item, index)=> {
+        let errorOnlyNumbers = false;
         return (
-          <tr className = "categoriesRow" key={item.name} >
+          <tr className = "budgetRow" key={item.name} >
             <th className = "categoriesValue tableIconBudget" >{icons(item.icon)}</th> 
             <th className = "categoriesValue tableCategoryBudget" >{item.name}</th>
-            <th className = "categoriesValue tableTotalBudget" >$ {item.budget}</th>
+            <th className = "categoriesValue tableTotalBudget" >
+              
+              <div style={{height:20, width:'100%', height:40, justifyContent:'center', display:'flex', flexDirection:'row', alignItems:'center'}}>
+                <p style={{paddingRight:3}}>$</p>
+                <TextField
+                    variant = 'outlined' 
+                    margin = "dense"
+                    size ="small"
+                    error = {errorOnlyNumbers}
+                    //helperText = {newExpenseOnlyNumbers ? 'Only numbers' : newExpenseEmpty ? '* This field is required' : ''} 
+                    type="text" 
+                    style={{width:'80%', margin:0, padding:0}}
+                    value={item.budget} 
+                    onChange={e => {item.budget=e.target.value;setUpdate(!update)}} 
+                    onFocus={()=>{errorOnlyNumbers = false}} 
+                    onBlur={()=>{if(!isNumber(item.budget))errorOnlyNumbers = true;}}
+                    
+                />
+              </div>
+            </th>
           </tr>        
         )  
     }
@@ -88,17 +143,18 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit}) => {
                 <div className="divCenteredItems">
                 <p className="popUpTitle">{title}</p>
                  <div className="divBudget">
-                     
-                    {/* <DatePicker 
-                        views={['year', 'month']}
-                        label = 'Month'
-                        value={month}
-                        minDate={new Date()} 
-                        onChange={(date) => setMonth(date)} 
-                        renderInput={(params) => 
-                            <TextField margin = 'dense'
-                            size = "small" {...params} />}
-                    /> */}
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DatePicker 
+                          views={['year', 'month']}
+                          label = 'Month'
+                          value={month}
+                          minDate={new Date()} 
+                          onChange={(date) => setMonth(date)} 
+                          renderInput={(params) => 
+                              <TextField margin = 'dense'
+                              size = "small" {...params} />}
+                      /> 
+                    </LocalizationProvider>
                     <table className = "categoriesPopUpBudget">
                         <thead className = "categoriesPopUpBudgetHead">
                             <tr className = "headPopUpBudgetRow">
@@ -111,17 +167,16 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit}) => {
                             <FlatList 
                                 list={categories}
                                 renderItem={renderCategories}
-                                //renderWhenEmpty={() => <tr><th><p>There is no expense yet!</p></th></tr>}
                             />
                         </tbody>
                     </table>
                     <Button 
-                    style = {{marginTop: '5%', width:'50%'}}
+                    style = {{ width:'50%'}}
                     variant = 'contained'
                     type="button" 
                     className="button1"
                     type="button" 
-                    // onClick={submitCategory}  
+                    onClick={submitBudget}  
                     // disabled={nameEmpty||iconEmpty}
                     >
                     Save

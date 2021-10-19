@@ -22,6 +22,7 @@ const HamburgerMenu = ({
     newCategory,
     editCategories,
     newBudget,
+    editBudgets,
     home,
     monthSummary,
     expenseHistory,
@@ -90,7 +91,7 @@ const HamburgerMenu = ({
                     <p className = "hamburgerMenuText">Edit categories</p>
                 }
                 </button>
-            <button className="hamburgerMenuButton" onClick={editCategories}>
+            <button className="hamburgerMenuButton" onClick={editBudgets}>
                 <IoCut className = "hamburgerMenuIcon" color="#7346c7"/>
                 {hamburger && 
                     <p className = "hamburgerMenuText">Edit budgets</p>

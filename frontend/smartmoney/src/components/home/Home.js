@@ -13,6 +13,7 @@ import PopUpDeleteCategory from "./PopUpDeleteCategory";
 import PopUpCategory from "./PopUpCategory";
 import PopUpEditCategories from "./PopUpEditCategories";
 import PopUpBudget from "./PopUpBudget";
+import PopUpEditBudgets from "./PopUpEditBudgets";
 import HomeContent from '../HomeContent';
 import MonthSummary from '../MonthSummary';
 import ExpenseHistory from '../ExpenseHistory';
@@ -31,27 +32,35 @@ const Home = () => {
   const [screen, setScreen] = useState('homeContent');
 
   const [popUpChangePassword, setPopUpChangePassword] = useState(false);
+  const [hamburgerMenu, setHamburgerMenu] = useState(true);
+  const [updateComponent, setUpdateComponent] = useState(false);
+  const [selectedMonth,setSelectedMonth] = useState('');
+
+  //Expenses
   const [popUpNewExpense, setPopUpNewExpense] = useState(false);
   const [popUpNewExpenseState, setPopUpNewExpenseState] = useState('');
   const [popUpEditExpense, setPopUpEditExpense] = useState('');
+  const [popUpDeleteExpense, setPopUpDeleteExpense] = useState('');
+  const [popUpDeleteExpenseDisplay, setPopUpDeleteExpenseDisplay] = useState(false);
+
+  //Categories
   const [popUpNewCategory, setPopUpNewCategory] = useState(false);
   const [popUpCategoryDetails, setPopUpCategoryDetails] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [hamburgerMenu, setHamburgerMenu] = useState(true);
-  const [popUpDeleteExpense, setPopUpDeleteExpense] = useState('');
-  const [popUpDeleteExpenseDisplay, setPopUpDeleteExpenseDisplay] = useState(false);
   const [popUpDeleteCategory, setPopUpDeleteCategory] = useState('');
   const [popUpDeleteCategoryDisplay, setPopUpDeleteCategoryDisplay] = useState(false);
   const [popUpNewCategoryState, setPopUpNewCategoryState] = useState('');
   const [popUpEditCategory, setPopUpEditCategory] = useState('');
-  const [updateComponent, setUpdateComponent] = useState(false);
   const [popUpCategories,setPopUpCategories] = useState(false);
   const [popUpEditCategories,setPopUpEditCategories] = useState(false);
-  const [selectedMonth,setSelectedMonth] = useState('');
+  
+  //Budgets
   const [popUpNewBudget, setPopUpNewBudget] = useState(false);
   const [popUpNewBudgetState, setPopUpNewBudgetState] = useState('');
   const [popUpEditBudget, setPopUpEditBudget] = useState('');
-
+  const [popUpEditBudgets,setPopUpEditBudgets] = useState(false);
+  const [popUpDeleteBudget, setPopUpDeleteBudget] = useState('');
+  const [popUpDeleteBudgetDisplay, setPopUpDeleteBudgetDisplay] = useState(false);
 
 
   function fetchCategories(){
@@ -71,101 +80,131 @@ const Home = () => {
   }
   useEffect(() => fetchCategories(),[])
 
-  function closePopUpChangePassword(){
-    setPopUpChangePassword(false);
-  }
-  function closePopUpNewExpense(){
-    setPopUpNewExpense(false);
-    updateComponents();
-  }
-  function closePopUpNewCategory(){
-    setPopUpNewCategory(false);
-    updateComponents();
-  }
   function openPopUpChangePassword(){
     setPopUpChangePassword(true)
   }
+  function closePopUpChangePassword(){
+    setPopUpChangePassword(false);
+  }
+  function hamburger (){
+    setHamburgerMenu(!hamburgerMenu);
+    console.log(hamburgerMenu);
+  }
+  function updateComponents(){
+    setUpdateComponent(!updateComponent)
+  }
+  function deletedCategory(){
+    setSelectedCategory('');
+    setPopUpCategoryDetails(false);
+    updateComponents();
+  }
+
+  //Pop ups Expenses open ---------------------------------------------
   function openPopUpNewExpense(){
     setPopUpNewExpenseState('New');
     setPopUpEditExpense('');
     setPopUpNewExpense(true);
   }
+  function openPopUpEditExpense (expense){
+    setPopUpNewExpenseState('Edit');
+    setPopUpEditExpense(expense);
+    setPopUpNewExpense(true);
+  }
+  function openPopUpDeleteExpense (expense) {
+    setPopUpDeleteExpense(expense);
+    setPopUpDeleteExpenseDisplay(true);
+  }
+
+  //Pop ups Expenses close ---------------------------------------------
+  function closePopUpNewExpense(){
+    setPopUpNewExpense(false);
+    updateComponents();
+  }
+  function closePopUpDeleteExpense(){
+    setPopUpDeleteExpenseDisplay(false);
+    updateComponents();
+  }
+
+  //Pop ups Categories open ---------------------------------------------
   function openPopUpNewCategory(){
     setPopUpNewCategoryState('New');
     setPopUpEditCategory('');
     setPopUpNewCategory(true)
   }
-  function hamburger (){
-    setHamburgerMenu(!hamburgerMenu);
-    console.log(hamburgerMenu);
-}
-function openPopUpCategoryDetails(category,month){
+  function openPopUpCategoryDetails(category,month){
     setSelectedMonth(month);
     setSelectedCategory(category);
     setPopUpCategoryDetails(true);
-}
-function closePopUpCategoryDetails(){
-  setPopUpCategoryDetails(false);
-}
-function openPopUpCategories(month){
+  }
+  function openPopUpCategories(month){
     setSelectedMonth(month);
     setPopUpCategories(true);
-}
+  }
+  function openPopUpEditCategory (category) {
+    setPopUpNewCategoryState('Edit');
+    setPopUpEditCategory(category);
+    setPopUpNewCategory(true);
+  }
+  function openPopUpDeleteCategory (category){
+    setPopUpDeleteCategory(category);
+    setPopUpDeleteCategoryDisplay(true);
+  }
+  function openPopUpEditCategories(){
+    setPopUpEditCategories(true);
+  }
 
-function closePopUpCategories(){
-  setPopUpCategories(false);
-}
-const openPopUpEditExpense = (expense) =>{
-  setPopUpNewExpenseState('Edit');
-  setPopUpEditExpense(expense);
-  setPopUpNewExpense(true);
-}
-const openPopUpEditCategory = (category) =>{
-  setPopUpNewCategoryState('Edit');
-  setPopUpEditCategory(category);
-  setPopUpNewCategory(true);
-}
-const openPopUpDeleteExpense = (expense) =>{
-  setPopUpDeleteExpense(expense);
-  setPopUpDeleteExpenseDisplay(true);
-}
-function closePopUpDeleteExpense(){
-  setPopUpDeleteExpenseDisplay(false);
-  updateComponents();
-}
-const openPopUpDeleteCategory = (category) =>{
-  setPopUpDeleteCategory(category);
-  setPopUpDeleteCategoryDisplay(true);
-}
-function closePopUpDeleteCategory(){
-  setPopUpDeleteCategoryDisplay(false);
-}
-function deletedCategory(){
-  setSelectedCategory('');
-  setPopUpCategoryDetails(false);
-  updateComponents();
-}
-function closePopUpEditCategories(){
-  setPopUpEditCategories(false);
-}
-function openPopUpEditCategories(){
-  setPopUpEditCategories(true);
-}
-function openPopUpNewBudget(){
-  setPopUpNewBudgetState('New');
-  setPopUpEditBudget('');
-  setPopUpNewBudget(true)
-}
-function closePopUpNewBudget(){
-  setPopUpNewBudget(false);
-  updateComponents();
-}
+  //Pop ups Categories close ---------------------------------------------
+  function closePopUpNewCategory(){
+    setPopUpNewCategory(false);
+    updateComponents();
+  }
+  function closePopUpCategoryDetails(){
+    setPopUpCategoryDetails(false);
+  }
+  function closePopUpCategories(){
+    setPopUpCategories(false);
+  }
+  function closePopUpDeleteCategory(){
+    setPopUpDeleteCategoryDisplay(false);
+  }
+  function closePopUpEditCategories(){
+    setPopUpEditCategories(false);
+  }
+
+  //Pop ups Budgets open ---------------------------------------------
+  function openPopUpNewBudget(){
+    setPopUpNewBudgetState('New');
+    setPopUpEditBudget('');
+    setPopUpNewBudget(true)
+  }
+  function openPopUpEditBudgets(){
+    setPopUpEditBudgets(true);
+  }
+  function openPopUpEditBudget (budget){
+    setPopUpNewBudgetState('Edit');
+    setPopUpEditBudget(budget);
+    setPopUpNewBudget(true);
+  }
+  function openPopUpDeleteBudget (budget){
+    setPopUpDeleteBudget(budget);
+    setPopUpDeleteBudgetDisplay(true);
+  }
+
+
+  //Pop ups Budgets close ---------------------------------------------
+  function closePopUpNewBudget(){
+    setPopUpNewBudget(false);
+    updateComponents();
+  }
+  function closePopUpEditBudgets(){
+    setPopUpEditBudgets(false);
+  }
+  function closePopUpDeleteBudget(){
+    setPopUpDeleteBudgetDisplay(false);
+  }
 
 
 
-function updateComponents(){
-  setUpdateComponent(!updateComponent)
-}
 
 
 
@@ -177,16 +216,12 @@ function updateComponents(){
       {popUpNewExpense && <PopUpNewExpense closePopUp= {closePopUpNewExpense} state={popUpNewExpenseState} expenseToEdit={popUpEditExpense} openPopUpDeleteExpense={openPopUpDeleteExpense} />}
       {popUpEditCategories && <PopUpEditCategories closePopUp={closePopUpEditCategories} openPopUpEditCategory={openPopUpEditCategory} openPopUpDeleteCategory={openPopUpDeleteCategory} update ={updateComponent}/>}
       {popUpNewCategory && <PopUpNewCategory closePopUp= {closePopUpNewCategory} state={popUpNewCategoryState} categoryToEdit={popUpEditCategory}/>}
-      {/* {popUpNewCategory && <PopUpNewCategory closePopUp= {closePopUpNewCategory}/>}       */}
       {popUpDeleteExpenseDisplay && <PopUpDeleteExpense closePopUp= {closePopUpDeleteExpense} expenseToDelete={popUpDeleteExpense}/>}
       {popUpDeleteCategoryDisplay && <PopUpDeleteCategory closePopUp= {closePopUpDeleteCategory} categoryToDelete={popUpDeleteCategory} deleted={deletedCategory}/>}
       {popUpNewBudget && <PopUpBudget closePopUp= {closePopUpNewBudget} state={popUpNewBudgetState} budgetToEdit={popUpEditBudget}/>}
+      {popUpEditBudgets && <PopUpEditBudgets closePopUp= {closePopUpEditBudgets} openPopUpEditBudget={openPopUpEditBudget} openPopUpDeleteBudget={openPopUpDeleteBudget} update ={updateComponent}/>}
 
 
-
-
-
-      
       <Header hamburger = {hamburger}/>
       
 
@@ -200,6 +235,7 @@ function updateComponents(){
           newCategory={openPopUpNewCategory}
           editCategories={openPopUpEditCategories}
           newBudget={openPopUpNewBudget}
+          editBudgets={openPopUpEditBudgets}
           home={()=>setScreen('homeContent')}
           monthSummary={()=>setScreen('monthSummary')}
           expenseHistory={()=>setScreen('expenseHistory')}
