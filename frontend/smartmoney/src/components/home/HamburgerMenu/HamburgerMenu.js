@@ -21,6 +21,7 @@ const HamburgerMenu = ({
     newExpense, 
     newCategory,
     editCategories,
+    newBudget,
     home,
     monthSummary,
     expenseHistory,
@@ -77,7 +78,7 @@ const HamburgerMenu = ({
                     <p className = "hamburgerMenuText">Add category</p>
                 }
                 </button>
-            <button className="hamburgerMenuButton" onClick={editCategories}>
+            <button className="hamburgerMenuButton" onClick={newBudget}>
                 <IoReceipt className = "hamburgerMenuIcon" color="#7346c7"/>
                 {hamburger && 
                     <p className = "hamburgerMenuText">Add budget</p>
