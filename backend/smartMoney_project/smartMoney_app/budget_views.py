@@ -15,9 +15,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from django.http import HttpResponse
 
-import datetime
 import pytz
-
+from datetime import datetime
 
 from . import models
 from .models import Sm_user as User
@@ -32,7 +31,7 @@ def validCode(user_id,received_code):
 def dateFromString(stringDate): #Format 'AAAA-MM-DD'
         paris_tz = pytz.timezone("UTC")
         parsedString = stringDate.split('-')
-        return paris_tz.localize(datetime.datetime(int(parsedString[0]), int(parsedString[1]), int(parsedString[2])))
+        return paris_tz.localize(datetime(int(parsedString[0]), int(parsedString[1]), int(parsedString[2])))
 
 value = openapi.Schema(title = 'value',type=openapi.FORMAT_FLOAT)
 code = openapi.Schema(title = 'session_code',type=openapi.TYPE_STRING)
@@ -78,7 +77,7 @@ def budget_details(request,user_id):
 							#TODO: Agregar el arreglo de categories
 							},
 						),
-					responses={201: 'Budget created',401: 'Invalid Credentials'})
+					responses={201: 'Budget created',400: 'Budget already exist',401: 'Invalid Credentials'})
 @api_view(['POST'])
 def create_budget(request,user_id):
 	user = User.get(id = user_id)
@@ -86,7 +85,10 @@ def create_budget(request,user_id):
 	month = (request.data.get('month'))
 	if validCode(user_id,received_code):
 		categories = request.data.get('categories')
-		budget = Budget.create_budget(user = user, month = month)
+		try:
+			budget = Budget.create_budget(user = user, month = month)
+		except Exception as e:
+			return Response(status = status.HTTP_400_BAD_REQUEST)
 		for detail in categories:
 			budget.add(detail.get('category'),detail.get('value'))
 		return Response(status = status.HTTP_200_OK)
@@ -164,6 +166,69 @@ def budget_total(request,user_id):
 		return Response(total,status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
 
+@swagger_auto_schema(methods=['post'],
+					request_body=openapi.Schema(
+						type=openapi.TYPE_OBJECT,
+						required=['version'],
+						properties={
+							'code': code,
+							},
+						),
+					responses={200: 'There is budget',400: 'There is no budget',401: 'Invalid Credentials'})
+@api_view(['POST'])
+def active_budget(request,user_id):
+	user = User.get(id = user_id)
+	received_code = request.data.get('code')
+	start_of_month =  pytz.timezone("UTC").localize(datetime.combine(datetime.today().replace(day=1), datetime.min.time()))
+	if validCode(user_id,received_code):
+		budget = Budget.get(user = user, month = start_of_month)
+		if budget:
+			return Response(status = status.HTTP_200_OK)
+		return Response(status = status.HTTP_400_BAD_REQUEST)
+	return Response(status = status.HTTP_401_UNAUTHORIZED)
+
+@swagger_auto_schema(methods=['post'],
+					request_body=openapi.Schema(
+						type=openapi.TYPE_OBJECT,
+						required=['version'],
+						properties={
+							'code': code,
+							},
+						),
+					responses={200: 'Budget sended',401: 'Invalid Credentials'})
+@api_view(['POST'])
+def future_budgets(request,user_id):
+	user = User.get(id = user_id)
+	received_code = request.data.get('code')
+	start_of_month =  pytz.timezone("UTC").localize(datetime.combine(datetime.today().replace(day=1), datetime.min.time()))
+	if validCode(user_id,received_code):
+		budgets = Budget.getBudgetsFrom(start_of_month)
+		return Response(budgets,status = status.HTTP_200_OK)
+ 
+	return Response(status = status.HTTP_401_UNAUTHORIZED)
+
+@swagger_auto_schema(methods=['post'],
+					request_body=openapi.Schema(
+						type=openapi.TYPE_OBJECT,
+						required=['version'],
+						properties={
+							'code': code,
+							'from_date': date,
+							'up_to_date': date
+							},
+						),
+					responses={200: 'Budget sended',401: 'Invalid Credentials'})
+@api_view(['POST'])
+def past_budgets(request,user_id):
+	user = User.get(id = user_id)
+	received_code = request.data.get('code')
+	from_date =  dateFromString(request.data.get('from_date'))
+	up_to_date =  dateFromString(request.data.get('up_to_date'))
+	if validCode(user_id,received_code):
+		budgets = Budget.getBudgetsOfPeriod(from_date,up_to_date)
+		return Response(budgets,status = status.HTTP_200_OK)
+ 
+	return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 
 

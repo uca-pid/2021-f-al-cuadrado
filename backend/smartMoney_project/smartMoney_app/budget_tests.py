@@ -169,6 +169,58 @@ class BudgetTestCase(APITestCase):
 		self.assertEqual(response.status_code,200)
 		self.assertEqual(response.data[0].get('total_budget'),9800)
 
+	def test_user_gets_budget_total(self):
+		webClient = self.client
+		loginResponse = self.userLogin('f@gmail.com','admin')
+		loginCode = loginResponse.data.get('code')
+		user_id = loginResponse.data.get('user_id')
+		response = webClient.post('/active_budget/' + str(user_id) + '/', {'code' : loginCode})
+		self.assertEqual(response.status_code,400)
+		budget = Budget.create_budget(user = self.user,month = self.month)
+		response = webClient.post('/active_budget/' + str(user_id) + '/', {'code' : loginCode})
+		self.assertEqual(response.status_code,200)
+
+	def test_user_consult_his_future_budgets(self):
+		webClient = self.client
+		loginResponse = self.userLogin('f@gmail.com','admin')
+		self.assertEqual(loginResponse.status_code,200)
+		loginCode = loginResponse.data.get('code')
+		user_id = loginResponse.data.get('user_id')
+		response = webClient.post('/future_budgets/' + str(user_id) + '/', {'code' : loginCode})
+		self.assertEqual(response.status_code,200)
+		self.assertEqual(len(response.data),0)
+		budget = Budget.create_budget(user = self.user,month = self.next_month)
+		budget.add('Bills and taxes',4800)
+		budget = Budget.create_budget(user = self.user,month = self.following_month)
+		budget.add('Bills and taxes',4800)
+		response = webClient.post('/future_budgets/' + str(user_id) + '/', {'code' : loginCode})
+		self.assertEqual(response.status_code,200)
+		self.assertEqual(len(response.data),2)
+
+	def test_user_consult_budgets_from_period_time(self):
+		webClient = self.client
+		loginResponse = self.userLogin('f@gmail.com','admin')
+		loginCode = loginResponse.data.get('code')
+		user_id = loginResponse.data.get('user_id')
+		budget = Budget.create_budget(user = self.user,month = self.last_month)
+		budget.add('Bills and taxes',4800)
+		budget = Budget.create_budget(user = self.user,month = self.month)
+		budget.add('Bills and taxes',4800)
+		budget = Budget.create_budget(user = self.user,month = self.next_month)
+		budget.add('Bills and taxes',4800)
+		budget = Budget.create_budget(user = self.user,month = self.following_month)
+		budget.add('Bills and taxes',4800)
+		response = webClient.post('/past_budgets/' + str(user_id) + '/', {'code' : loginCode,
+																			'from_date':self.last_month,
+																			'up_to_date':self.next_month})
+		self.assertEqual(response.status_code,200)
+		self.assertEqual(len(response.data),3)
+
+
+
+
+
+
 
 
 

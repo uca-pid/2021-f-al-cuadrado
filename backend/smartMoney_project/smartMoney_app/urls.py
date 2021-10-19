@@ -25,7 +25,12 @@ urlpatterns = [
     path('delete_budget/<int:user_id>/',views.delete_budget,name = 'delete budgets'),
     path('edit_budget/<int:user_id>/',views.edit_budget,name = 'edit budget'),
     path('budget_total/<int:user_id>/',views.budget_total,name = 'get budget total'),
-    path('month_total/<int:user_id>/',views.expense_month_total,name = 'get budget total')
+    path('month_total/<int:user_id>/',views.expense_month_total,name = 'get budget total'),
+    path('active_budget/<int:user_id>/',views.active_budget,name = 'There is budget in current month'),
+    path('future_budgets/<int:user_id>/',views.future_budgets,name = 'Get an user next budgets'),
+    path('past_budgets/<int:user_id>/',views.past_budgets,name = 'Get an user past budgets'),
+
+
 
 
 
