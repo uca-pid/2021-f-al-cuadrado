@@ -19,7 +19,14 @@ urlpatterns = [
     path('edit_category/<int:user_id>/',views.edit_category, name = 'Edit an user category'),
     path('delete_category/<int:user_id>/',views.delete_category, name = 'delete expenses'),
     path('expenses_per_month/<int:user_id>/',views.expenses_per_month,name = 'expenses per month'),
-    path('category_names/<int:user_id>/',views.category_list_name,name = 'Get an user categories names')
+    path('category_names/<int:user_id>/',views.category_list_name,name = 'Get an user categories names'),
+    path('budget_details/<int:user_id>/',views.budget_details,name = 'Get a budget details'),
+    path('create_budget/<int:user_id>/',views.create_budget,name = 'Create budgets'),
+    path('delete_budget/<int:user_id>/',views.delete_budget,name = 'delete budgets'),
+    path('edit_budget/<int:user_id>/',views.edit_budget,name = 'edit budget'),
+    path('budget_total/<int:user_id>/',views.budget_total,name = 'get budget total'),
+    path('month_total/<int:user_id>/',views.expense_month_total,name = 'get budget total')
+
 
 
 

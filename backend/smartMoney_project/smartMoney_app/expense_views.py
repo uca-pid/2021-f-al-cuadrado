@@ -34,7 +34,7 @@ from django.utils import timezone
 
 
 def dateFromString(stringDate): #Format 'AAAA-MM-DD'
-        paris_tz = pytz.timezone("Europe/Paris")
+        paris_tz = pytz.timezone("UTC")
         parsedString = stringDate.split('-')
         return paris_tz.localize(datetime(int(parsedString[0]), int(parsedString[1]), int(parsedString[2])))
 
@@ -216,7 +216,31 @@ def expenses_per_month(request,user_id):
 		totals = Expense.getTotalsPerMonth(last_months = last_months or 12,user = user)
 		return Response(totals, status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
-	
+
+@swagger_auto_schema(methods=['post'],
+					request_body=openapi.Schema(
+						type=openapi.TYPE_OBJECT,
+						required=['version'],
+						properties={
+							'code': code,
+							'month' : month
+							},
+						),
+					responses={200: 'Totals sended',401: 'Invalid Credentials'})
+@api_view(['POST'])
+def expense_month_total(request,user_id):
+	user = User.get(id = user_id)
+	expected_code = Sc.get(user=user).getCode()
+	received_code = request.data.get('code')
+	month = dateFromString(request.data.get('month'))
+	if expected_code == received_code:
+		totals = Expense.getTotalOf(month = month,user = user)
+		return Response(totals, status = status.HTTP_200_OK)
+	return Response(status = status.HTTP_401_UNAUTHORIZED)
+
+
+
+
 
 
 

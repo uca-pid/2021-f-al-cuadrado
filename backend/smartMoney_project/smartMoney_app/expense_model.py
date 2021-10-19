@@ -42,6 +42,14 @@ class Expense(models.Model,baseModel):
         return self.category
 
     @classmethod
+    def getTotalOf(cls,month,user):
+        expense_owner_filter = (Q(owner = user))
+        next_month = month.replace(month= month.month +1)
+        date_filter = Q(date__gte = month) & Q(date__lt = next_month)
+        total = cls.objects.filter(date_filter).values('date__month').annotate(total = models.Sum('value'))
+        return total
+
+    @classmethod
     def getTotalsPerMonth(cls,user,last_months = 12):
         expense_owner_filter = (Q(owner = user))
         today = datetime.datetime.today()

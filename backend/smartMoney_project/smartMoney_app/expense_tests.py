@@ -26,7 +26,7 @@ class ConsumptionTestCase(APITestCase):
 		date = '2021-09-18'
 		category = Category.get(name = 'Other')
 		expense = Expense.create_expense(value = 500,description = 'Entrada cine',owner = user,date = date,category = category)
-		date = pytz.timezone("Europe/Paris").localize(datetime(2021, 9 , 18))
+		date = pytz.timezone("UTC").localize(datetime(2021, 9 , 18))
 		self.assertEqual(expense.getValue(),500)
 		self.assertEqual(expense.getOwner(),user)
 		self.assertEqual(expense.getDescription(),'Entrada cine')
@@ -60,7 +60,7 @@ class ConsumptionTestCase(APITestCase):
 																		'date': date}) #falta date
 		self.assertEqual(response.status_code,201)
 		self.assertEqual(len(Expense.getAllWith()),1)
-		date = pytz.timezone("Europe/Paris").localize(datetime(2021, 9 , 18))
+		date = pytz.timezone("UTC").localize(datetime(2021, 9 , 18))
 		category = Category.get(name = 'Market and home')
 		expense = Expense.get(value = 500)
 		self.assertEqual(expense.getValue(),500)
@@ -131,7 +131,7 @@ class ConsumptionTestCase(APITestCase):
 		self.assertEqual(response.status_code,200)
 		self.assertEqual(expense.getValue(),750)
 		self.assertEqual(expense.getDescription(),'Focos de luz')
-		date = pytz.timezone("Europe/Paris").localize(datetime(2020, 9 , 18))
+		date = pytz.timezone("UTC").localize(datetime(2020, 9 , 18))
 		self.assertEqual(expense.getDate(),date)
 		self.assertEqual(expense.getCategory().getName(), 'Bills and taxes')
 	def test_user_edits_expense_with_invalid_credentials(self):
@@ -258,8 +258,25 @@ class ConsumptionTestCase(APITestCase):
 			'upTo_date': '2021-'+ str(month-1) + '-21'
 			},format = 'json')
 		self.assertEqual(len(response.data),3)
+	def test_user_gets_his_month_total(self):
+		date = datetime.now()
+		month = (int(date.strftime("%m")))
+		user = User.get(email= 'f@gmail.com')
+		other_category = Category.get(name = 'Other')
+		bills_cat = Category.get(name = 'Bills and taxes')
+		Expense.create_expense(value = 500,description = 'Entrada cine',owner = user,date = '2021-' + str(month) + '-20',category = other_category)
+		Expense.create_expense(value = 1500,description = 'Entrada cine',owner = user,date = '2021-' + str(month-1) + '-20',category = other_category)
+		Expense.create_expense(value = 1500,description = 'Entrada cine',owner = user,date = '2021-' + str(month-1) + '-20',category = bills_cat)
+		Expense.create_expense(value = 500,description = 'Entrada cine',owner = user,date = '2021-' + str(month) + '-20',category = bills_cat)
+		loginResponse = self.userLogin('f@gmail.com','admin')
+		loginCode = loginResponse.data.get('code')
+		user_id = loginResponse.data.get('user_id')
+		webClient = self.client
+		date = '2021-' + str(month) + '-1'
+		response = webClient.post('/month_total/' + str(user_id) + '/', {'code' : loginCode,'month': date})
+		self.assertEqual(response.status_code,200)
+		self.assertEqual(response.data[0].get('total'),1000)
 
-		
 
 
 

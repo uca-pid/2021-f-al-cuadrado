@@ -58,7 +58,7 @@ class ExpenseManager(models.Manager):
         raise ValueError(_('Invalid information'))
  
     def dateFromString(self,stringDate): #Format 'AAAA-MM-DD'
-        paris_tz = pytz.timezone("Europe/Paris")
+        paris_tz = pytz.timezone("UTC")
         parsedString = stringDate.split('-')
         return paris_tz.localize(datetime(int(parsedString[0]), int(parsedString[1]), int(parsedString[2])))
     def validCategory(self,category,owner):
@@ -94,12 +94,13 @@ class CategoryManager(models.Manager):
 
 
 class BudgetManager(models.Manager):
-    def create_budget(self,user,month,year):
-        date = self.startOf(month,year)
-        budget = self.model(user = user,month =date)
+    def create_budget(self,user,month):
+        date = self.dateFromString(month)
+        budget = self.model(user = user,month = date)
         budget.save()
         return budget
 
-    def startOf(self,month,year):
-        paris_tz = pytz.timezone("Europe/Paris")
-        return paris_tz.localize(datetime(year,month,1))
+    def dateFromString(self,stringDate): #Format 'AAAA-MM-DD'
+        paris_tz = pytz.timezone("UTC")
+        parsedString = stringDate.split('-')
+        return paris_tz.localize(datetime(int(parsedString[0]), int(parsedString[1]), int(parsedString[2])))
