@@ -81,7 +81,8 @@ class Budget(models.Model,baseModel):
 		date_time_filter = ((Q(expense__date__gte = self.month) & Q(expense__date__lt = next_month)) | Q(expense__date__month = None))
 		categories = Category.objects.filter(user_filter)
 		return (categories.annotate(total= Coalesce(models.Sum('budget_category__total',filter = budget_filter),0.0),
-									)).values('name','icon','total','total_spent').order_by('-total')
+									)).values('name','icon','total').order_by('-total')
+		#total_spent = Coalesce(models.Sum('expense__value',filter = (expense_owner_filter & date_time_filter)),0.0)
 		return Budget_Category.getAllWith(budget= self).values('category__name','total')
 	def getTotal(self):
 		budget_filter = Q(budget = self)
