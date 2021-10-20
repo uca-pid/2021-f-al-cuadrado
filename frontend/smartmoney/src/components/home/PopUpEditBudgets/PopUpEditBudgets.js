@@ -4,6 +4,8 @@ import {useState, useEffect} from 'react';
 import { IoPencil} from "@react-icons/all-files/io5/IoPencil"; 
 import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline"; 
 import FlatList from 'flatlist-react';
+import { monthsNamesShort } from '../../../constants/monthsNamesShort';
+
 
 const PopUpEditBudgets = ({closePopUp, openPopUpEditBudget, openPopUpDeleteBudget, update}) => {
 
@@ -33,13 +35,13 @@ const PopUpEditBudgets = ({closePopUp, openPopUpEditBudget, openPopUpDeleteBudge
         
 
     }
-    //useEffect(() => getFutureBudgets(),[update])
+    useEffect(() => getFutureBudgets(),[update])
 
     const renderBudget = (item)=> {
         return (
           <tr className = "futureBudgetRow" onClick={()=>openPopUpEditBudget(item)}>
-            <th className = "borderBottomRow tableMontWidth">{item.month}</th>
-            <th className = "borderBottomRow tableTotalWidth">${item.total}</th>
+            <th className = "borderBottomRow tableMontWidth">{monthsNamesShort[parseInt(item.budget__month.substring(5, 7))-1]}, {item.budget__month.substring(0, 4)}</th>
+            <th className = "borderBottomRow tableTotalWidth">${item.total_budget}</th>
             <th className = "borderBottomRow tableEditWidth"><IoPencil className="editBudgetIconTable"/></th>
             <th className = "borderBottomRow tableDeleteWidth"><IoTrashOutline className="deleteBudgetIconTable" onClick={(event)=>{openPopUpDeleteBudget(item);event.stopPropagation()}}/></th>
           </tr>        

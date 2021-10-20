@@ -15,10 +15,12 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';import FlatList from 'flatlist-react';
 
+import { IoArrowBack } from "@react-icons/all-files/io5/IoArrowBack"; 
+import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline";
 
 
 
-const PopUpBudget = ({closePopUp, state, budgetToEdit}) => {
+const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget}) => {
 
     // const isMobileDevice = useMediaQuery({
     //     query: "(max-device-width: 480px)",
@@ -28,6 +30,7 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit}) => {
     const [month, setMonth] = useState(new Date()); //#TODO: Revisar con fran
     const [categories, setCategories] = useState([]);
     const [update, setUpdate] = useState(false);
+    const [total, setTotal] = useState(0);
 
 
     // const [name, setName] = useState('');
@@ -36,9 +39,8 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit}) => {
     // const [selectedIcon, setSelectedIcon] = useState('');
 
     const loadEditFiles = () =>{
+      const session = JSON.parse(localStorage.session);
         if(state==='New'){
-            //let categoriesAux = [];
-            const session = JSON.parse(localStorage.session);
             const requestOptions = {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -48,14 +50,24 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit}) => {
               .then(response => response.json())
               .then(data => {
                 data.map(category => {
-                    category.budget = 0
+                    category.total = 0
                 })
                 setCategories(data);
               })
         }else{
-            setTitle("Edit category")
-            //   setName(categoryToEdit.name);
-            //   setSelectedIcon(categoryToEdit.icon);
+            setTitle("Edit budget");
+            setMonth(new Date(parseInt(budgetToEdit.budget__month.substring(0, 4)),parseInt(budgetToEdit.budget__month.substring(5, 7)-1)));
+            const requestOptions = {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ code: session.code, month:budgetToEdit.budget__month.substring(0, 10)})
+            };
+            fetch('https://smart-money-back.herokuapp.com/budget_details/'+session.user_id+'/', requestOptions)
+              .then(response => response.json())
+              .then(data => {
+                setCategories(data);
+                setTotal(budgetToEdit.total_budget);
+              })
         }
       }
     useEffect(() => loadEditFiles(),[state, budgetToEdit])
@@ -66,9 +78,8 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit}) => {
 
     const submitNewBudget = () => {
         let categoryList = [];
-        console.log(categories)
         categories.map(category => {
-          if(category.budget>0)categoryList.push({category:category.name,value:parseInt(category.budget)})
+          if(category.total>0)categoryList.push({category:category.name,value:parseInt(category.total)})
         })
         const session = JSON.parse(localStorage.session);
         const requestOptionsNewExpense = {
@@ -85,27 +96,48 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit}) => {
           .then((response) => {
             if(response.status===200){
                 closePopUp();
-              //#TODO: Actualizar lista de consumos y de categorias
-              // const requestOptionsExpenses = {
-              //   method: 'POST',
-              //   headers: { 'Content-Type': 'application/json' },
-              //   body: JSON.stringify({ code: session.code})
-              // };
-              // fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptionsExpenses)
-              //   .then(response => response.json())
-              //   .then(data => setConsumos(data));
             }
           });  
     }
 
     const submitEditBudget = () =>{
-      }
+      let categoryList = [];
+      categories.map(category => {
+        if(category.total>0)categoryList.push({category:category.name,value:parseInt(category.total)})
+      })
+      const session = JSON.parse(localStorage.session);
+      const requestOptionsNewExpense = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            code: session.code, 
+            month: month.getFullYear()+'-'+(month.getMonth()+1)+'-'+1,
+            categories: categoryList,
+        })
+      };
+      console.log(requestOptionsNewExpense.body)
+      fetch('https://smart-money-back.herokuapp.com/edit_budget/'+session.user_id+'/', requestOptionsNewExpense)
+        .then((response) => {
+          if(response.status===200){
+              closePopUp();
+          }
+        }); 
+    }
 
     const isNumber = (value) => {
       const numbers = /^[0-9]*$/;
       return numbers.test(value);
     }
-    const renderCategories = (item, index)=> {
+
+    const setTotalBudget = () =>{
+      let sum = 0;
+      categories.map(category =>{
+        console.log(isNumber(category.total))
+        if(category.total)sum += parseInt(category.total);
+      })
+      setTotal(sum);
+    }
+    const renderCategories = (item)=> {
         let errorOnlyNumbers = false;
         return (
           <tr className = "budgetRow" key={item.name} >
@@ -123,10 +155,10 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit}) => {
                     //helperText = {newExpenseOnlyNumbers ? 'Only numbers' : newExpenseEmpty ? '* This field is required' : ''} 
                     type="text" 
                     style={{width:'80%', margin:0, padding:0}}
-                    value={item.budget} 
-                    onChange={e => {item.budget=e.target.value;setUpdate(!update)}} 
+                    value={item.total} 
+                    onChange={e => {item.total=e.target.value;setTotalBudget();setUpdate(!update)}} 
                     onFocus={()=>{errorOnlyNumbers = false}} 
-                    onBlur={()=>{if(!isNumber(item.budget))errorOnlyNumbers = true;}}
+                    onBlur={()=>{if(!isNumber(item.total))errorOnlyNumbers = true;}}
                     
                 />
               </div>
@@ -139,22 +171,28 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit}) => {
         <div className="popUpComponent">
             <button className="popUpBackground" onClick={closePopUp}/>
             <div className="budgetContainer">
-                <button className="closeBudget" onClick={closePopUp}>X</button>
+                {(state==='New')&& <button className="closeBudget" onClick={closePopUp}>X</button>}
+                {(state==='Edit')&& <IoArrowBack className="closeBudgetArrow" onClick={closePopUp}/>}
+                {(state==='Edit')&& <IoTrashOutline className="deleteBudgetIcon" onClick={()=>{closePopUp();openPopUpDeleteBudget(budgetToEdit)}}/>}
                 <div className="divCenteredItems">
                 <p className="popUpTitle">{title}</p>
                  <div className="divBudget">
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <DatePicker 
-                          views={['year', 'month']}
-                          label = 'Month'
-                          value={month}
-                          minDate={new Date()} 
-                          onChange={(date) => setMonth(date)} 
-                          renderInput={(params) => 
-                              <TextField margin = 'dense'
-                              size = "small" {...params} />}
-                      /> 
-                    </LocalizationProvider>
+                    <div style={{width:'90%', display:'flex', flexDirection:'row', alignItems:'center'}}>
+                      <LocalizationProvider dateAdapter={AdapterDateFns} >
+                        <DatePicker 
+                            views={['year', 'month']}
+                            label = 'Month'
+                            value={month}
+                            minDate={new Date()} 
+                            
+                            onChange={(date) => setMonth(date)} 
+                            renderInput={(params) => 
+                                <TextField margin = 'dense'
+                                size = "small" {...params} />}
+                        /> 
+                      </LocalizationProvider>
+                      <p style={{margin:0, width:'50%', textAlign:'right', fontWeight:'bolder', fontSize:20}}>Total: $ {total}</p>
+                    </div>
                     <table className = "categoriesPopUpBudget">
                         <thead className = "categoriesPopUpBudgetHead">
                             <tr className = "headPopUpBudgetRow">
@@ -170,6 +208,7 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit}) => {
                             />
                         </tbody>
                     </table>
+
                     <Button 
                     style = {{ width:'50%'}}
                     variant = 'contained'

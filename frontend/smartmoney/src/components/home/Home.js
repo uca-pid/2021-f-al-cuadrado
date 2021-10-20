@@ -14,6 +14,7 @@ import PopUpCategory from "./PopUpCategory";
 import PopUpEditCategories from "./PopUpEditCategories";
 import PopUpBudget from "./PopUpBudget";
 import PopUpEditBudgets from "./PopUpEditBudgets";
+import PopUpDeleteBudget from "./PopUpDeleteBudget";
 import HomeContent from '../HomeContent';
 import MonthSummary from '../MonthSummary';
 import ExpenseHistory from '../ExpenseHistory';
@@ -180,9 +181,9 @@ const Home = () => {
   function openPopUpEditBudgets(){
     setPopUpEditBudgets(true);
   }
-  function openPopUpEditBudget (budget){
+  function openPopUpEditBudget (budgetMonth){
     setPopUpNewBudgetState('Edit');
-    setPopUpEditBudget(budget);
+    setPopUpEditBudget(budgetMonth);
     setPopUpNewBudget(true);
   }
   function openPopUpDeleteBudget (budget){
@@ -202,6 +203,10 @@ const Home = () => {
   function closePopUpDeleteBudget(){
     setPopUpDeleteBudgetDisplay(false);
   }
+  function closePopUpDeleteBudget(){
+    setPopUpDeleteBudgetDisplay(false);
+    updateComponents();
+  }
 
 
 
@@ -218,8 +223,10 @@ const Home = () => {
       {popUpNewCategory && <PopUpNewCategory closePopUp= {closePopUpNewCategory} state={popUpNewCategoryState} categoryToEdit={popUpEditCategory}/>}
       {popUpDeleteExpenseDisplay && <PopUpDeleteExpense closePopUp= {closePopUpDeleteExpense} expenseToDelete={popUpDeleteExpense}/>}
       {popUpDeleteCategoryDisplay && <PopUpDeleteCategory closePopUp= {closePopUpDeleteCategory} categoryToDelete={popUpDeleteCategory} deleted={deletedCategory}/>}
-      {popUpNewBudget && <PopUpBudget closePopUp= {closePopUpNewBudget} state={popUpNewBudgetState} budgetToEdit={popUpEditBudget}/>}
       {popUpEditBudgets && <PopUpEditBudgets closePopUp= {closePopUpEditBudgets} openPopUpEditBudget={openPopUpEditBudget} openPopUpDeleteBudget={openPopUpDeleteBudget} update ={updateComponent}/>}
+      {popUpNewBudget && <PopUpBudget closePopUp= {closePopUpNewBudget} state={popUpNewBudgetState} budgetToEdit={popUpEditBudget} openPopUpDeleteBudget={openPopUpDeleteBudget}/>}
+      {/* {popUpDeleteBudgetDisplay && <PopUpDeleteBudget closePopUp= {closePopUpDeleteBudget} budgetToDelete={popUpDeleteBudget} deleted={deletedBudget}/>} */}
+      {popUpDeleteBudgetDisplay && <PopUpDeleteBudget closePopUp= {closePopUpDeleteBudget} budgetToDelete={popUpDeleteBudget}/>}
 
 
       <Header hamburger = {hamburger}/>

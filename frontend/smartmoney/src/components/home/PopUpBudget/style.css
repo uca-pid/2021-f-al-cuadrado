@@ -17,6 +17,20 @@
     background-color:#FFFFFF;
     border:0px
 }
+.deleteBudgetIcon{
+    position:relative;
+    left:400px;
+    top:15px;
+    background-color:#FFFFFF;
+    border:0px
+}
+.closeBudgetArrow{
+    position:relative;
+    left:15px;
+    top:15px;
+    background-color:#FFFFFF;
+    border:0px 
+}
 .divBudget{
     display: flex;
     flex-direction: column;
@@ -99,12 +113,12 @@
 }
 /* .customCategoryRow:hover{
     background-color: #a589cd;
-}
-.editCategoryIconTableEditCategories{
+}*/
+.closeBudgetArrow{
     width: 20px;
     height: 20px;
 }
-.deleteCategoryIconTableEditCategories{
+.deleteBudgetIcon{
     width: 20px;
     height: 20px;
-} */
+} 
