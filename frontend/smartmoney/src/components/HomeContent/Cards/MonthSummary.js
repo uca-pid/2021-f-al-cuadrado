@@ -42,7 +42,7 @@ const MonthSummary = ({monthSummary,update}) => {
             <div className="cardTitleContainer">
                 <p className="cardTitle">Month summary</p>
             </div>
-            <div style={{width:'90%', height:'65%', marginTop:60}}>
+            <div style={{width:'90%', height:'65%'}}>
                 <Pie options= {{maintainAspectRatio: false,plugins: {legend: {display: false}}}} data={chartCategories} />
             </div>
         </div>

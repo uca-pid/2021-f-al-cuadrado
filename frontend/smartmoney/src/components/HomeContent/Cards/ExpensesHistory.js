@@ -71,7 +71,7 @@ const ExpensesHistory = ({expenseHistory,update}) => {
             <div className="cardTitleContainer">
                 <p className="cardTitle">Expense history</p>
             </div>
-            <div style={{width:'90%', height:'65%', marginTop:60}}>
+            <div style={{width:'90%', height:'65%',}}>
                 <Bar 
                     style={{height:300, width:'80%'}}
                     data={dataFrame} options={options} />
