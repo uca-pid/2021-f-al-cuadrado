@@ -8,6 +8,8 @@ from .managers import BudgetManager
 from datetime import datetime, timedelta
 from django.utils import timezone
 import datetime
+import pytz
+
 from dateutil.relativedelta import relativedelta
 
 
@@ -65,20 +67,21 @@ class Budget(models.Model,baseModel):
 		else:
 			raise ValueError(_('Not Valid category'))
 	def delete(self):
-		today_month = datetime.date.today().month
-		if today_month >= self.getMonth() :
+		today_month = pytz.timezone("UTC").localize(datetime.datetime.now())
+		if today_month >= self.month :
 			raise ValueError(_('Cant delete older or active budgets'))
 		else:
 			super().delete()
 	def getDetails(self):
+		next_month = self.month.replace(month = self.month.month + 1)
 		categories = Category.getAllWith(user = self.user)
 		user_filter = Q(user = self.user) | Q(user = None)
 		budget_filter = Q(budget_category__budget = self)
 		expense_owner_filter = (Q(expense__owner = self.user) | Q(expense__owner = None))
-		date_time_filter = (Q(expense__date__month = self.month.month) | Q(expense__date__month = None))
+		date_time_filter = ((Q(expense__date__gte = self.month) & Q(expense__date__lt = next_month)) | Q(expense__date__month = None))
 		categories = Category.objects.filter(user_filter)
 		return (categories.annotate(total= Coalesce(models.Sum('budget_category__total',filter = budget_filter),0.0),
-									total_spent = Coalesce(models.Sum('expense__value',filter = (expense_owner_filter & date_time_filter)),0.0))).values('name','total','total_spent')
+									total_spent = Coalesce(models.Sum('expense__value',filter = (expense_owner_filter & date_time_filter)),0.0))).values('name','icon','total','total_spent').order_by('-total')
 		return Budget_Category.getAllWith(budget= self).values('category__name','total')
 	def getTotal(self):
 		budget_filter = Q(budget = self)
@@ -87,19 +90,19 @@ class Budget(models.Model,baseModel):
 	@classmethod
 	def getBudgetsFrom(cls,from_date):
 		date_filter = Q(budget__month__gt = from_date)
-		return Budget_Category.objects.all().filter(date_filter).values('budget__month').annotate(total_budget = Coalesce(models.Sum('total'),0.0)).order_by('-budget__month')
+		return Budget_Category.objects.all().filter(date_filter).values('budget__month').annotate(total_budget = Coalesce(models.Sum('total'),0.0)).order_by('budget__month')
 	
 	@classmethod
 	def getBudgetsOfPeriod(cls,from_date,up_to_date):
 		date_filter = Q(budget__month__gte = from_date) & Q(budget__month__lte = up_to_date)
-		return Budget_Category.objects.all().filter(date_filter).values('budget__month').annotate(total_budget = Coalesce(models.Sum('total'),0.0)).order_by('-budget__month')
+		return Budget_Category.objects.all().filter(date_filter).values('budget__month').annotate(total_budget = Coalesce(models.Sum('total'),0.0)).order_by('budget__month')
 
 
 
 
 
 class Budget_Category(models.Model,baseModel):
-	category = models.ForeignKey(Category, on_delete=models.CASCADE)
+	category = models.ForeignKey(Category, on_delete=models.SET_DEFAULT,default = Category.other)
 	budget = models.ForeignKey(Budget, on_delete=models.CASCADE)
 	total = models.FloatField()
 

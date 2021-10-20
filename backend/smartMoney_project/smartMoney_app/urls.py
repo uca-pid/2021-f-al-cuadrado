@@ -30,9 +30,4 @@ urlpatterns = [
     path('future_budgets/<int:user_id>/',views.future_budgets,name = 'Get an user next budgets'),
     path('past_budgets/<int:user_id>/',views.past_budgets,name = 'Get an user past budgets'),
 
-
-
-
-
-
 ]

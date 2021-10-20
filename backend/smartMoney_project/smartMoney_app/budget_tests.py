@@ -87,6 +87,8 @@ class BudgetTestCase(APITestCase):
 		budget = Budget.create_budget(user = self.user,month = self.month)
 		budget.add('Other',4800)
 		budget.add('Bills and taxes',4800)
+		budget = Budget.create_budget(user = self.user,month = self.next_month)
+		budget.add('Market and home',5000)
 		loginResponse = self.userLogin('f@gmail.com','admin')
 		loginCode = loginResponse.data.get('code')
 		user_id = loginResponse.data.get('user_id')
