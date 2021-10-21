@@ -20,7 +20,7 @@ import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline";
 
 
 
-const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget}) => {
+const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, confirmBudget}) => {
 
     // const isMobileDevice = useMediaQuery({
     //     query: "(max-device-width: 480px)",
@@ -77,27 +77,48 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget}) =
       }
 
     const submitNewBudget = () => {
+        const actualMonth = new Date();
         let categoryList = [];
         categories.map(category => {
           if(category.total>0)categoryList.push({category:category.name,value:parseInt(category.total)})
         })
-        const session = JSON.parse(localStorage.session);
-        const requestOptionsNewExpense = {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-              code: session.code, 
-              month: month.getFullYear()+'-'+(month.getMonth()+1)+'-'+1,
-              categories: categoryList,
-          })
-        };
-        console.log(requestOptionsNewExpense.body)
-        fetch('https://smart-money-back.herokuapp.com/create_budget/'+session.user_id+'/', requestOptionsNewExpense)
-          .then((response) => {
-            if(response.status===200){
-                closePopUp();
-            }
-          });  
+        const session = JSON.parse(localStorage.session); 
+        if((actualMonth.getFullYear()===month.getFullYear()) && (actualMonth.getMonth()===month.getMonth())){
+          const requestOptionsNewExpense = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({code: session.code})
+          };
+          console.log(requestOptionsNewExpense.body)
+          fetch('https://smart-money-back.herokuapp.com/active_budget/'+session.user_id+'/', requestOptionsNewExpense)
+            .then((response) => {
+              if(response.status===400){
+                confirmBudget({
+                  total: total,
+                  categories: categoryList,
+                  month: month
+                });
+              }
+            });  
+        }else{
+          const requestOptionsNewExpense = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                code: session.code, 
+                month: month.getFullYear()+'-'+(month.getMonth()+1)+'-'+1,
+                categories: categoryList,
+            })
+          };
+          console.log(requestOptionsNewExpense.body)
+          fetch('https://smart-money-back.herokuapp.com/create_budget/'+session.user_id+'/', requestOptionsNewExpense)
+            .then((response) => {
+              if(response.status===200){
+                  closePopUp();
+              }
+            });  
+                  
+        }
     }
 
     const submitEditBudget = () =>{

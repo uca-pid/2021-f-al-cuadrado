@@ -10,7 +10,7 @@ import { IoLogOutOutline } from "@react-icons/all-files/io5/IoLogOutOutline";
 import { IoSettingsSharp } from "@react-icons/all-files/io5/IoSettingsSharp"; 
 import { IoPieChart } from "@react-icons/all-files/io5/IoPieChart"; 
 import { IoBuildOutline } from "@react-icons/all-files/io5/IoBuildOutline"; 
-import { IoReceipt } from "@react-icons/all-files/io5/IoReceipt"; 
+import { IoBagAdd } from "@react-icons/all-files/io5/IoBagAdd"; 
 import { IoCut } from "@react-icons/all-files/io5/IoCut"; 
 import { useMediaQuery } from 'react-responsive';
 
@@ -80,7 +80,7 @@ const HamburgerMenu = ({
                 }
                 </button>
             <button className="hamburgerMenuButton" onClick={newBudget}>
-                <IoReceipt className = "hamburgerMenuIcon" color="#7346c7"/>
+                <IoBagAdd className = "hamburgerMenuIcon" color="#7346c7"/>
                 {hamburger && 
                     <p className = "hamburgerMenuText">Add budget</p>
                 }

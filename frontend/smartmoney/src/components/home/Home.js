@@ -13,6 +13,7 @@ import PopUpDeleteCategory from "./PopUpDeleteCategory";
 import PopUpCategory from "./PopUpCategory";
 import PopUpEditCategories from "./PopUpEditCategories";
 import PopUpBudget from "./PopUpBudget";
+import PopUpBudgetConfirmation from "./PopUpBudgetConfirmation";
 import PopUpEditBudgets from "./PopUpEditBudgets";
 import PopUpDeleteBudget from "./PopUpDeleteBudget";
 import HomeContent from '../HomeContent';
@@ -62,6 +63,8 @@ const Home = () => {
   const [popUpEditBudgets,setPopUpEditBudgets] = useState(false);
   const [popUpDeleteBudget, setPopUpDeleteBudget] = useState('');
   const [popUpDeleteBudgetDisplay, setPopUpDeleteBudgetDisplay] = useState(false);
+  const [popUpConfirmBudget, setPopUpConfirmBudget] = useState(false);
+  const [popUpBudgetConfirmation, setPopUpBudgetConfirmation] = useState(false);
 
 
   function fetchCategories(){
@@ -190,7 +193,10 @@ const Home = () => {
     setPopUpDeleteBudget(budget);
     setPopUpDeleteBudgetDisplay(true);
   }
-
+  function openPopUpConfirmBudgets (budget, total){
+    setPopUpConfirmBudget(budget);
+    setPopUpBudgetConfirmation(true);
+  }
 
   //Pop ups Budgets close ---------------------------------------------
   function closePopUpNewBudget(){
@@ -207,6 +213,11 @@ const Home = () => {
     setPopUpDeleteBudgetDisplay(false);
     updateComponents();
   }
+  function closePopUpConfirmBudget(){
+    setPopUpBudgetConfirmation(false);
+    updateComponents();
+  }
+  
 
 
 
@@ -224,9 +235,9 @@ const Home = () => {
       {popUpDeleteExpenseDisplay && <PopUpDeleteExpense closePopUp= {closePopUpDeleteExpense} expenseToDelete={popUpDeleteExpense}/>}
       {popUpDeleteCategoryDisplay && <PopUpDeleteCategory closePopUp= {closePopUpDeleteCategory} categoryToDelete={popUpDeleteCategory} deleted={deletedCategory}/>}
       {popUpEditBudgets && <PopUpEditBudgets closePopUp= {closePopUpEditBudgets} openPopUpEditBudget={openPopUpEditBudget} openPopUpDeleteBudget={openPopUpDeleteBudget} update ={updateComponent}/>}
-      {popUpNewBudget && <PopUpBudget closePopUp= {closePopUpNewBudget} state={popUpNewBudgetState} budgetToEdit={popUpEditBudget} openPopUpDeleteBudget={openPopUpDeleteBudget}/>}
-      {/* {popUpDeleteBudgetDisplay && <PopUpDeleteBudget closePopUp= {closePopUpDeleteBudget} budgetToDelete={popUpDeleteBudget} deleted={deletedBudget}/>} */}
+      {popUpNewBudget && <PopUpBudget closePopUp= {closePopUpNewBudget} state={popUpNewBudgetState} budgetToEdit={popUpEditBudget} openPopUpDeleteBudget={openPopUpDeleteBudget} confirmBudget={openPopUpConfirmBudgets}/>}
       {popUpDeleteBudgetDisplay && <PopUpDeleteBudget closePopUp= {closePopUpDeleteBudget} budgetToDelete={popUpDeleteBudget}/>}
+      {popUpBudgetConfirmation && <PopUpBudgetConfirmation closePopUp= {closePopUpConfirmBudget} budget={popUpConfirmBudget} closeNewBudgetPopUp={closePopUpNewBudget}/>}
 
 
       <Header hamburger = {hamburger}/>
@@ -258,6 +269,7 @@ const Home = () => {
               openPopUpCategoryDetails={openPopUpCategoryDetails} 
               openPopUpEditExpense={openPopUpEditExpense}  
               openPopUpDeleteExpense={openPopUpDeleteExpense} 
+              newBudget={openPopUpNewBudget}
               update ={updateComponent}/>
             ||
             (screen === "monthSummary")&&

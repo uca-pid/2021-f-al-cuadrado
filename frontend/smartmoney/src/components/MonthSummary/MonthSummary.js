@@ -70,6 +70,12 @@ const MonthSummary = ({openPopUpCategoryDetails, update}) => {
 
     useEffect(() => fetchCategories(),[update,updatte])
 
+
+    function getElementFromEvent(elem) {
+      console.log(elem[0].index)
+      openPopUpCategoryDetails(categories[elem[0].index],date.getMonth()+1);
+    }
+
     const changeSelectedCategories = (category, add) => {
         let index = chartCategories.labels.findIndex(x => x ===category.name);
         if(add){
@@ -102,13 +108,19 @@ const MonthSummary = ({openPopUpCategoryDetails, update}) => {
                     </div>
                 </div>
                 <div className="pieChartContainer">
-                    <Pie options= {{maintainAspectRatio: false,plugins: {legend: {display: false}}}} data={chartCategories} />
+                    <Pie 
+                      options= {{maintainAspectRatio: false,plugins: {legend: {display: false}}}} 
+                      data={chartCategories} 
+                      getElementAtEvent={getElementFromEvent}/>
                 </div>
-
 
             </div>
             <div className="monthSummarySecondtDiv">
-                <Categories month= {date.getMonth() +1} categories={categories} changeSelectedCategories={changeSelectedCategories} openPopUpCategoryDetails={openPopUpCategoryDetails}/>
+                <Categories 
+                  month= {date.getMonth() +1} 
+                  categories={categories} 
+                  changeSelectedCategories={changeSelectedCategories} 
+                  openPopUpCategoryDetails={openPopUpCategoryDetails}/>
             </div>
         </div>
     )
