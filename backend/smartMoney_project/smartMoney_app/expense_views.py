@@ -254,7 +254,7 @@ def earliest_expense(request,user_id):
 	expected_code = Sc.get(user=user).getCode()
 	received_code = request.data.get('code')
 	if expected_code == received_code:
-		expense = Expense.objects.all().order_by('date').first()
+		expense = Expense.objects.filter().order_by('date').values()
 		return Response(expense, status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
 
