@@ -1,17 +1,15 @@
 @import "../../../styles/generalWebStyles.css";
 
 .cardContainerHomeContentBig{
-    height: 390px;
+    height: 20px;
     align-items:center;
 }
 .cardContainerHomeContentBig:hover{
     background-color: #e2d9eb;
 }
 .cardContainerHomeContent{
-    height: 35%;
+    height: 300px;
     align-items:center;
-    flex-direction: row;
-    align-items: center;
 }
 .cardContainerHomeContent:hover{
     background-color: #e2d9eb;
@@ -56,6 +54,16 @@
 .tableHomeBudgetNumber{
     width: 15%;
 }
+.homeTableIcon{
+    padding-left: 5px;
+    width: 15%;
+}
+.homeTableTotal{
+    width: 25%;
+}
+.homeTableDescription{
+    width: 50%;
+}
 .budgetHomeTableHead{
     text-align: left;
     border-bottom-style:solid;
@@ -69,8 +77,14 @@
 .budgetHomeTableBody{
     display: block;
     width: 100%;
-    height: 150px;
+    height: 250px;
     overflow-y: auto;
+}
+.expensesHomeTableBody{
+    display: block;
+    width: 100%;
+    overflow-y: auto;
+    height: 180px;
 }
 .cardTitle{
     font-weight: bolder;
