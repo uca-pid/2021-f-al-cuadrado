@@ -29,7 +29,7 @@ const options = {
   },
 };
 
-const BarChart = ({openPopUpCategories,update}) => {
+const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update}) => {
     const [fromDate, setFromDate] = useState(new Date(new Date().getFullYear(), 0, 1));
     const [upToDate, setUpToDate] = useState(new Date());
     const [dataFrame,setDataFrame] = useState([])
@@ -53,7 +53,9 @@ const BarChart = ({openPopUpCategories,update}) => {
         }
       else if(elem[0] && elem[0].datasetIndex === 1)
         {
-          alert("PopUp Budget");
+          //#TODO: Rompe en cambio de año
+          let dateAux = new Date(new Date().setMonth(fromDate.getMonth()+(elem[0].index)))
+          openPopUpBudgetDetails(dateAux)
         }
     }
 
@@ -159,16 +161,20 @@ const BarChart = ({openPopUpCategories,update}) => {
     style={{height:350}}
     spacing={2}
     alignItems="center">
-          <YearSelection 
-          fromYear={fromDate}
-          upToDate = {upToDate}
-          setFromDate = {setFromDate}
-          setUptoDate = {setUpToDate}/>
+      <div style={{display:'flex', flexDirection:'row', width:'100%',justifyContent:'space-around'}}>
+
+        <YearSelection 
+        fromYear={fromDate}
+        upToDate = {upToDate}
+        setFromDate = {setFromDate}
+        setUptoDate = {setUpToDate}/>
+
         <BudgetExpenseSelector
         getAll = {fetchAll}
         getExpenses = {fetchOnlyExpenses}
         getBudgets = {fetchOnlyBudgets}
         />
+      </div>
 
         <Bar 
         style={{height:300, width:'80%'}}

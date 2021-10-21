@@ -24,6 +24,7 @@ import Header from './Header';
 
 import "./style.css";
 import HamburgerMenu from './HamburgerMenu';
+import PopUpBudgetDetails from './PopUpBudgetDetails/PopUpBudgetDetails';
 
 const Home = () => {
 
@@ -65,7 +66,8 @@ const Home = () => {
   const [popUpDeleteBudgetDisplay, setPopUpDeleteBudgetDisplay] = useState(false);
   const [popUpConfirmBudget, setPopUpConfirmBudget] = useState(false);
   const [popUpBudgetConfirmation, setPopUpBudgetConfirmation] = useState(false);
-
+  const [popUpBudgetDetails, setPopUpBudgetDetails] = useState(false);
+  const [popUpBudgetDetailsMonth, setPopUpBudgetDetailsMonth] = useState(false);
 
   function fetchCategories(){
     const session = JSON.parse(localStorage.session);
@@ -197,6 +199,11 @@ const Home = () => {
     setPopUpConfirmBudget(budget);
     setPopUpBudgetConfirmation(true);
   }
+  function openPopUpBudgetDetails(month){
+    setPopUpBudgetDetailsMonth(month);
+    setPopUpBudgetDetails(true);
+    updateComponents();
+  }
 
   //Pop ups Budgets close ---------------------------------------------
   function closePopUpNewBudget(){
@@ -217,11 +224,10 @@ const Home = () => {
     setPopUpBudgetConfirmation(false);
     updateComponents();
   }
-  
-
-
-
-
+  function closePopUpBudgetDetails(){
+    setPopUpBudgetDetails(false);
+    updateComponents();
+  }
 
 
   return (
@@ -238,6 +244,8 @@ const Home = () => {
       {popUpNewBudget && <PopUpBudget closePopUp= {closePopUpNewBudget} state={popUpNewBudgetState} budgetToEdit={popUpEditBudget} openPopUpDeleteBudget={openPopUpDeleteBudget} confirmBudget={openPopUpConfirmBudgets}/>}
       {popUpDeleteBudgetDisplay && <PopUpDeleteBudget closePopUp= {closePopUpDeleteBudget} budgetToDelete={popUpDeleteBudget}/>}
       {popUpBudgetConfirmation && <PopUpBudgetConfirmation closePopUp= {closePopUpConfirmBudget} budget={popUpConfirmBudget} closeNewBudgetPopUp={closePopUpNewBudget}/>}
+      {popUpBudgetDetails && <PopUpBudgetDetails closePopUp= {closePopUpBudgetDetails} month={popUpBudgetDetailsMonth}/>}
+
 
 
       <Header hamburger = {hamburger}/>
@@ -280,6 +288,7 @@ const Home = () => {
             (screen === "expenseHistory")&&
               <ExpenseHistory 
               openPopUpCategories = {openPopUpCategories}
+              openPopUpBudgetDetails = {openPopUpBudgetDetails}
               update ={updateComponent}
               />
             ||
