@@ -29,5 +29,6 @@ urlpatterns = [
     path('active_budget/<int:user_id>/',views.active_budget,name = 'There is budget in current month'),
     path('future_budgets/<int:user_id>/',views.future_budgets,name = 'Get an user next budgets'),
     path('past_budgets/<int:user_id>/',views.past_budgets,name = 'Get an user past budgets'),
+    path('earliest_expense/<int:user_id>/',views.earliest_expense,name = 'Get an user earliest expense'),
 
 ]

@@ -203,7 +203,7 @@ def future_budgets(request,user_id):
 	received_code = request.data.get('code')
 	start_of_month =  pytz.timezone("UTC").localize(datetime.combine(datetime.today().replace(day=1), datetime.min.time()))
 	if validCode(user_id,received_code):
-		budgets = Budget.getBudgetsFrom(start_of_month)
+		budgets = Budget.getBudgetsFrom(start_of_month,user)
 		return Response(budgets,status = status.HTTP_200_OK)
  
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
@@ -226,7 +226,7 @@ def past_budgets(request,user_id):
 	from_date =  dateFromString(request.data.get('from_date'))
 	up_to_date =  dateFromString(request.data.get('up_to_date'))
 	if validCode(user_id,received_code):
-		budgets = Budget.getBudgetsOfPeriod(from_date,up_to_date)
+		budgets = Budget.getBudgetsOfPeriod(from_date,up_to_date,user)
 		return Response(budgets,status = status.HTTP_200_OK)
  
 	return Response(status = status.HTTP_401_UNAUTHORIZED)

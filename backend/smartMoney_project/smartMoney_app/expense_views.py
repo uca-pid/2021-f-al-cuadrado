@@ -239,6 +239,26 @@ def expense_month_total(request,user_id):
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 
+@swagger_auto_schema(methods=['post'],
+					request_body=openapi.Schema(
+						type=openapi.TYPE_OBJECT,
+						required=['version'],
+						properties={
+							'code': code,
+							},
+						),
+					responses={200: 'Totals sended',401: 'Invalid Credentials'})
+@api_view(['POST'])
+def earliest_expense(request,user_id):
+	user = User.get(id = user_id)
+	expected_code = Sc.get(user=user).getCode()
+	received_code = request.data.get('code')
+	if expected_code == received_code:
+		expense = Expense.objects.all().order_by('date').first()
+		return Response(expense, status = status.HTTP_200_OK)
+	return Response(status = status.HTTP_401_UNAUTHORIZED)
+
+
 
 
 

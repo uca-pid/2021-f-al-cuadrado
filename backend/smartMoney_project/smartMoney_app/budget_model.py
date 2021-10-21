@@ -88,14 +88,14 @@ class Budget(models.Model,baseModel):
 		return Budget_Category.objects.all().filter(budget_filter).values('budget').annotate(total_budget = Coalesce(models.Sum('total',filter = budget_filter),0.0))
 	
 	@classmethod
-	def getBudgetsFrom(cls,from_date):
+	def getBudgetsFrom(cls,from_date,user):
 		date_filter = Q(budget__month__gt = from_date)
-		return Budget_Category.objects.all().filter(date_filter).values('budget__month').annotate(total_budget = Coalesce(models.Sum('total'),0.0)).order_by('budget__month')
+		return Budget_Category.objects.all().filter(date_filter).values('budget__month').annotate(total_budget = Coalesce(models.Sum('total',filter = Q(budget__user = user)),0.0)).order_by('budget__month')
 	
 	@classmethod
-	def getBudgetsOfPeriod(cls,from_date,up_to_date):
+	def getBudgetsOfPeriod(cls,from_date,up_to_date,user):
 		date_filter = Q(budget__month__gte = from_date) & Q(budget__month__lte = up_to_date)
-		return Budget_Category.objects.all().filter(date_filter).values('budget__month').annotate(total_budget = Coalesce(models.Sum('total'),0.0)).order_by('budget__month')
+		return Budget_Category.objects.all().filter(date_filter).values('budget__month').annotate(total_budget = Coalesce(models.Sum('total',filter = Q(budget__user = user)),0.0)).order_by('budget__month')
 
 
 
