@@ -47,6 +47,7 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) 
     const [maxValue, setMaxValue] = useState('');
     const [fromDate, setFromDate] = useState(null);
     const [upToDate, setUpToDate] = useState(null);
+    const [errorMessage, setErrorMessage] = useState('')
 
     const [mobileFilterDisplay, setMobileFilterDisplay]= useState(false);
 
@@ -117,7 +118,10 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) 
         
         fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptions)
           .then(response => response.json())
-          .then(data => {setExpenses({...data})});
+          .then(data => {
+              setExpenses({...data});
+              if(data.length===0)setErrorMessage("There is no expense yet!")
+            });
 
     }
     useEffect(() => fetchExpenses(),[update])
@@ -237,7 +241,7 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) 
             </div>
             }
             <div className="searchExpensesFirstDiv">
-                <Expenses expenses={expenses} openPopUpEditExpense={openPopUpEditExpense}  openPopUpDeleteExpense={openPopUpDeleteExpense} update ={update}/>
+                <Expenses expenses={expenses} errorMessage={errorMessage} openPopUpEditExpense={openPopUpEditExpense}  openPopUpDeleteExpense={openPopUpDeleteExpense} update ={update}/>
 
             </div>
             {!isMobileDevice&&

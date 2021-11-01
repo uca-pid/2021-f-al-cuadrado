@@ -11,6 +11,7 @@ const PopUpEditBudgets = ({closePopUp, openPopUpEditBudget, openPopUpDeleteBudge
 
     
     const [futureBudgets, setFutureBudgets] = useState([]);
+    const [errorMessage, setErrorMessage] = useState('')
 
     const getFutureBudgets = () => {
         //let categories = [];
@@ -23,14 +24,9 @@ const PopUpEditBudgets = ({closePopUp, openPopUpEditBudget, openPopUpDeleteBudge
         fetch('https://smart-money-back.herokuapp.com/future_budgets/'+session.user_id+'/', requestOptions)
           .then(response => response.json())
           .then(data => {
-              
-            // data.map(category => {
-            //     if(category.user_id!==null){
-            //         categories.push(category)
-            //     }
-            // })
             setFutureBudgets(data);
             console.log(data)
+            if(data.length===0)setErrorMessage("There is no future budget yet!")
           })
         
 
@@ -61,7 +57,7 @@ const PopUpEditBudgets = ({closePopUp, openPopUpEditBudget, openPopUpDeleteBudge
                                 list={futureBudgets}
                                 renderItem={renderBudget}
                                 keyExtractor={(item) =>  item.id}
-                                renderWhenEmpty={() => <tr><th><p>There is no future budget yet!</p></th></tr>}
+                                renderWhenEmpty={() => <tr><th><p>{errorMessage}</p></th></tr>}
                             />
                         </tbody>
                     </table>

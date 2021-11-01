@@ -226,6 +226,7 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, co
                             <FlatList 
                                 list={categories}
                                 renderItem={renderCategories}
+                                renderWhenEmpty={() => <tr><th><p></p></th></tr>}
                             />
                         </tbody>
                     </table>

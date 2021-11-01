@@ -71,7 +71,6 @@ const PopUpCategory = ({month, closePopUp, openPopUpCategoryDetails,update}) => 
                         <FlatList 
                         list={categories}
                         renderItem={renderCategories}
-                        renderWhenEmpty={() => <tr><th><p>There is no expense yet!</p></th></tr>}
                         />
                     </tbody>
                     </table>

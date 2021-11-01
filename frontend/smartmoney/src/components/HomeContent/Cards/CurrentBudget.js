@@ -102,7 +102,7 @@ const CurrentBudget = ({newBudget, update}) => {
                         <p className="cardTitle" style={{margin:0}}>Current budget</p>
                         <div style={{marginTop:20}}>
                             <p style={{margin:0, fontSize:12}}>Balance:</p>
-                            <p className="homeBudgetValues" style={green ? {fontWeight:'bold',color:'green'} : {fontWeight:'bold',width:'30%',color:'red'}}>$ {diference}</p>
+                            <p className="homeBudgetValues" style={green ? {fontWeight:'bold',color:'green'} : {fontWeight:'bold',color:'red'}}>$ {diference}</p>
                         </div>
                         <div style={{marginTop:20}}>
                             <p style={{margin:0, fontSize:12}}>Spent:</p>
@@ -146,7 +146,7 @@ const CurrentBudget = ({newBudget, update}) => {
                  <div style={{width:'100%', display:'flex',flexDirection:'row', justifyContent:'space-around'}}>
                     <div style={{width:'30%'}}>
                         <p style={{margin:0, fontSize:12}}>Balance:</p>
-                        <p className="homeBudgetValues" style={green ? {fontWeight:'bold',color:'green'} : {fontWeight:'bold',width:'30%',color:'red'}}>$ {diference}</p>
+                        <p className="homeBudgetValues" style={green ? {fontWeight:'bold',color:'green'} : {fontWeight:'bold',color:'red'}}>$ {diference}</p>
                     </div>
                     <div style={{width:'30%'}}>
                         <p style={{margin:0, fontSize:12}}>Spent:</p>
