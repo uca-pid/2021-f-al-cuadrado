@@ -1,21 +1,15 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
-//import "./style.css";
-import webStyles from "../webStyles";
-import mobilStyles from "../mobilStyles";
-import { useMediaQuery } from 'react-responsive';
 import FlatList from 'flatlist-react';
 import icons from "../../../functions/icons";
 import { IoArrowBack } from "@react-icons/all-files/io5/IoArrowBack"; 
 import { IoPencil} from "@react-icons/all-files/io5/IoPencil"; 
-import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline"; 
 
 
 const monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
 ];
 
-// import TableScrollbar from 'react-table-scrollbar';
 const PopUpCategory = ({month, closePopUp, openPopUpCategoryDetails,update}) => {
 
     const [categories, setCategories] = useState([]);
@@ -58,7 +52,7 @@ const PopUpCategory = ({month, closePopUp, openPopUpCategoryDetails,update}) => 
             <div className="categoryDetailsContainer">
                 <IoArrowBack className="closeCategoryDetails" onClick={closePopUp}/>
                 <div className="divCenteredItems">
-                    <p className="popUpTitle">{monthNames[month-1]}</p>
+                    <p className="popUpTitle">{monthNames[month.split("-")[1]-1]} {month.split("-")[0]}</p>
                     <table className = "categoryDetailsTable">
                         <thead className = "categoriesHomeTableHead">
                             <tr className = "headCategoriesRow">

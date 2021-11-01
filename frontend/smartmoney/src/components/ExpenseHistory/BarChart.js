@@ -40,12 +40,11 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update}) => {
       });
 
     function month_totalProcess(monthTotal,dataFrameBarChart) {
-      //#TODO: Revisar que no se este salteando un mes, en ese caso agregarlo con valor 0
-        let month_number = parseInt((monthTotal.month.slice(5,7)));
-        let month_letter = monthsNamesShort[month_number-1];
-        let year = monthTotal.month.slice(0,4);
+
+        let index = ((( monthTotal.month.split('-')[0]-fromDate.getFullYear())*12)+ parseInt(monthTotal.month.split('-')[1])) - fromDate.getMonth()-1;
+
         let total = monthTotal.total;
-        dataFrameBarChart.datasets[0].data.push(total)
+        dataFrameBarChart.datasets[0].data[index]=(total)
 
     }
 
@@ -54,11 +53,12 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update}) => {
       let month = fromDate.getMonth()
       if (elem[0] && elem[0].datasetIndex === 0) 
         {
-          openPopUpCategories((elem[0].index)+1+month)
+          console.log(dataFrame.labels[elem[0].index].split(" ")[1]+"-"+(((month+elem[0].index)%12)+1)+"-1")
+          openPopUpCategories(dataFrame.labels[elem[0].index].split(" ")[1]+"-"+(((month+elem[0].index)%12)+1)+"-1")
         }
       else if(elem[0] && elem[0].datasetIndex === 1)
         {
-          //#TODO: Rompe en cambio de año
+
           let dateAux = new Date(new Date().setMonth(fromDate.getMonth()+(elem[0].index)))
           openPopUpBudgetDetails(dateAux)
         }
