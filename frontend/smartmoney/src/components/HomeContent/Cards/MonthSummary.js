@@ -13,10 +13,11 @@ const MonthSummary = ({monthSummary,update}) => {
    
     function fetchCategories(){
         const session = JSON.parse(localStorage.session);
+        const date = new Date();
         const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code: session.code, month:new Date().getMonth()+1})
+          body: JSON.stringify({ code: session.code, month:date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()})
         };
         fetch('https://smart-money-back.herokuapp.com/categories/'+session.user_id+'/', requestOptions)
           .then(response => response.json())

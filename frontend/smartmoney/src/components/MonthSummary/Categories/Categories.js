@@ -7,27 +7,6 @@ import { IoCheckmarkSharp } from "@react-icons/all-files/io5/IoCheckmarkSharp";
 
 const Categories = ({categories,changeSelectedCategories, openPopUpCategoryDetails,month}) => {
 
-    // const [categories, setCategories] = useState([]);
-
-    // function fetchCategories(){
-    //     const session = JSON.parse(localStorage.session);
-    //     const requestOptions = {
-    //       method: 'POST',
-    //       headers: { 'Content-Type': 'application/json' },
-    //       body: JSON.stringify({ code: session.code})
-    //     };
-    //     fetch('https://smart-money-back.herokuapp.com/categories/'+session.user_id+'/', requestOptions)
-    //       .then(response => response.json())
-    //       .then(data => {
-    //           setCategories(data);
-    //           let allCategories = [];
-    //           data.map( obj => {allCategories.push(obj.name)});
-    //           localStorage.setItem('allCategories',allCategories);
-    //         });
-    // }
-
-  // useEffect(() => fetchCategories(),[update])
-
    const categoryDetails = (category) => {
         openPopUpCategoryDetails(category,month);
    }

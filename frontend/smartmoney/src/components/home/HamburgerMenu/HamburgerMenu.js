@@ -55,7 +55,7 @@ const HamburgerMenu = ({
             <button className="hamburgerMenuButton" onClick={expenseHistory}>
                 <IoBarChart className = "hamburgerMenuIcon" color="#7346c7"/>
                 {hamburger && 
-                    <p className = "hamburgerMenuText">Historical</p>
+                    <p className = "hamburgerMenuText">History</p>
                 }
             </button>
             <button className="hamburgerMenuButton" onClick={searchExpenses}>

@@ -82,6 +82,7 @@ const Home = () => {
         let allCategories = [];
         data.map( obj => {allCategories.push(obj.name)});
         localStorage.setItem('allCategories',allCategories);
+        console.log(allCategories)
     });
   }
   useEffect(() => fetchCategories(),[])

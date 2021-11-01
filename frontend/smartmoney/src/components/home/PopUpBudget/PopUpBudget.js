@@ -41,10 +41,11 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, co
     const loadEditFiles = () =>{
       const session = JSON.parse(localStorage.session);
         if(state==='New'){
+          const date = new Date();
             const requestOptions = {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ code: session.code, month:new Date().getMonth()})
+              body: JSON.stringify({ code: session.code, month:date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()})
             };
             fetch('https://smart-money-back.herokuapp.com/categories/'+session.user_id+'/', requestOptions)
               .then(response => response.json())
@@ -226,6 +227,7 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, co
                             <FlatList 
                                 list={categories}
                                 renderItem={renderCategories}
+                                renderWhenEmpty={() => <tr><th><p></p></th></tr>}
                             />
                         </tbody>
                     </table>

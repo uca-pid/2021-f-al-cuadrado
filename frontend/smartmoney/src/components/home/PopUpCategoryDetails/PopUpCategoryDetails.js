@@ -15,6 +15,7 @@ import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline";
 const PopUpCategoryDetails = ({category, month, closePopUp, openPopUpEditExpense,editCategory,deleteCategoryPopUp, update}) => {
 
     const [expenses, setExpenses] = useState([]);
+    const [errorMessage, setErrorMessage] = useState('')
 
     const categoryDetails = () => {
         let from = null
@@ -39,6 +40,7 @@ const PopUpCategoryDetails = ({category, month, closePopUp, openPopUpEditExpense
         .then(response => response.json())
         .then(data => {
             setExpenses(data);
+            if(data.length===0)setErrorMessage("There is no expense yet!")
             });
    }
    useEffect(() => categoryDetails(),[update])
@@ -84,7 +86,7 @@ const PopUpCategoryDetails = ({category, month, closePopUp, openPopUpEditExpense
                         list={expenses}
                         renderItem={renderExpenses}
                         keyExtractor={(item) =>  item.id}
-                        renderWhenEmpty={() => <tr><th><p>There is no expense yet!</p></th></tr>}
+                        renderWhenEmpty={() => <tr><th><p>{errorMessage}</p></th></tr>}
                     />
                 </tbody>
             </table>

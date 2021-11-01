@@ -31,7 +31,7 @@ const MonthSummary = ({openPopUpCategoryDetails, update}) => {
         const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code: session.code, month:date.getMonth()+1})
+          body: JSON.stringify({ code: session.code, month: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()})
         };
         fetch('https://smart-money-back.herokuapp.com/categories/'+session.user_id+'/', requestOptions)
           .then(response => response.json())
@@ -99,7 +99,7 @@ const MonthSummary = ({openPopUpCategoryDetails, update}) => {
                     <div style={{display:'flex', flexDirection:'row', alignItems:'center'}}>
                         <IoChevronBackSharp onClick={()=>{date.setMonth(date.getMonth() - 1);setUpdate(!updatte)}}/>
                         <p className="monthYearText">{monthNames[date.getMonth()]}, {date.getFullYear()}</p>
-                        <IoChevronForwardSharp onClick={()=>{if(date.getMonth()!==(new Date().getMonth())){date.setMonth(date.getMonth() + 1);setUpdate(!updatte)}}}/>
+                        <IoChevronForwardSharp onClick={()=>{if(date.setDate(2)<(new Date().setDate(1))){date.setMonth(date.getMonth() + 1);setUpdate(!updatte)}}}/>
                     </div>
                     <div>
                         {!subTotalVisible&&<p className="totalText">Total: ${chartTotalValue}</p>}

@@ -114,6 +114,10 @@
 .cardViewAll:hover{
     background-color: #BBBBBB;
 }
+.homeBudgetValues{
+    margin: 0px;
+    font-size: 25px;
+}
 @media only screen and (max-width: 600px) {
     .cardContainerHomeContent{
         height: 300px;
@@ -137,5 +141,11 @@
     .tableDate{
         font-size: 12px;
         width: 25%;
+    }
+    .cardContainerHomeContentBig{
+        margin: 20px;
+    }
+    .homeBudgetValues{
+        font-size: 15px;
     }
 }

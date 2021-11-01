@@ -9,14 +9,16 @@ const PopUpEditCategoires = ({closePopUp, openPopUpEditCategory, openPopUpDelete
 
     
     const [customCategories, setCustomCategories] = useState([]);
+    const [errorMessage, setErrorMessage] = useState('')
 
     const getcustomCategories = () => {
         let categories = [];
         const session = JSON.parse(localStorage.session);
+        const date = new Date();
         const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code: session.code, month:new Date().getMonth()})
+          body: JSON.stringify({ code: session.code, month:date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()})
         };
         fetch('https://smart-money-back.herokuapp.com/categories/'+session.user_id+'/', requestOptions)
           .then(response => response.json())
@@ -28,7 +30,7 @@ const PopUpEditCategoires = ({closePopUp, openPopUpEditCategory, openPopUpDelete
                 }
             })
             setCustomCategories({...categories});
-            console.log(customCategories)
+            if(data.length===6)setErrorMessage("There is no custom categories yet!")
           })
         
 
@@ -58,7 +60,7 @@ const PopUpEditCategoires = ({closePopUp, openPopUpEditCategory, openPopUpDelete
                                 list={customCategories}
                                 renderItem={renderCategory}
                                 keyExtractor={(item) =>  item.id}
-                                renderWhenEmpty={() => <tr><th><p>There is no custom categories yet!</p></th></tr>}
+                                renderWhenEmpty={() => <tr><th><p>{errorMessage}</p></th></tr>}
                             />
                         </tbody>
                     </table>

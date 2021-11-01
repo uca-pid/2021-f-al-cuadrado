@@ -5,14 +5,14 @@ import FlatList from 'flatlist-react';
 import icons from "../../../functions/icons";
 import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline"; 
 
-const Expenses = ({expenses,openPopUpEditExpense, openPopUpDeleteExpense, update}) => {
+const Expenses = ({expenses,errorMessage,openPopUpEditExpense, openPopUpDeleteExpense, update}) => {
 
     const editExpense = (expense) => {
         openPopUpEditExpense(expense);
    }
    const deleteExpense = (expense) => {
     openPopUpDeleteExpense(expense);
-}
+    }
 
     const renderExpenses = (item, index)=> {
         return (
@@ -50,7 +50,7 @@ const Expenses = ({expenses,openPopUpEditExpense, openPopUpDeleteExpense, update
                         list={expenses}
                         renderItem={renderExpenses}
                         keyExtractor={(item) =>  item.id}
-                        renderWhenEmpty={() => <tr><th><p>There is no expense yet!</p></th></tr>}
+                        renderWhenEmpty={() => <tr><th><p>{errorMessage}</p></th></tr>}
                     />
                 </tbody>
             </table>
