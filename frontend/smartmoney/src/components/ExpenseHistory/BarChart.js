@@ -7,6 +7,7 @@ import YearSelection from "./Select_Year.js"
 import BudgetExpenseSelector from "./BudgetExpenseSelector.js"
 import { dataFrameBarChart, dataFrameBarChartBudget , dataFrameBarChartExpenses} from '../../constants/dataFrameBarChart';
 import { monthsNamesShort } from '../../constants/monthsNamesShort';
+import { useMediaQuery } from 'react-responsive';
 
 const options = {
   maintainAspectRatio: false,
@@ -33,6 +34,10 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update}) => {
     const [fromDate, setFromDate] = useState(new Date(new Date().getFullYear(), 0, 1));
     const [upToDate, setUpToDate] = useState(new Date());
     const [dataFrame,setDataFrame] = useState([])
+
+    const isMobileDevice = useMediaQuery({
+      query: "(max-device-width: 480px)",
+      });
 
     function month_totalProcess(monthTotal,dataFrameBarChart) {
       //#TODO: Revisar que no se este salteando un mes, en ese caso agregarlo con valor 0
@@ -161,20 +166,36 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update}) => {
     style={{height:350}}
     spacing={2}
     alignItems="center">
-      <div style={{display:'flex', flexDirection:'row', width:'100%',justifyContent:'space-around'}}>
+      {!isMobileDevice &&
+        <div style={{display:'flex', flexDirection:'row', width:'100%',justifyContent:'space-around'}}>
+            <YearSelection 
+            fromYear={fromDate}
+            upToDate = {upToDate}
+            setFromDate = {setFromDate}
+            setUptoDate = {setUpToDate}/>
 
-        <YearSelection 
-        fromYear={fromDate}
-        upToDate = {upToDate}
-        setFromDate = {setFromDate}
-        setUptoDate = {setUpToDate}/>
+            <BudgetExpenseSelector
+            getAll = {fetchAll}
+            getExpenses = {fetchOnlyExpenses}
+            getBudgets = {fetchOnlyBudgets}
+            />
+          </div>
+      }
+      {isMobileDevice &&
+        <div style={{display:'flex', flexDirection:'column', width:'100%',alignItems:'center'}}>
+            <YearSelection 
+            fromYear={fromDate}
+            upToDate = {upToDate}
+            setFromDate = {setFromDate}
+            setUptoDate = {setUpToDate}/>
 
-        <BudgetExpenseSelector
-        getAll = {fetchAll}
-        getExpenses = {fetchOnlyExpenses}
-        getBudgets = {fetchOnlyBudgets}
-        />
-      </div>
+            <BudgetExpenseSelector
+            getAll = {fetchAll}
+            getExpenses = {fetchOnlyExpenses}
+            getBudgets = {fetchOnlyBudgets}
+            />
+          </div>
+      }
 
         <Bar 
         style={{height:300, width:'80%'}}
