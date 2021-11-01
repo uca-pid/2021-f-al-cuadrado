@@ -87,15 +87,6 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit, openPopUpDeleteExpen
             .then((response) => {
               if(response.status===201){
                   closePopUp();
-                //#TODO: Actualizar lista de consumos y de categorias
-                // const requestOptionsExpenses = {
-                //   method: 'POST',
-                //   headers: { 'Content-Type': 'application/json' },
-                //   body: JSON.stringify({ code: session.code})
-                // };
-                // fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptionsExpenses)
-                //   .then(response => response.json())
-                //   .then(data => setConsumos(data));
               }
             });
         }else{

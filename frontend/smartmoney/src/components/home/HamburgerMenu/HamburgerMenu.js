@@ -9,6 +9,9 @@ import { IoCashOutline } from "@react-icons/all-files/io5/IoCashOutline";
 import { IoLogOutOutline } from "@react-icons/all-files/io5/IoLogOutOutline"; 
 import { IoSettingsSharp } from "@react-icons/all-files/io5/IoSettingsSharp"; 
 import { IoPieChart } from "@react-icons/all-files/io5/IoPieChart"; 
+import { IoBuildOutline } from "@react-icons/all-files/io5/IoBuildOutline"; 
+import { IoBagAdd } from "@react-icons/all-files/io5/IoBagAdd"; 
+import { IoCut } from "@react-icons/all-files/io5/IoCut"; 
 import { useMediaQuery } from 'react-responsive';
 
 
@@ -17,6 +20,9 @@ const HamburgerMenu = ({
     changePassword, 
     newExpense, 
     newCategory,
+    editCategories,
+    newBudget,
+    editBudgets,
     home,
     monthSummary,
     expenseHistory,
@@ -49,7 +55,7 @@ const HamburgerMenu = ({
             <button className="hamburgerMenuButton" onClick={expenseHistory}>
                 <IoBarChart className = "hamburgerMenuIcon" color="#7346c7"/>
                 {hamburger && 
-                    <p className = "hamburgerMenuText">Expense history</p>
+                    <p className = "hamburgerMenuText">History</p>
                 }
             </button>
             <button className="hamburgerMenuButton" onClick={searchExpenses}>
@@ -71,6 +77,24 @@ const HamburgerMenu = ({
                 <IoAddCircle className = "hamburgerMenuIcon" color="#7346c7"/>
                 {hamburger && 
                     <p className = "hamburgerMenuText">Add category</p>
+                }
+                </button>
+            <button className="hamburgerMenuButton" onClick={newBudget}>
+                <IoBagAdd className = "hamburgerMenuIcon" color="#7346c7"/>
+                {hamburger && 
+                    <p className = "hamburgerMenuText">Add budget</p>
+                }
+                </button>
+            <button className="hamburgerMenuButton" onClick={editCategories}>
+                <IoBuildOutline className = "hamburgerMenuIcon" color="#7346c7"/>
+                {hamburger && 
+                    <p className = "hamburgerMenuText">Edit categories</p>
+                }
+                </button>
+            <button className="hamburgerMenuButton" onClick={editBudgets}>
+                <IoCut className = "hamburgerMenuIcon" color="#7346c7"/>
+                {hamburger && 
+                    <p className = "hamburgerMenuText">Edit budgets</p>
                 }
                 </button>
             <div className="hamburgerMenuBottomButtonsContainer">

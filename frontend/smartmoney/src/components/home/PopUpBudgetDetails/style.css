@@ -1,0 +1,28 @@
+.closeBudgetDetails{
+    position:relative;
+    left:520px;
+    top:5px;
+    background-color:#FFFFFF;
+    border:0px
+}
+.categoriesBudgetDetails{
+    border-spacing:0px;
+    padding: 20px;
+    width:100%;
+}
+.budgetBudgetDetailsHead{
+    text-align: left;
+    border-bottom-style:solid;
+    border-width:2px;
+    background-color: #52347b;
+    height: 40px;
+    color: #EEEEEE;
+    display: block;
+    width: 100%;
+}
+.budgetBudgetDetailsBody{
+    display: block;
+    width: 100%;
+    height: 250px;
+    overflow-y: auto;
+}

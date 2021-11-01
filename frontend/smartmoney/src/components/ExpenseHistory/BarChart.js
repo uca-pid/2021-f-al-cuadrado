@@ -4,8 +4,10 @@ import {useState, useEffect} from 'react';
 
 import Stack from '@mui/material/Stack';
 import YearSelection from "./Select_Year.js"
-import { dataFrameBarChart } from '../../constants/dataFrameBarChart';
+import BudgetExpenseSelector from "./BudgetExpenseSelector.js"
+import { dataFrameBarChart, dataFrameBarChartBudget , dataFrameBarChartExpenses} from '../../constants/dataFrameBarChart';
 import { monthsNamesShort } from '../../constants/monthsNamesShort';
+import { useMediaQuery } from 'react-responsive';
 
 const options = {
   maintainAspectRatio: false,
@@ -28,36 +30,46 @@ const options = {
   },
 };
 
-const BarChart = ({openPopUpCategories,update}) => {
+const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update}) => {
     const [fromDate, setFromDate] = useState(new Date(new Date().getFullYear(), 0, 1));
     const [upToDate, setUpToDate] = useState(new Date());
     const [dataFrame,setDataFrame] = useState([])
 
-    function month_totalProcess(monthTotal) {
-      //#TODO: Revisar que no se este salteando un mes, en ese caso agregarlo con valor 0
-        let month_number = parseInt((monthTotal.month.slice(5,7)));
-        let month_letter = monthsNamesShort[month_number-1];
-        let year = monthTotal.month.slice(0,4);
+    const isMobileDevice = useMediaQuery({
+      query: "(max-device-width: 480px)",
+      });
+
+    function month_totalProcess(monthTotal,dataFrameBarChart) {
+
+        let index = ((( monthTotal.month.split('-')[0]-fromDate.getFullYear())*12)+ parseInt(monthTotal.month.split('-')[1])) - fromDate.getMonth()-1;
+
         let total = monthTotal.total;
-        dataFrameBarChart.datasets[0].data.push(total)
-        dataFrameBarChart.labels.push(month_letter + ' ' + year)
+        dataFrameBarChart.datasets[0].data[index]=(total)
 
     }
 
     function getElementFromEvent(elem) {
+      console.log(elem[0].datasetIndex === 1)
       let month = fromDate.getMonth()
-      if (elem[0]) 
+      if (elem[0] && elem[0].datasetIndex === 0) 
         {
-          openPopUpCategories((elem[0].index)+1+month)
+          console.log(dataFrame.labels[elem[0].index].split(" ")[1]+"-"+(((month+elem[0].index)%12)+1)+"-1")
+          openPopUpCategories(dataFrame.labels[elem[0].index].split(" ")[1]+"-"+(((month+elem[0].index)%12)+1)+"-1")
+        }
+      else if(elem[0] && elem[0].datasetIndex === 1)
+        {
+
+          let dateAux = new Date(new Date().setMonth(fromDate.getMonth()+(elem[0].index)))
+          openPopUpBudgetDetails(dateAux)
         }
     }
 
-    function fetchTotals(){
-        const fromDateNumber = fromDate.getMonth()+1;
-        const upToDateNumber = upToDate.getMonth()+1;
-        let number = (upToDateNumber-fromDateNumber)+1+12*(upToDate.getYear()-fromDate.getYear());
-        const session = JSON.parse(localStorage.session);
-        const requestOptions = {
+    function expenseTotals(dataFrameBarChart) {
+      const fromDateNumber = fromDate.getMonth()+1;
+      const upToDateNumber = upToDate.getMonth()+1;
+      let number = (upToDateNumber-fromDateNumber)+1+12*(upToDate.getYear()-fromDate.getYear());
+      const session = JSON.parse(localStorage.session);
+      let requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(
@@ -69,25 +81,122 @@ const BarChart = ({openPopUpCategories,update}) => {
         fetch('https://smart-money-back.herokuapp.com/expenses_per_month/'+session.user_id+'/', requestOptions)
           .then(response => response.json())
           .then(data => {
-            dataFrameBarChart.labels = []
             dataFrameBarChart.datasets[0].data = []
-            data.forEach(month => month_totalProcess(month))
-            setDataFrame({...dataFrameBarChart})
+            data.forEach(month => month_totalProcess(month,dataFrameBarChart))
             //Math.min(...dataFrameBarChart.datasets[0].data)
-    })
+            setDataFrame({...dataFrameBarChart})
+    });
+    }
+    function fetchBudgets(dataFrameBarChart,dataset_index) {
+      const offset = fromDate.getTimezoneOffset()
+      const session = JSON.parse(localStorage.session);
+      let up_to_date = new Date(upToDate - (offset*60*1000)).toISOString().split('T')[0]
+      let from_date = new Date(fromDate - (offset*60*1000)).toISOString().split('T')[0]
+
+      let requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(
+            { 
+                code: session.code,
+                from_date: from_date,
+                up_to_date: up_to_date
+            })
+        };
+        fetch('https://smart-money-back.herokuapp.com/past_budgets/'+session.user_id+'/', requestOptions)
+        .then(response => response.json())
+        .then(data => {
+          dataFrameBarChart.datasets[dataset_index].data = []
+          data.forEach(month => {
+            let month_date = new Date(month.budget__month)
+            let month_number = month_date.getMonth() + 1
+            let index
+            if (month_date.getFullYear() != fromDate.getFullYear()) {
+              index = month_date.getMonth() + (13 - fromDate.getMonth())
+            } else {
+              index = month_number - fromDate.getMonth()
+            }
+            dataFrameBarChart.datasets[dataset_index].data[index] = (month.total_budget)
+          });
+          setDataFrame({...dataFrameBarChart})
+        })
+
+    }
+    function loadLabels(dataFrameBarChart) {
+      dataFrameBarChart.labels = []
+      let index_date = new Date(fromDate)
+      while(index_date < upToDate){
+        let month_number = index_date.getMonth()
+        let month_letter = monthsNamesShort[month_number];
+        let year = index_date.getFullYear().toString()
+        dataFrameBarChart.labels.push(month_letter + ' ' + year)
+        index_date = new Date(index_date.setMonth(index_date.getMonth()+1));
+      }
+      
+    }
+    function fetchAll(){
+        dataFrameBarChart.datasets[1].data = []
+        dataFrameBarChart.datasets[0].data = []
+        dataFrameBarChart.labels = []
+        expenseTotals(dataFrameBarChart)
+        fetchBudgets(dataFrameBarChart,1)
+        loadLabels(dataFrameBarChart)
+        setDataFrame({...dataFrameBarChart})
+
 }
-    useEffect(() => fetchTotals(),[fromDate,upToDate,update])
+    function fetchOnlyBudgets() {
+        dataFrameBarChart.datasets[1].data = []
+        dataFrameBarChartBudget.datasets[0].data = []
+        dataFrameBarChartBudget.labels = []
+        fetchBudgets(dataFrameBarChartBudget,0)
+        loadLabels(dataFrameBarChartBudget)
+}
+    function fetchOnlyExpenses() {
+        dataFrameBarChart.datasets[1].data = []
+        dataFrameBarChartExpenses.datasets[0].data = []
+        dataFrameBarChartExpenses.labels = []
+        expenseTotals(dataFrameBarChartExpenses)
+        loadLabels(dataFrameBarChartExpenses)
+}
+
+    useEffect(() => fetchAll(),[fromDate,upToDate,update])
 
     return(
     <Stack 
     style={{height:350}}
     spacing={2}
     alignItems="center">
-        <YearSelection 
-        fromYear={fromDate}
-        upToDate = {upToDate}
-        setFromDate = {setFromDate}
-        setUptoDate = {setUpToDate}/>
+      {!isMobileDevice &&
+        <div style={{display:'flex', flexDirection:'row', width:'100%',justifyContent:'space-around'}}>
+            <YearSelection 
+            fromYear={fromDate}
+            upToDate = {upToDate}
+            setFromDate = {setFromDate}
+            setUptoDate = {setUpToDate}/>
+
+            <BudgetExpenseSelector
+            getAll = {fetchAll}
+            getExpenses = {fetchOnlyExpenses}
+            getBudgets = {fetchOnlyBudgets}
+            />
+          </div>
+      }
+      {isMobileDevice &&
+        <div style={{display:'flex', flexDirection:'column', width:'100%',alignItems:'center'}}>
+            <YearSelection 
+            fromYear={fromDate}
+            upToDate = {upToDate}
+            setFromDate = {setFromDate}
+            setUptoDate = {setUpToDate}/>
+
+            <BudgetExpenseSelector
+            getAll = {fetchAll}
+            getExpenses = {fetchOnlyExpenses}
+            getBudgets = {fetchOnlyBudgets}
+            />
+          </div>
+      }
+
         <Bar 
         style={{height:300, width:'80%'}}
         getElementAtEvent={getElementFromEvent}
