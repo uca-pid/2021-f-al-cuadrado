@@ -16,7 +16,7 @@ from rest_framework.response import Response
 from django.http import HttpResponse
 
 import datetime
-
+import pytz
 
 from smartMoney_project.settings import EMAIL_HOST_USER
 from django.core.mail import send_mail
@@ -31,6 +31,11 @@ def validCode(user_id,received_code):
 	user = User.get(id = user_id)
 	expected_code = Sc.get(user=user).getCode()
 	return expected_code == received_code
+
+def dateFromString(stringDate): #Format 'AAAA-MM-DD'
+        paris_tz = pytz.timezone("UTC")
+        parsedString = stringDate.split('-')
+        return paris_tz.localize(datetime.datetime(int(parsedString[0]), int(parsedString[1]), int(parsedString[2])))
 
 value = openapi.Schema(title = 'value',type=openapi.FORMAT_FLOAT)
 code = openapi.Schema(title = 'session_code',type=openapi.TYPE_STRING)
@@ -58,9 +63,11 @@ month = openapi.Schema(title = 'month',type=openapi.TYPE_STRING)
 def category_list(request,user_id):
 	user = User.get(id = user_id)
 	received_code = request.data.get('code')
-	month = request.data.get('month')
+	month = (request.data.get('month'))
+	if month:
+		month = dateFromString(request.data.get('month'))
 	if validCode(user_id,received_code):
-		categories = Category.getAllWithTotalsFor(user = user, month = month or datetime.datetime.now().strftime("%m"))
+		categories = Category.getAllWithTotalsFor(user = user, date = month or datetime.datetime.now())
 		return Response(categories.values(), status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
 

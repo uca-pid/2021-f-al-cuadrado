@@ -10,18 +10,22 @@ from .budget_model import Budget_Category
 import datetime
 import pytz
 
+from dateutil.relativedelta import relativedelta
+
 
 
 User = get_user_model()
 
 class BudgetTestCase(APITestCase):
 	def setUp(self):
-		month = datetime.datetime.now().month
-		self.month = '2021-' + str(month) + '-01'
-		self.last_month = '2021-' + str(month-1) + '-01'
-		self.next_month = '2021-' + str(month+1) + '-01'
-		self.following_month = '2021-' + str(month+2) + '-01'
-		self.int_month = month
+		month = datetime.datetime.now()
+		self.next_month_date = (datetime.datetime.now() + relativedelta(months=+1))
+		self.following_month_date = (datetime.datetime.now() + relativedelta(months=+2))
+		self.month = str(month.year) + '-' + str(month.month) + '-01'
+		self.last_month = str(month.year) + '-' + str(month.month-1) + '-01'
+		self.next_month = str(self.next_month_date.year) + '-' + str(self.next_month_date.month) + '-01'
+		self.following_month = str(self.following_month_date.year) + '-' + str(self.following_month_date.month) + '-01'
+		self.int_month = month.month
 		self.user = User.create_user(first_name='Francisco',email='f@gmail.com',last_name='Stulich',password='admin')
 
 	def userLogin (self,email,password):
@@ -72,11 +76,10 @@ class BudgetTestCase(APITestCase):
 			last_month_budget.modify()
 	def test_modify_budget_month(self):
 		budget = Budget.create_budget(user = self.user,month = self.next_month)
-		self.assertEqual(budget.getMonth(),self.int_month + 1)
-		date = pytz.timezone("Europe/Paris").localize(datetime.datetime.now())
-		date = date.replace(month = self.int_month + 2)
+		self.assertEqual(budget.getMonth(), self.int_month + 1)
+		date = pytz.timezone("Europe/Paris").localize(self.following_month_date)
 		budget.modify(month = date)
-		self.assertEqual(budget.getMonth(),self.int_month + 2)
+		self.assertEqual(budget.getMonth(),self.following_month_date.month)
 	def test_change_category_total_of_budget(self):
 		budget = Budget.create_budget(user = self.user,month = self.next_month)
 		budget.add('Other',4800)

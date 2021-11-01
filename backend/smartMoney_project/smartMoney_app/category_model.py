@@ -63,9 +63,11 @@ class Category(models.Model,baseModel):
         return super().getAllWith(*arg,**fields)
 
     @classmethod
-    def getAllWithTotalsFor(cls,user, month = datetime.datetime.now().strftime("%m")):
+    def getAllWithTotalsFor(cls,user, date = datetime.datetime.now()):
+        month = date.strftime("%m")
+        year = date.strftime("%Y")
         expense_owner_filter = (Q(expense__owner = user) | Q(expense__owner = None))
-        date_time_filter = (Q(expense__date__month = month) | Q(expense__date__month = None))
+        date_time_filter = (Q(expense__date__month = month) & Q(expense__date__year = year))
         categories = cls.getAllWith(user = user)
         categories = categories.annotate(total= Coalesce(models.Sum('expense__value',filter = (expense_owner_filter & date_time_filter)),0.0)).order_by('-total')
         return categories
