@@ -27,6 +27,19 @@ class CustomUserManager(BaseUserManager):
         return user
     def get_queryset(self):
         return super().get_queryset()
+    def create_superuser(self, email, password, **extra_fields):
+        """
+        Create and save a SuperUser with the given email and password.
+        """
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError(_('Superuser must have is_staff=True.'))
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError(_('Superuser must have is_superuser=True.'))
+        return self.create_user(email, password, **extra_fields)
 
 
 class SecurityCodeManager(models.Manager):
@@ -58,7 +71,7 @@ class ExpenseManager(models.Manager):
         raise ValueError(_('Invalid information'))
  
     def dateFromString(self,stringDate): #Format 'AAAA-MM-DD'
-        paris_tz = pytz.timezone("Europe/Paris")
+        paris_tz = pytz.timezone("UTC")
         parsedString = stringDate.split('-')
         return paris_tz.localize(datetime(int(parsedString[0]), int(parsedString[1]), int(parsedString[2])))
     def validCategory(self,category,owner):
@@ -93,4 +106,14 @@ class CategoryManager(models.Manager):
 
 
 
+class BudgetManager(models.Manager):
+    def create_budget(self,user,month):
+        date = self.dateFromString(month)
+        budget = self.model(user = user,month = date)
+        budget.save()
+        return budget
 
+    def dateFromString(self,stringDate): #Format 'AAAA-MM-DD'
+        paris_tz = pytz.timezone("UTC")
+        parsedString = stringDate.split('-')
+        return paris_tz.localize(datetime(int(parsedString[0]), int(parsedString[1]), int(parsedString[2])))

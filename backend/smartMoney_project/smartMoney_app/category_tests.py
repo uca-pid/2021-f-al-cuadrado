@@ -325,7 +325,7 @@ class CategoryTestCase(APITestCase):
 		Expense.create_expense(value = 750,description = 'Primer mes',owner = user,date = last_month_date,category = category)
 		webClient = self.client
 		response = webClient.post('/categories/' + str(user_id) + '/', {'code' : loginCode,
-																		'month' : last_month})
+																		'month' : last_month_date})
 		self.assertEqual(response.status_code,200)
 		categories = response.data
 		self.assertEqual(len(categories),7)
