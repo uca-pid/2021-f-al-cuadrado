@@ -123,13 +123,16 @@ def expenses_from_category(request,user_id):
 							'icon' : icon,
 							},
 						),
-					responses={201: 'Category created',401: 'Invalid Credentials'})
+					responses={201: 'Category created',401: 'Invalid Credentials',400: 'Category already exist'})
 @api_view(['POST'])
 def new_category(request,user_id):
 	user = User.get(id = user_id)
 	received_code = request.data.get('code')
 	if validCode(user_id,received_code):
-		Category.create(name = request.data.get('category_name'), icon = request.data.get('icon'), user = user)
+		try:
+			Category.create(name = request.data.get('category_name'), icon = request.data.get('icon'), user = user)
+		except Exception as e:
+			return Response(status = status.HTTP_400_BAD_REQUEST)
 		return Response(status = status.HTTP_201_CREATED)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
 

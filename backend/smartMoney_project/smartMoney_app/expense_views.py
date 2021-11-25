@@ -65,6 +65,8 @@ from_date = openapi.Schema(title = 'from_date',type=openapi.TYPE_STRING)
 upTo_date = openapi.Schema(title = 'upTo_date',type=openapi.TYPE_STRING)
 valueFrom = openapi.Schema(title = 'valueFrom',type=openapi.FORMAT_FLOAT)
 upToValue = openapi.Schema(title = 'upToValue',type=openapi.FORMAT_FLOAT)
+up_to_item = openapi.Schema(title = 'up_to_item',type=openapi.FORMAT_FLOAT)
+from_item = openapi.Schema(title = 'from_item',type=openapi.FORMAT_FLOAT)
 
 
 
@@ -119,6 +121,8 @@ def new_expense(request,user_id):
 							'upToValue':upToValue,
 							'category':category,
 							'description':description,
+							'from_item':from_item,
+							'up_to_item':up_to_item
 							},
 						),
 					responses={200: 'Expenses sended',401: 'Invalid Credentials'}) #TODO Cambiar nombres.
@@ -127,27 +131,36 @@ def expense_list(request,user_id):
 	user = User.get(id = user_id)
 	expected_code = Sc.get(user=user).getCode()
 	received_code = request.data.get('code')
+	from_item = request.data.get('from_item')
+	up_to_item = request.data.get('up_to_item')
+	flag = True
 	if expected_code == received_code:
 		expense_filter = Q(owner = user)
 		for field in request.data.keys():
-			if field == 'from_date' and request.data.get(field): #rompe
+			if field == 'from_date' and request.data.get(field):
 				date = dateFromString(request.data.get('from_date'))
 				expense_filter = expense_filter & Q(date__gte = date)
-			elif field == 'upTo_date' and request.data.get(field): #rompe
+			elif field == 'upTo_date' and request.data.get(field):
 				date = dateFromString(request.data.get('upTo_date'))
 				expense_filter = expense_filter & Q(date__lte = date)
 			elif field == 'valueFrom' and request.data.get(field):
 				expense_filter = expense_filter & Q(value__gte = request.data.get('valueFrom'))
 			elif field == 'upToValue' and request.data.get(field):
 				expense_filter = expense_filter & Q(value__lte = request.data.get('upToValue'))
-			elif field == 'category' and request.data.get(field): #mas de una category
+			elif field == 'category' and request.data.get(field): 
 				cat_filters = makeCatFilter(request.data.get('category'))
 				if cat_filters:
 					expense_filter = expense_filter & cat_filters
 			elif field == 'description' and request.data.get(field): #distingue mayusq y minusc
 				expense_filter = expense_filter & Q(description__icontains = request.data.get('description'))
 		expenses = Expense.getAllWith(expense_filter).order_by('-date')
-		return Response(expenses.values('id','owner_id','value','description','date','category__name','category__icon'), status = status.HTTP_200_OK)
+		if not from_item:
+			from_item = 0
+		elif not up_to_item or up_to_item > len(expenses):
+			up_to_item = len(expenses)
+			flag = False
+		expenses = expenses.values('id','owner_id','value','description','date','category__name','category__icon')[from_item:up_to_item]
+		return Response({'data' : expenses, 'flag' : flag}, status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
 
 

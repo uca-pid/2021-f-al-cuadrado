@@ -144,14 +144,15 @@ class UserTestCase(APITestCase):
         self.userLogin('f@gmail.com','admin')
         self.assertEqual(len(Sc.getAllWith()),1)
         
-    def test_user_code_changes_when_he_logins_again(self):
+    def test_user_code_dont_change_when_he_logins_again(self):
         self.assertEqual(len(Sc.getAllWith()),0)
         loginResponse = self.userLogin('f@gmail.com','admin')
         first_code = Sc.get(user_code = loginResponse.data.get('code'))
         self.assertEqual(len(Sc.getAllWith()),1)
-        self.userLogin('f@gmail.com','admin')
+        loginResponse = self.userLogin('f@gmail.com','admin')
         second_code = Sc.get(user_code = loginResponse.data.get('code'))
         self.assertEqual(len(Sc.getAllWith()),1)
-        self.assertNotEqual(first_code, second_code)
+        print(first_code.getCode(),second_code)
+        self.assertEqual(first_code, second_code)
 
 

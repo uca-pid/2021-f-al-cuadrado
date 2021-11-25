@@ -27,13 +27,12 @@ class SecurityCode(models.Model,baseModel):
     objects = SecurityCodeManager()
 
     def __eq__(self, otherObject):
-        return isinstance(otherObject, SecurityCode) and self.user.getUserId() == otherObject.getUserId() and self.user_code == otherObject.getCode() and self.getDate() == other.getDate()
+        return isinstance(otherObject, SecurityCode) and self.getUserId() == otherObject.getUserId() and self.user_code == otherObject.getCode()
 
     @classmethod
     def validCode(cls,user,userCode):
         code = cls.objects.filter(user = user).first()
-        expire_date = code.getDate() + timedelta(minutes = 20)
-        if timezone.now() < expire_date and code.getCode() == userCode:
+        if code.validDate() and code.getCode() == userCode:
             code.updateDate()
             return True
         return False
@@ -44,6 +43,10 @@ class SecurityCode(models.Model,baseModel):
             return cls.objects.create_security_code(user)
         except Exception as e:
             raise e
+
+    def validDate(self):
+        expire_date = self.getDate() + timedelta(minutes = 20)
+        return timezone.now() < expire_date
     def getCode(self):
         return self.user_code
     def getUserId(self):

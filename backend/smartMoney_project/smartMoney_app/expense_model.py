@@ -10,6 +10,8 @@ from django.utils import timezone
 import datetime
 from dateutil.relativedelta import relativedelta
 
+import pytz
+
 
 from django.db.models import Q
 from django.db.models.functions import Coalesce
@@ -52,8 +54,8 @@ class Expense(models.Model,baseModel):
     @classmethod
     def getTotalsPerMonth(cls,user,last_months = 12):
         expense_owner_filter = (Q(owner = user))
-        today = datetime.datetime.today()
-        today_date = datetime.datetime(today.year, today.month, 1)
+        today =  pytz.timezone("UTC").localize(datetime.datetime.today())
+        today_date = pytz.timezone("UTC").localize(datetime.datetime(today.year, today.month, 1))
         relative_delta = relativedelta(months=+int(last_months)-1)
         from_date = today_date - relative_delta
         last_months_filter = Q(date__gt= from_date) 
