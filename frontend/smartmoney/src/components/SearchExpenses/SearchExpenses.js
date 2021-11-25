@@ -9,7 +9,7 @@ import { IoChevronDownSharp } from "@react-icons/all-files/io5/IoChevronDownShar
 import { IoChevronUpSharp } from "@react-icons/all-files/io5/IoChevronUpSharp"; 
 import Filters from "./Filers";
 
-const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) => {
+const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update, openPopUpSessionExpired}) => {
 
     const isMobileDevice = useMediaQuery({
         query: "(max-device-width: 480px)",
@@ -22,7 +22,9 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) 
     const [maxValue, setMaxValue] = useState('');
     const [fromDate, setFromDate] = useState(null);
     const [upToDate, setUpToDate] = useState(null);
-    const [errorMessage, setErrorMessage] = useState('')
+    const [errorMessage, setErrorMessage] = useState('');
+    const [morePages, setMorePages] = useState(true);
+    const [fromItem, setFromItem] = useState(50);
 
     const [mobileFilterDisplay, setMobileFilterDisplay]= useState(false);
     
@@ -33,6 +35,7 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) 
           setMaxValue('');
           setFromDate(null);
           setUpToDate(null);
+          setFromItem(0)
           const session = JSON.parse(localStorage.session);
           const requestOptions = {
             method: 'POST',
@@ -45,12 +48,15 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) 
                   category: [],
                   valueFrom:null,
                   upToValue:null,
+                  from_item:0,
+                  up_to_item:50,
               })
           };
           
           fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptions)
             .then(response => response.json())
-            .then(data => {setMobileFilterDisplay(false);setExpenses({...data})});
+            .then(data => {setMobileFilterDisplay(false);setMorePages(data.flag);setFromItem(50);setExpenses(data.data)})
+            .catch(error => openPopUpSessionExpired())
       }
       const applyFilters = () => {
         fetchExpenses()
@@ -76,18 +82,59 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) 
                 category: fetchCategories,
                 valueFrom:minValue,
                 upToValue:maxValue,
+                from_item:0,
+                up_to_item:50,
             })
         };
         
         fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptions)
           .then(response => response.json())
           .then(data => {
-              setExpenses({...data});
-              if(data.length===0)setErrorMessage("There is no expense yet!")
-            });
+              setExpenses(data.data);
+              setMorePages(data.flag);
+              if(data.data.length===0)setErrorMessage("There is no expense yet!")
+            })
+            .catch(error => openPopUpSessionExpired())
 
     }
     useEffect(() => fetchExpenses(),[update])
+
+    const loadMore = () => {
+        let from_date = null;
+        let upTo_date = null;
+        let fetchCategories = categories;
+        if(fromDate)from_date=fromDate.getFullYear()+'-'+(fromDate.getMonth()+1)+'-'+(fromDate.getDate()+1);
+        if(upToDate)upTo_date=upToDate.getFullYear()+'-'+(upToDate.getMonth()+1)+'-'+(upToDate.getDate()+1);
+        if(fetchCategories[0]=='Categories')fetchCategories=[];
+        const session = JSON.parse(localStorage.session);
+        const requestOptions = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+                code: session.code,
+                from_date: from_date,
+                upTo_date: upTo_date,
+                description: description,
+                category: fetchCategories,
+                valueFrom:minValue,
+                upToValue:maxValue,
+                from_item:fromItem+50,
+                up_to_item:fromItem+100,
+            })
+        };
+        
+        fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptions)
+          .then(response => response.json())
+          .then(data => {
+              data.data.map((exp) => {console.log(exp)})
+                expenses.push(...data.data)
+                console.log(expenses)
+              setMorePages(data.flag);
+              setFromItem(fromItem+50);
+              if(data.data.length===0)setErrorMessage("There is no expense yet!")
+            })
+            .catch(error => openPopUpSessionExpired())
+    }
 
     return(
         <div className="searchExpensesContainer" >
@@ -95,7 +142,7 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) 
             <div className="searchExpensesSecondtDiv">
                 <div className="cardContainer">
                     <div className="cardTitleContainer" style={{marginBottom:10}}>
-                        <p className="cardTitle">Aply filters</p>
+                        <p className="cardTitle">Apply filters</p>
                         {mobileFilterDisplay && <IoChevronUpSharp style={{marginRight:15}} onClick={()=>setMobileFilterDisplay(false)}/>}
                         {!mobileFilterDisplay && <IoChevronDownSharp style={{marginRight:15}} onClick={()=>setMobileFilterDisplay(true)}/>}
                     </div>
@@ -121,14 +168,14 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update}) 
             </div>
             }
             <div className="searchExpensesFirstDiv">
-                <Expenses expenses={expenses} errorMessage={errorMessage} openPopUpEditExpense={openPopUpEditExpense}  openPopUpDeleteExpense={openPopUpDeleteExpense} update ={update}/>
+                <Expenses expenses={expenses} morePagesProps={morePages} loadMore={loadMore} errorMessage={errorMessage} openPopUpEditExpense={openPopUpEditExpense}  openPopUpDeleteExpense={openPopUpDeleteExpense} update ={update}/>
 
             </div>
             {!isMobileDevice&&
             <div className="searchExpensesSecondtDiv">
                 <div className="cardContainer">
                     <div className="cardTitleContainer">
-                        <p className="cardTitle">Aply filters</p>
+                        <p className="cardTitle">Apply filters</p>
                     </div>
 
                     <Filters 

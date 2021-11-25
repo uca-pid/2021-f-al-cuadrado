@@ -11,7 +11,7 @@ import { IoChevronDownSharp } from "@react-icons/all-files/io5/IoChevronDownShar
 import { IoChevronUpSharp } from "@react-icons/all-files/io5/IoChevronUpSharp"; 
 import { useMediaQuery } from 'react-responsive';
 
-const CurrentBudget = ({newBudget, update}) => {
+const CurrentBudget = ({newBudget, update, openPopUpSessionExpired}) => {
 
    const [categories, setCategories] = useState([]);
    const [budget, setBudget] = useState(0);
@@ -39,6 +39,8 @@ const CurrentBudget = ({newBudget, update}) => {
             .then((response) => {
               if(response.status===200){
                 setBudgetCurrentMonth(true)
+              }else{
+                openPopUpSessionExpired()
               }
             });  
 
@@ -62,13 +64,10 @@ const CurrentBudget = ({newBudget, update}) => {
               })
               setBudget(totalBudget);
               setSpent(totalSpent);
-              if((totalBudget-totalSpent)>=0){
-                setDiference(totalBudget-totalSpent);
-              }else{
-                setDiference(totalSpent-totalBudget);
-              }
+              setDiference((totalSpent*100/totalBudget).toFixed(0));
               setGreen((totalBudget-totalSpent)>=0);
-            });
+            })
+            .catch(error => openPopUpSessionExpired())
     }
 
     useEffect(() => fetchLoadScreen(),[update])
@@ -101,8 +100,8 @@ const CurrentBudget = ({newBudget, update}) => {
                     <div style={{marginTop:20}}>
                         <p className="cardTitle" style={{margin:0}}>Current budget</p>
                         <div style={{marginTop:20}}>
-                            <p style={{margin:0, fontSize:12}}>Balance:</p>
-                            <p className="homeBudgetValues" style={green ? {fontWeight:'bold',color:'green'} : {fontWeight:'bold',color:'red'}}>$ {diference}</p>
+                            <p style={{margin:0, fontSize:12}}>Spent:</p>
+                            <p className="homeBudgetValues" style={green ? {fontWeight:'bold',color:'green'} : {fontWeight:'bold',color:'red'}}>{diference} %</p>
                         </div>
                         <div style={{marginTop:20}}>
                             <p style={{margin:0, fontSize:12}}>Spent:</p>
@@ -145,8 +144,8 @@ const CurrentBudget = ({newBudget, update}) => {
                 {(!display && budgetCurrentMonth&&!isMobileDevice)&&
                  <div style={{width:'100%', display:'flex',flexDirection:'row', justifyContent:'space-around'}}>
                     <div style={{width:'30%'}}>
-                        <p style={{margin:0, fontSize:12}}>Balance:</p>
-                        <p className="homeBudgetValues" style={green ? {fontWeight:'bold',color:'green'} : {fontWeight:'bold',color:'red'}}>$ {diference}</p>
+                        <p style={{margin:0, fontSize:12}}>Spent:</p>
+                        <p className="homeBudgetValues" style={green ? {fontWeight:'bold',color:'green'} : {fontWeight:'bold',color:'red'}}>{diference} %</p>
                     </div>
                     <div style={{width:'30%'}}>
                         <p style={{margin:0, fontSize:12}}>Spent:</p>
@@ -189,8 +188,8 @@ const CurrentBudget = ({newBudget, update}) => {
                     <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'space-around', alignItems:'center'}}>
                         <p className="cardTitle" style={{margin:0, width:'30%'}}>Current budget</p>
                         <div style={{marginTop:20}}>
-                            <p style={{margin:0, fontSize:12}}>Balance:</p>
-                            <p className="homeBudgetValues" style={green ? {fontWeight:'bold',color:'green'} : {fontWeight:'bold',width:'30%',color:'red'}}>$ {diference}</p>
+                            <p style={{margin:0, fontSize:12}}>Spent:</p>
+                            <p className="homeBudgetValues" style={green ? {fontWeight:'bold',color:'green'} : {fontWeight:'bold',width:'30%',color:'red'}}>{diference} %</p>
                         </div>
                         <div style={{marginTop:20}}>
                             <p style={{margin:0, fontSize:12}}>Spent:</p>

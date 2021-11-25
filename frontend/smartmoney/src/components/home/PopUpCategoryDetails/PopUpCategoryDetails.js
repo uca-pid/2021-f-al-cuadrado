@@ -12,7 +12,7 @@ import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline";
 
 
 // import TableScrollbar from 'react-table-scrollbar';
-const PopUpCategoryDetails = ({category, month, closePopUp, openPopUpEditExpense,editCategory,deleteCategoryPopUp, update}) => {
+const PopUpCategoryDetails = ({category, month, closePopUp, openPopUpEditExpense,editCategory,deleteCategoryPopUp, update,openPopUpSessionExpired}) => {
 
     const [expenses, setExpenses] = useState([]);
     const [errorMessage, setErrorMessage] = useState('')
@@ -41,7 +41,8 @@ const PopUpCategoryDetails = ({category, month, closePopUp, openPopUpEditExpense
         .then(data => {
             setExpenses(data);
             if(data.length===0)setErrorMessage("There is no expense yet!")
-            });
+            })
+            .catch(error => openPopUpSessionExpired())
    }
    useEffect(() => categoryDetails(),[update])
 

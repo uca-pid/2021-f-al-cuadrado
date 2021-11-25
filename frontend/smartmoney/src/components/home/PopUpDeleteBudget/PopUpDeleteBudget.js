@@ -14,7 +14,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import { monthsNamesShort } from '../../../constants/monthsNamesShort';
 
-const PopUpDeleteBudget = ({closePopUp, budgetToDelete}) => {
+const PopUpDeleteBudget = ({closePopUp, budgetToDelete,openPopUpSessionExpired}) => {
 
     const deleteBudget = () => {
       console.log(budgetToDelete)
@@ -29,7 +29,8 @@ const PopUpDeleteBudget = ({closePopUp, budgetToDelete}) => {
       };
       console.log(requestOptions.body)
       fetch('https://smart-money-back.herokuapp.com/delete_budget/'+session.user_id+'/', requestOptions)
-        .then(() => closePopUp());
+        .then(() => closePopUp())
+        .catch(error => openPopUpSessionExpired())
 
     }
 

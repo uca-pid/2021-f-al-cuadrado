@@ -26,8 +26,8 @@ return (
       color="primary"
       value={selection}
       onChange={handleChange}>
-      <ToggleButton value="Expenses">Expenses</ToggleButton>
-      <ToggleButton value="Budget">Budget</ToggleButton>
+      <ToggleButton style={((JSON.stringify(selection) == JSON.stringify(['Budget']))||(JSON.stringify(selection) == JSON.stringify([])))?{backgroundColor:'rgba(54, 162, 235, 0.2)'}:{backgroundColor:'rgba(54, 162, 235, 0.6)'}} value="Expenses">Expenses</ToggleButton>
+      <ToggleButton style={((JSON.stringify(selection) == JSON.stringify(['Expenses']))||(JSON.stringify(selection) == JSON.stringify([])))?{backgroundColor:'rgba(153, 102, 255, 0.2)'}:{backgroundColor:'rgba(153, 102, 255, 0.6)'}} value="Budget">Budget</ToggleButton>
     </ToggleButtonGroup>
     )
 }

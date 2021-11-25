@@ -1,11 +1,11 @@
 import React from 'react';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import "./style.css";
 import FlatList from 'flatlist-react';
 import icons from "../../../functions/icons";
 import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline"; 
 
-const Expenses = ({expenses,errorMessage,openPopUpEditExpense, openPopUpDeleteExpense, update}) => {
+const Expenses = ({expenses,morePagesProps,loadMore,errorMessage,openPopUpEditExpense, openPopUpDeleteExpense, update}) => {
 
     const editExpense = (expense) => {
         openPopUpEditExpense(expense);
@@ -13,6 +13,11 @@ const Expenses = ({expenses,errorMessage,openPopUpEditExpense, openPopUpDeleteEx
    const deleteExpense = (expense) => {
     openPopUpDeleteExpense(expense);
     }
+
+    const loadMoreExpenses = () => {
+        loadMore();
+    }
+
 
     const renderExpenses = (item, index)=> {
         return (
@@ -49,6 +54,8 @@ const Expenses = ({expenses,errorMessage,openPopUpEditExpense, openPopUpDeleteEx
                     <FlatList 
                         list={expenses}
                         renderItem={renderExpenses}
+                        hasMoreItems={morePagesProps}
+                        loadMoreItems={loadMoreExpenses}
                         keyExtractor={(item) =>  item.id}
                         renderWhenEmpty={() => <tr><th><p>{errorMessage}</p></th></tr>}
                     />

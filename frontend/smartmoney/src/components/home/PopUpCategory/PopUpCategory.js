@@ -10,7 +10,7 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
 ];
 
-const PopUpCategory = ({month, closePopUp, openPopUpCategoryDetails,update}) => {
+const PopUpCategory = ({month, closePopUp, openPopUpCategoryDetails,update,openPopUpSessionExpired}) => {
 
     const [categories, setCategories] = useState([]);
 
@@ -26,7 +26,8 @@ const PopUpCategory = ({month, closePopUp, openPopUpCategoryDetails,update}) => 
           .then(response => response.json())
           .then(data => {
               setCategories(data);
-            });
+            })
+            .catch(error => openPopUpSessionExpired())
     }
     useEffect(() => fetchCategories(),[update])
 

@@ -30,7 +30,7 @@ const options = {
   },
 };
 
-const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update}) => {
+const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update,openPopUpSessionExpired}) => {
     const [fromDate, setFromDate] = useState(new Date(new Date().getFullYear(), 0, 1));
     const [upToDate, setUpToDate] = useState(new Date());
     const [dataFrame,setDataFrame] = useState([])
@@ -79,13 +79,15 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update}) => {
             })
         };
         fetch('https://smart-money-back.herokuapp.com/expenses_per_month/'+session.user_id+'/', requestOptions)
-          .then(response => response.json())
+          .then(response =>response.json())
           .then(data => {
             dataFrameBarChart.datasets[0].data = []
             data.forEach(month => month_totalProcess(month,dataFrameBarChart))
             //Math.min(...dataFrameBarChart.datasets[0].data)
             setDataFrame({...dataFrameBarChart})
-    });
+          })
+          .catch(error => openPopUpSessionExpired())
+
     }
     function fetchBudgets(dataFrameBarChart,dataset_index) {
       const offset = fromDate.getTimezoneOffset()
@@ -120,6 +122,7 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update}) => {
           });
           setDataFrame({...dataFrameBarChart})
         })
+        .catch(error => openPopUpSessionExpired())
 
     }
     function loadLabels(dataFrameBarChart) {

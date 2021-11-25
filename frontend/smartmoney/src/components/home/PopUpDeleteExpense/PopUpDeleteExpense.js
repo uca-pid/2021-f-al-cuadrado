@@ -18,7 +18,7 @@ import Stack from '@mui/material/Stack';
 //   ];
 //   const defaultOption = categoryList[0];
 
-const PopUpDeleteExpense = ({closePopUp, expenseToDelete}) => {
+const PopUpDeleteExpense = ({closePopUp, expenseToDelete,openPopUpSessionExpired}) => {
 
     const deleteExpense = () => {
       const session = JSON.parse(localStorage.session);
@@ -33,7 +33,8 @@ const PopUpDeleteExpense = ({closePopUp, expenseToDelete}) => {
       };
       console.log(requestOptions.body)
       fetch('https://smart-money-back.herokuapp.com/delete_expense/'+session.user_id+'/', requestOptions)
-        .then(() => closePopUp());
+        .then(() => closePopUp())
+        .catch(error => openPopUpSessionExpired())
 
     }
 

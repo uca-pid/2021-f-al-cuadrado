@@ -20,7 +20,7 @@ import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline";
 
 
 
-const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, confirmBudget}) => {
+const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, confirmBudget, openPopUpCantCreateBudget,openPopUpSessionExpired}) => {
 
     // const isMobileDevice = useMediaQuery({
     //     query: "(max-device-width: 480px)",
@@ -31,6 +31,8 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, co
     const [categories, setCategories] = useState([]);
     const [update, setUpdate] = useState(false);
     const [total, setTotal] = useState(0);
+    const [sinValores, setSinValores] = useState(false);
+
 
 
     // const [name, setName] = useState('');
@@ -55,6 +57,7 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, co
                 })
                 setCategories(data);
               })
+              .catch(error => openPopUpSessionExpired())
         }else{
             setTitle("Edit budget");
             setMonth(new Date(parseInt(budgetToEdit.budget__month.substring(0, 4)),parseInt(budgetToEdit.budget__month.substring(5, 7)-1)));
@@ -69,12 +72,18 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, co
                 setCategories(data);
                 setTotal(budgetToEdit.total_budget);
               })
+              .catch(error => openPopUpSessionExpired())
         }
       }
     useEffect(() => loadEditFiles(),[state, budgetToEdit])
 
     const submitBudget = () => {
-        (state==='New') ? submitNewBudget() : submitEditBudget();
+      setSinValores(false)
+        if(total>0){
+          (state==='New') ? submitNewBudget() : submitEditBudget();
+        }else{
+            setSinValores(true)
+        }
       }
 
     const submitNewBudget = () => {
@@ -100,6 +109,12 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, co
                   month: month
                 });
               }
+              if(response.status===200){
+                openPopUpCantCreateBudget();
+              }
+              if(response.status===401){
+                openPopUpSessionExpired();
+              }
             });  
         }else{
           const requestOptionsNewExpense = {
@@ -117,6 +132,13 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, co
               if(response.status===200){
                   closePopUp();
               }
+              if(response.status===400){
+                openPopUpCantCreateBudget();
+              }
+              if(response.status===401){
+                openPopUpSessionExpired()
+              }
+              
             });  
                   
         }
@@ -143,6 +165,10 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, co
           if(response.status===200){
               closePopUp();
           }
+          else{
+            openPopUpSessionExpired()
+          }
+
         }); 
     }
 
@@ -213,7 +239,10 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, co
                                 size = "small" {...params} />}
                         /> 
                       </LocalizationProvider>
-                      <p style={{margin:0, width:'50%', textAlign:'right', fontWeight:'bolder', fontSize:20}}>Total: $ {total}</p>
+                      <div style={{margin:0, width:'50%'}}>
+                        <p style={{margin:0,textAlign:'right', fontWeight:'bolder', fontSize:20}}>Total: $ {total}</p>
+                        {sinValores&&<p className="invalidCredentials" style={{margin:0,textAlign:'right'}}>Must be grater than 0</p>}
+                      </div>
                     </div>
                     <table className = "categoriesPopUpBudget">
                         <thead className = "categoriesPopUpBudgetHead">

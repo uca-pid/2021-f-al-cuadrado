@@ -7,7 +7,7 @@ import FlatList from 'flatlist-react';
 import { monthsNamesShort } from '../../../constants/monthsNamesShort';
 
 
-const PopUpEditBudgets = ({closePopUp, openPopUpEditBudget, openPopUpDeleteBudget, update}) => {
+const PopUpEditBudgets = ({closePopUp, openPopUpEditBudget, openPopUpDeleteBudget, update, openPopUpSessionExpired}) => {
 
     
     const [futureBudgets, setFutureBudgets] = useState([]);
@@ -28,6 +28,7 @@ const PopUpEditBudgets = ({closePopUp, openPopUpEditBudget, openPopUpDeleteBudge
             console.log(data)
             if(data.length===0)setErrorMessage("There is no future budget yet!")
           })
+          .catch(error => openPopUpSessionExpired())
         
 
     }

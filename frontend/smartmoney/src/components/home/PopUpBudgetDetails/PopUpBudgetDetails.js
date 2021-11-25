@@ -13,7 +13,7 @@ import { monthsNamesShort } from '../../../constants/monthsNamesShort';
 
 
 // import TableScrollbar from 'react-table-scrollbar';
-const PopUpBudgetDetails = ({month, closePopUp}) => {
+const PopUpBudgetDetails = ({month, closePopUp,openPopUpSessionExpired}) => {
 
     const [categories, setCategories] = useState([]);
     const [budget, setBudget] = useState(0);
@@ -43,13 +43,10 @@ const PopUpBudgetDetails = ({month, closePopUp}) => {
                 })
                 setBudget(totalBudget);
                 setSpent(totalSpent);
-                if((totalBudget-totalSpent)>=0){
-                    setDiference(totalBudget-totalSpent);
-                }else{
-                    setDiference(totalSpent-totalBudget);
-                }
+                setDiference((totalSpent*100/totalBudget).toFixed(0));
                 setGreen((totalBudget-totalSpent)>=0);
-              });
+              })
+              .catch(error => openPopUpSessionExpired())
    }
 
    useEffect(() => budgetDetails(),[])
@@ -81,8 +78,8 @@ const PopUpBudgetDetails = ({month, closePopUp}) => {
                     <p className="popUpTitle">Budget {monthsNamesShort[month.getMonth()]}, {month.getFullYear()}</p>
                     <div style={{width:'100%', display:'flex',flexDirection:'row', justifyContent:'space-around', marginTop:10}}>
                         <div >
-                            <p style={{margin:0, fontSize:12}}>Balance:</p>
-                            <p style={green ? {fontSize:25, margin:0, fontWeight:'bold',color:'green'} : {fontSize:25, margin:0, fontWeight:'bold',color:'red'}}>$ {diference}</p>
+                            <p style={{margin:0, fontSize:12}}>Spent:</p>
+                            <p style={green ? {fontSize:25, margin:0, fontWeight:'bold',color:'green'} : {fontSize:25, margin:0, fontWeight:'bold',color:'red'}}>{diference} %</p>
                         </div>
                         <div >
                             <p style={{margin:0, fontSize:12}}>Spent:</p>

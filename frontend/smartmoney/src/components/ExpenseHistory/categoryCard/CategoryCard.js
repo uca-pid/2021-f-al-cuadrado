@@ -4,7 +4,7 @@ import "./style.css";
 import FlatList from 'flatlist-react';
 import icons from "../../../functions/icons";
 
-const Categories = ({openPopUpCategoryDetails, update}) => {
+const Categories = ({openPopUpCategoryDetails, update, openPopUpSessionExpired}) => {
 
     const [categories, setCategories] = useState([]);
 
@@ -22,7 +22,8 @@ const Categories = ({openPopUpCategoryDetails, update}) => {
               let allCategories = [];
               data.map( obj => {allCategories.push(obj.name)});
               localStorage.setItem('allCategories',allCategories);
-            });
+            })
+            .catch(error => openPopUpSessionExpired())
     }
 
    useEffect(() => fetchCategories(),[update])

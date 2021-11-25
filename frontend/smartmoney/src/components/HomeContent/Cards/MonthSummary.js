@@ -7,7 +7,7 @@ import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline";
 import { Pie } from 'react-chartjs-2';
 import { dataFramePieChart } from '../../../constants/dataFramePieChart';
 
-const MonthSummary = ({monthSummary,update}) => {
+const MonthSummary = ({monthSummary,update, openPopUpSessionExpired}) => {
 
     const [chartCategories,setChartCategories] = useState(dataFramePieChart);
    
@@ -33,7 +33,8 @@ const MonthSummary = ({monthSummary,update}) => {
               dataFrame.datasets[0].data = categoriesChartValue;
               setChartCategories(dataFrame);
 
-            });
+            })
+            .catch(error => openPopUpSessionExpired())
     }
 
     useEffect(() => fetchCategories(),[update])

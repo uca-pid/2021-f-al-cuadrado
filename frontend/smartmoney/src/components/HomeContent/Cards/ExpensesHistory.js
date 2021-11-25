@@ -26,7 +26,7 @@ const options = {
   },
 };
 
-const ExpensesHistory = ({expenseHistory,update}) => {
+const ExpensesHistory = ({expenseHistory,update, openPopUpSessionExpired}) => {
 
     const [dataFrame,setDataFrame] = useState([])
 
@@ -63,6 +63,7 @@ const ExpensesHistory = ({expenseHistory,update}) => {
             setDataFrame({...dataFrameBarChart})
             //Math.min(...dataFrameBarChart.datasets[0].data)
     })
+    .catch(error => openPopUpSessionExpired())
 }
     useEffect(() => fetchTotals(),[update])
    

@@ -12,7 +12,7 @@ import { dataFramePieChart } from '../../constants/dataFramePieChart';
 import { colors } from "../../constants/colors";
 import { monthNames } from "../../constants/monthNames";
 
-const MonthSummary = ({openPopUpCategoryDetails, update}) => {
+const MonthSummary = ({openPopUpCategoryDetails, update, openPopUpSessionExpired}) => {
 
   const isMobileDevice = useMediaQuery({
     query: "(max-device-width: 480px)",
@@ -65,7 +65,8 @@ const MonthSummary = ({openPopUpCategoryDetails, update}) => {
               setChartCategories(dataFrame);
               setCategories([]);
               setCategories(categoriesFetch);
-            });
+            })
+            .catch(error => openPopUpSessionExpired())
     }
 
     useEffect(() => fetchCategories(),[update,updatte])

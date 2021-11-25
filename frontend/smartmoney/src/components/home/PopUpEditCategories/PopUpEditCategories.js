@@ -5,7 +5,7 @@ import { IoPencil} from "@react-icons/all-files/io5/IoPencil";
 import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline"; 
 import FlatList from 'flatlist-react';
 
-const PopUpEditCategoires = ({closePopUp, openPopUpEditCategory, openPopUpDeleteCategory, update}) => {
+const PopUpEditCategoires = ({closePopUp, openPopUpEditCategory, openPopUpDeleteCategory, update, openPopUpSessionExpired}) => {
 
     
     const [customCategories, setCustomCategories] = useState([]);
@@ -32,6 +32,7 @@ const PopUpEditCategoires = ({closePopUp, openPopUpEditCategory, openPopUpDelete
             setCustomCategories({...categories});
             if(data.length===6)setErrorMessage("There is no custom categories yet!")
           })
+          .catch(error => openPopUpSessionExpired())
         
 
     }
