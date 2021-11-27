@@ -221,7 +221,7 @@ const Home = () => {
   function openPopUpBudgetDetails(month){
     setPopUpBudgetDetailsMonth(month);
     setPopUpBudgetDetails(true);
-    updateComponents();
+    //updateComponents();
   }
   function openPopUpCantCreateBudget(){
     setPopUpCantCreateBudget(true);
@@ -248,7 +248,7 @@ const Home = () => {
   }
   function closePopUpBudgetDetails(){
     setPopUpBudgetDetails(false);
-    updateComponents();
+    //updateComponents();
   }
   function closePopUpCantCreateBudget(){
     setPopUpCantCreateBudget(false);

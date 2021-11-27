@@ -9,7 +9,6 @@ import {useState, useEffect} from 'react';
 
 const BudgetExpenseSelector = ({getAll,getExpenses,getBudgets}) => {
 	const [selection, setSelection] = React.useState(['Expenses','Budget']);
-
 	const handleChange = (event, newSelection) => {
 		if (JSON.stringify(newSelection) == JSON.stringify(['Budget'])) {
 			getBudgets()

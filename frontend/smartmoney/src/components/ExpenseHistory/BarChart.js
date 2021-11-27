@@ -8,6 +8,7 @@ import BudgetExpenseSelector from "./BudgetExpenseSelector.js"
 import { dataFrameBarChart, dataFrameBarChartBudget , dataFrameBarChartExpenses} from '../../constants/dataFrameBarChart';
 import { monthsNamesShort } from '../../constants/monthsNamesShort';
 import { useMediaQuery } from 'react-responsive';
+import PopUpBudgetDetails from '../home/PopUpBudgetDetails'
 
 const options = {
   maintainAspectRatio: false,
@@ -33,7 +34,12 @@ const options = {
 const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update,openPopUpSessionExpired}) => {
     const [fromDate, setFromDate] = useState(new Date(new Date().getFullYear(), 0, 1));
     const [upToDate, setUpToDate] = useState(new Date());
-    const [dataFrame,setDataFrame] = useState([])
+    const [dataFrame,setDataFrame] = useState([]);
+    const [onlyBudgets,setOnlyBudgets] = useState(false);
+    const [popUpBudgetDetails,setPopUpBudgetDetails] = useState(false);
+    const [datePopUpBudgetDetails, setDatePopUpBudgetDetails] = useState(null)
+
+
 
     const isMobileDevice = useMediaQuery({
       query: "(max-device-width: 480px)",
@@ -49,19 +55,29 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update,openPopUpSe
     }
 
     function getElementFromEvent(elem) {
-      console.log(elem[0].datasetIndex === 1)
       let month = fromDate.getMonth()
-      if (elem[0] && elem[0].datasetIndex === 0) 
+      if (elem[0] && elem[0].datasetIndex === 0 && !onlyBudgets) 
         {
-          console.log(dataFrame.labels[elem[0].index].split(" ")[1]+"-"+(((month+elem[0].index)%12)+1)+"-1")
           openPopUpCategories(dataFrame.labels[elem[0].index].split(" ")[1]+"-"+(((month+elem[0].index)%12)+1)+"-1")
         }
       else if(elem[0] && elem[0].datasetIndex === 1)
         {
-
-          let dateAux = new Date(new Date().setMonth(fromDate.getMonth()+(elem[0].index)))
+          let dateAux = new Date(new Date().setMonth((month+(elem[0].index))%12))
           openPopUpBudgetDetails(dateAux)
+          //setDatePopUpBudgetDetails(dateAux)
+          //setPopUpBudgetDetails(true)
         }
+      else if(elem[0] && elem[0].datasetIndex === 0 && onlyBudgets)
+        {
+          let dateAux = new Date(new Date().setMonth((month+(elem[0].index))%12))
+          
+          openPopUpBudgetDetails(dateAux)
+          /*
+          setDatePopUpBudgetDetails(dateAux)
+          setPopUpBudgetDetails(true)*/
+        }
+
+
     }
 
     function expenseTotals(dataFrameBarChart) {
@@ -138,6 +154,7 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update,openPopUpSe
       
     }
     function fetchAll(){
+        setOnlyBudgets(false)
         dataFrameBarChart.datasets[1].data = []
         dataFrameBarChart.datasets[0].data = []
         dataFrameBarChart.labels = []
@@ -148,6 +165,7 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update,openPopUpSe
 
 }
     function fetchOnlyBudgets() {
+        setOnlyBudgets(true)
         dataFrameBarChart.datasets[1].data = []
         dataFrameBarChartBudget.datasets[0].data = []
         dataFrameBarChartBudget.labels = []
@@ -155,6 +173,7 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update,openPopUpSe
         loadLabels(dataFrameBarChartBudget)
 }
     function fetchOnlyExpenses() {
+        setOnlyBudgets(false)
         dataFrameBarChart.datasets[1].data = []
         dataFrameBarChartExpenses.datasets[0].data = []
         dataFrameBarChartExpenses.labels = []
@@ -169,6 +188,8 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update,openPopUpSe
     style={{height:350}}
     spacing={2}
     alignItems="center">
+    {//popUpBudgetDetails && <PopUpBudgetDetails closePopUp= {() => setPopUpBudgetDetails(false)} month={popUpBudgetDetailsMonth} openPopUpSessionExpired={openPopUpSessionExpired}/>}
+  }
       {!isMobileDevice &&
         <div style={{display:'flex', flexDirection:'row', width:'100%',justifyContent:'space-around'}}>
             <YearSelection 
