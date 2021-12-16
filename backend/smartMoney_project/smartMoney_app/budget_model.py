@@ -57,6 +57,13 @@ class Budget(models.Model,baseModel):
 		if budget_category:
 			budget_category.modify(total = total)
 
+	def deleteDetails(self):
+		budget_filter = Q(budget = self)
+		budget_category = Budget_Category.getAllWith(filter = budget_filter)
+		if budget_category:
+			for detail in budget_category:
+				detail.delete()
+
 
 	def getMonth(self):
 		return self.month.month

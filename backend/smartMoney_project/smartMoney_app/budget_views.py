@@ -139,8 +139,9 @@ def edit_budget(request,user_id):
 			new_month = dateFromString(request.data.get('new_month'))
 			budget.modify(month = new_month)
 		categories = request.data.get('categories')
+		budget.deleteDetails()
 		for detail in categories:
-			budget.editCategory(detail.get('category'),detail.get('value'))
+			budget.add(detail.get('category'),detail.get('value'))
 		return Response(status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
 

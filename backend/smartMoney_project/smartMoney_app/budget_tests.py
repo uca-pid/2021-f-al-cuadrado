@@ -160,7 +160,6 @@ class BudgetTestCase(APITestCase):
 																			}
 																			]},format = 'json')
 		self.assertEqual(response.status_code,200)
-		self.assertEqual(budget.getTotalFrom('Bills and taxes'),4800)
 		self.assertEqual(budget.getTotalFrom('Other'),2000)
 	def test_user_gets_budget_total(self):
 		loginResponse = self.userLogin('f@gmail.com','admin')
