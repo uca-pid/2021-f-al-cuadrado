@@ -41,8 +41,8 @@ class Budget(models.Model,baseModel):
 			return Budget_Category.get(filter = cat_filter & budget_filter).getTotal()
 
 	def modify(self, **args_to_change):
-		today_month = datetime.date.today().month
-		if today_month >= self.getMonth() :
+		today_month = pytz.timezone("UTC").localize(datetime.datetime.now())
+		if today_month >= self.month :
 			raise ValueError(_('Cant delete older or active budgets'))
 		else:
 			return super().modify(**args_to_change)
@@ -56,6 +56,13 @@ class Budget(models.Model,baseModel):
 		budget_category = Budget_Category.get(filter = cat_filter & budget_filter)
 		if budget_category:
 			budget_category.modify(total = total)
+
+	def deleteDetails(self):
+		budget_filter = Q(budget = self)
+		budget_category = Budget_Category.getAllWith(filter = budget_filter)
+		if budget_category:
+			for detail in budget_category:
+				detail.delete()
 
 
 	def getMonth(self):
@@ -73,7 +80,8 @@ class Budget(models.Model,baseModel):
 		else:
 			super().delete()
 	def getDetails(self):
-		next_month = self.month.replace(month = self.month.month + 1)
+		
+		next_month = (self.month + relativedelta(months=+1))
 		categories = Category.getAllWith(user = self.user)
 		user_filter = Q(user = self.user) | Q(user = None)
 		budget_filter = Q(budget_category__budget = self)

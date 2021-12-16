@@ -94,7 +94,7 @@ class ConsumptionTestCase(APITestCase):
 																		'date': date})
 		response = webClient.post('/expenses/' + str(user_id) + '/',{'code' : loginCode})
 		self.assertEqual(response.status_code,200)
-		self.assertEqual(len(response.data),6)
+		self.assertEqual(len(response.data['data']),6)
 		
 	def test_cant_get_expenses_without_valid_credentials(self):
 		loginResponse = self.userLogin('f@gmail.com','admin')
@@ -257,7 +257,7 @@ class ConsumptionTestCase(APITestCase):
 			'category':[],
 			'upTo_date': '2021-'+ str(month-1) + '-21'
 			},format = 'json')
-		self.assertEqual(len(response.data),3)
+		self.assertEqual(len(response.data['data']),3)
 	def test_user_gets_his_month_total(self):
 		date = datetime.now()
 		month = (int(date.strftime("%m")))

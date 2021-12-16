@@ -76,7 +76,7 @@ class BudgetTestCase(APITestCase):
 			last_month_budget.modify()
 	def test_modify_budget_month(self):
 		budget = Budget.create_budget(user = self.user,month = self.next_month)
-		self.assertEqual(budget.getMonth(), self.int_month + 1)
+		self.assertEqual(budget.getMonth(), self.next_month_date.month)
 		date = pytz.timezone("Europe/Paris").localize(self.following_month_date)
 		budget.modify(month = date)
 		self.assertEqual(budget.getMonth(),self.following_month_date.month)
@@ -160,7 +160,6 @@ class BudgetTestCase(APITestCase):
 																			}
 																			]},format = 'json')
 		self.assertEqual(response.status_code,200)
-		self.assertEqual(budget.getTotalFrom('Bills and taxes'),4800)
 		self.assertEqual(budget.getTotalFrom('Other'),2000)
 	def test_user_gets_budget_total(self):
 		loginResponse = self.userLogin('f@gmail.com','admin')

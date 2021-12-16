@@ -52,7 +52,8 @@ class SecurityCodeManager(models.Manager):
         todayDate = timezone.now()
         if codes:
             userCode = codes.first()
-            userCode.user_code = code
+            if not userCode.validDate():
+                userCode.user_code = code
             userCode.updateDate() #No esta Testeado
             return userCode
         else:
