@@ -129,7 +129,6 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update,openPopUpSe
             let index
             if (month_date.getFullYear() !== fromDate.getFullYear()) {
               let diferenciaAnios = month_date.getFullYear()-fromDate.getFullYear();
-
               index = month_date.getMonth() + (13 - fromDate.getMonth()) + (diferenciaAnios-1)*12
             } else {
               index = month_number - fromDate.getMonth()
