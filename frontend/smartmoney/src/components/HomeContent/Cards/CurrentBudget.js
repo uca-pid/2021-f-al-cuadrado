@@ -218,7 +218,10 @@ const CurrentBudget = ({newBudget, update, openPopUpSessionExpired}) => {
                         {!display &&<IoChevronDownSharp style={{width:30, height:30, alignSelf:'center'}} onClick={()=>setDisplay(true)}/>}
                         {display &&<IoChevronUpSharp style={{width:30, height:30, alignSelf:'center'}} onClick={()=>setDisplay(false)}/>}
                     </div>
-                    <table className = "categoriesHomeTable">
+                    {display&&
+
+                    
+                        <table className = "categoriesHomeTable">
                             <thead className = "budgetHomeTableHead">
                                 <tr className = "headCategoriesRow">
                                     <th className = "tableHomeBudgetIcon"></th>
@@ -236,6 +239,7 @@ const CurrentBudget = ({newBudget, update, openPopUpSessionExpired}) => {
                                 />
                             </tbody>
                         </table>
+                    }
                 </div>
             }
         </div>
