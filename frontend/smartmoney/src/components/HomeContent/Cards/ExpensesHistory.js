@@ -67,7 +67,6 @@ const ExpensesHistory = ({expenseHistory,update, openPopUpSessionExpired}) => {
             dataFrameBarChartExpenses.datasets[0].data = []
             data.forEach(month => month_totalProcess(month))
             setDataFrame({...dataFrameBarChartExpenses})
-            //Math.min(...dataFrameBarChartExpenses.datasets[0].data)
           })
 }
     useEffect(() => fetchTotals(),[update])

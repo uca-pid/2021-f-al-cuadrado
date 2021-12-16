@@ -1,22 +1,10 @@
 import React from 'react';
 import "./style.css";
-import {useState, useEffect} from 'react';
-import RequiredField from '../../RequiredField/requiredField';
-import { useMediaQuery } from 'react-responsive';
-import webStyles from "../webStyles";
-import mobilStyles from "../mobilStyles";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-
-// const categoryList=[
-//     'one', 'two', 'three'
-//   ];
-//   const defaultOption = categoryList[0];
 
 const PopUpDeleteExpense = ({closePopUp, expenseToDelete,openPopUpSessionExpired}) => {
 
@@ -68,12 +56,10 @@ const PopUpDeleteExpense = ({closePopUp, expenseToDelete,openPopUpSessionExpired
                   <Button 
                   variant = 'contained'
                   size = 'small'
-                  //className="button1 popUpDeleteButton" 
                   onClick={closePopUp}>Don't delete it</Button>
                   <Button 
                   variant ='outlined'
                   size = 'small'
-                  //className="buttonDeleteCategory popUpDeleteButton" 
                   onClick={deleteExpense}>Yes, delete it</Button>
 
                 </Stack>

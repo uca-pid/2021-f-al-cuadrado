@@ -1,9 +1,6 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
 import "./style.css";
-import FlatList from 'flatlist-react';
-import icons from "../../../functions/icons";
-import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline"; 
 import { Pie } from 'react-chartjs-2';
 import { dataFramePieChart } from '../../../constants/dataFramePieChart';
 

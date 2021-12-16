@@ -2,9 +2,6 @@ import React, { cloneElement } from 'react';
 import "./style.css";
 import {useState,useEffect} from 'react';
 import RequiredField from '../../RequiredField/requiredField';
-import { useMediaQuery } from 'react-responsive';
-import webStyles from "../webStyles";
-import mobilStyles from "../mobilStyles";
 import icons from '../../../functions/icons';
 import IconList from '../../IconList';
 
@@ -15,10 +12,6 @@ import Button from '@mui/material/Button';
 
 
 const PopUpNewCategory = ({closePopUp, state, categoryToEdit, openPopUpCantCreateCategory, openPopUpSessionExpired}) => {
-
-    const isMobileDevice = useMediaQuery({
-        query: "(max-device-width: 480px)",
-    });
 
     const [title, setTitle] = useState('New category');
     const [name, setName] = useState('');
@@ -124,7 +117,6 @@ const PopUpNewCategory = ({closePopUp, state, categoryToEdit, openPopUpCantCreat
                     label = "Category name" variant = 'outlined' 
                     margin = "dense"
                     size ="small"
-                    //style={isMobileDevice ? (nameEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (nameEmpty ? webStyles.inputEmpty : webStyles.input)} 
                     type="text" 
                     value={name} 
                     onChange={e => setName(e.target.value)} 

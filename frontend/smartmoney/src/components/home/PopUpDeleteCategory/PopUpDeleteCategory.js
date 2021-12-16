@@ -1,13 +1,6 @@
 import React from 'react';
 import "./style.css";
-import {useState, useEffect} from 'react';
-import RequiredField from '../../RequiredField/requiredField';
-import { useMediaQuery } from 'react-responsive';
-import webStyles from "../webStyles";
-import mobilStyles from "../mobilStyles";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import icons from '../../../functions/icons';
 
@@ -63,12 +56,10 @@ const PopUpDeleteCategory = ({closePopUp, categoryToDelete, deleted,openPopUpSes
                   <Button 
                   variant = 'contained'
                   size = 'small'
-                  //className="button1 popUpDeleteButton" 
                   onClick={closePopUp}>Don't delete it</Button>
                   <Button 
                   variant ='outlined'
                   size = 'small'
-                  //className="buttonDeleteCategory popUpDeleteButton" 
                   onClick={deleteCategory}>Yes, delete it</Button>
 
                 </Stack>

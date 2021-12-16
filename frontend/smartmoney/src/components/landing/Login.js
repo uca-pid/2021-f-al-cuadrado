@@ -46,7 +46,6 @@ const Login = ({setLayoutForgotPassword,setLayoutRegister}) => {
               inputProps={{ "data-testid": "user-input" }}
               label = "User" variant = 'outlined' 
               margin="dense"
-              //style={isMobileDevice ? (userEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (userEmpty ? webStyles.inputEmpty : webStyles.input)}
               type="text" value={user} 
               onChange={e => setUser(e.target.value)} 
               onFocus={()=>setUserEmpty(false)} 
@@ -60,7 +59,6 @@ const Login = ({setLayoutForgotPassword,setLayoutRegister}) => {
               inputProps={{ "data-testid": "password-input" }}
               margin="dense"
               label="Password" variant="outlined"
-              //style={isMobileDevice ? (passwordEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (passwordEmpty ? webStyles.inputEmpty : webStyles.input)} 
               type="password" value={password} onChange={e => setPassword(e.target.value)} 
               onFocus={()=>setPasswordEmpty(false)} 
               onBlur={()=>isEmpty(password,setPasswordEmpty)}
@@ -70,7 +68,6 @@ const Login = ({setLayoutForgotPassword,setLayoutRegister}) => {
               />
 
               <Button 
-              //style={isMobileDevice ? mobilStyles.forgotPassword : webStyles.forgotPassword} 
               type="button" onClick={setLayoutForgotPassword} 
               size = 'small'
               style={{justifyContent: 'left', fontSize: 10}}

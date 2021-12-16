@@ -34,11 +34,7 @@ const Expenses = ({expenses,morePagesProps,loadMore,errorMessage,openPopUpEditEx
     return(
         <div className="cardContainer cardContainerExpenses">
             <div className="cardTitleContainer">
-                <p className="cardTitle">Latest expenses</p>
-                {/* <button className="cardViewAll">
-                    <p>See all</p>
-                    {icons("IoArrowForwardOutline")}
-                </button> */} 
+                <p className="cardTitle">Latest expenses</p> 
             </div>
             <table className = "categoriesHomeTable">
                 <thead className = "categoriesHomeTableHead">

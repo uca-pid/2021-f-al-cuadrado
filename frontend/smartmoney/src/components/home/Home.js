@@ -96,7 +96,6 @@ const Home = () => {
         let allCategories = [];
         data.map( obj => {allCategories.push(obj.name)});
         localStorage.setItem('allCategories',allCategories);
-        console.log(allCategories)
     })
   }
   useEffect(() => fetchCategories(),[])
@@ -109,7 +108,6 @@ const Home = () => {
   }
   function hamburger (){
     setHamburgerMenu(!hamburgerMenu);
-    console.log(hamburgerMenu);
   }
   function updateComponents(){
     setUpdateComponent(!updateComponent)
@@ -284,7 +282,6 @@ const Home = () => {
       
 
       <div style={isMobileDevice ? mobilStyles.main : webStyles.main}>
-        {/* <Expenses /> */}
         <HamburgerMenu 
           
           hamburger={hamburgerMenu} 

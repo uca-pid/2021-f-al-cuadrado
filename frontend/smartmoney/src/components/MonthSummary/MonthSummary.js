@@ -4,8 +4,6 @@ import "./style.css";
 import {useState, useEffect} from 'react';
 import { IoChevronBackSharp } from "@react-icons/all-files/io5/IoChevronBackSharp"; 
 import { IoChevronForwardSharp } from "@react-icons/all-files/io5/IoChevronForwardSharp"; 
-import { style } from "@mui/system";
-import icons from "../../functions/icons";
 import { Pie } from 'react-chartjs-2';
 import { useMediaQuery } from 'react-responsive';
 import { dataFramePieChart } from '../../constants/dataFramePieChart';
@@ -46,7 +44,6 @@ const MonthSummary = ({openPopUpCategoryDetails, update, openPopUpSessionExpired
               let categoriesChartName = [];
               let categoriesChartValue = [];
               let chartTotal = 0;
-              //data.map( category => {chartTotal = chartTotal + category.total;})
               let i = 0;
               data.map( category => {
                   category.isSelected = (category.total>0);
@@ -78,7 +75,6 @@ const MonthSummary = ({openPopUpCategoryDetails, update, openPopUpSessionExpired
 
 
     function getElementFromEvent(elem) {
-      console.log(elem[0].index)
       openPopUpCategoryDetails(categories[elem[0].index],date);
     }
 

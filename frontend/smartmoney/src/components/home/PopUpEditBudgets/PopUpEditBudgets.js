@@ -14,7 +14,6 @@ const PopUpEditBudgets = ({closePopUp, openPopUpEditBudget, openPopUpDeleteBudge
     const [errorMessage, setErrorMessage] = useState('')
 
     const getFutureBudgets = () => {
-        //let categories = [];
         const session = JSON.parse(localStorage.session);
         const requestOptions = {
           method: 'POST',

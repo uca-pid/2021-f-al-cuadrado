@@ -218,9 +218,7 @@ const CurrentBudget = ({newBudget, update, openPopUpSessionExpired}) => {
                         {!display &&<IoChevronDownSharp style={{width:30, height:30, alignSelf:'center'}} onClick={()=>setDisplay(true)}/>}
                         {display &&<IoChevronUpSharp style={{width:30, height:30, alignSelf:'center'}} onClick={()=>setDisplay(false)}/>}
                     </div>
-                    {display&&
-
-                    
+                    {display&&            
                         <table className = "categoriesHomeTable">
                             <thead className = "budgetHomeTableHead">
                                 <tr className = "headCategoriesRow">

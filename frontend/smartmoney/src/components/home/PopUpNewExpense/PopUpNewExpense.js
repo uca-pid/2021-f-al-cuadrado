@@ -3,11 +3,7 @@ import "./style.css";
 import {useState, useEffect} from 'react';
 import RequiredField from '../../RequiredField/requiredField';
 import { useMediaQuery } from 'react-responsive';
-import webStyles from "../webStyles";
-import mobilStyles from "../mobilStyles";
-//import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 
 
@@ -24,10 +20,6 @@ import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline";
 
 
 const PopUpNewExpense = ({closePopUp, state, expenseToEdit, openPopUpDeleteExpense, openPopUpNewCategory, openPopUpSessionExpired}) => {
-
-    const isMobileDevice = useMediaQuery({
-        query: "(max-device-width: 480px)",
-    });
 
     const allCategories = localStorage.allCategories.split(',');
     const [selectedOption, setSelectedOption] = useState('');
@@ -159,7 +151,6 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit, openPopUpDeleteExpen
                     required
                     error = {newExpenseOnlyNumbers || newExpenseEmpty}
                     helperText = {newExpenseOnlyNumbers ? 'Only numbers' : newExpenseEmpty ? '* This field is required' : ''} 
-                    //style={isMobileDevice ? (newExpenseEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (newExpenseEmpty ? webStyles.inputEmpty : webStyles.input)} 
                     type="text" 
                     value={expenseValue} 
                     onChange={e => setExpenseValue(e.target.value)} 
@@ -172,7 +163,6 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit, openPopUpDeleteExpen
                     required
                     error = {descriptionEmpty}
                     helperText = {descriptionEmpty ? '* This field is required' : ''} 
-                    //style={isMobileDevice ? (descriptionEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (descriptionEmpty ? webStyles.inputEmpty : webStyles.input)} 
                     type="text" 
                     value={description} 
                     onChange={e => setDescription(e.target.value)}  
@@ -184,7 +174,6 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit, openPopUpDeleteExpen
                       select required
                       margin = "dense"
                       style={{width:'80%'}}
-                      //options={allCategories} 
                       labelId = 'label'
                       size = 'small'
                       value={selectedOption} 

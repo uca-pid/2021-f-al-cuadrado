@@ -88,7 +88,6 @@ const ForgotPassword = ({setLayoutLogin}) => {
               size = 'small'
               error = {userEmpty}
               helperText={userEmpty ? 'This field is required' : ' '}
-              //style={isMobileDevice ? (userEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (userEmpty ? webStyles.inputEmpty : webStyles.input)} 
               type="text" value={user} onChange={e => setUser(e.target.value)} onFocus={()=>setUserEmpty(false)} onBlur={()=>isEmpty(user,setUserEmpty)}/>
               {
                 !codigoEnviado &&
@@ -112,7 +111,6 @@ const ForgotPassword = ({setLayoutLogin}) => {
                     size = 'small'
                     error = {(codigoEnviado&&codeEmpty)}
                     helperText={(codigoEnviado&&codeEmpty) ? 'Password must have al least 8 caracters, 1 number, 1 uppercase and 1 lowercase' : ' '}
-                    //style={isMobileDevice ? (codeEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (codeEmpty ? webStyles.inputEmpty : webStyles.input)} 
                     type="text" value={codigoSeguridad} onChange={e => setCodigoSeguridad(e.target.value)} onFocus={()=>setCodeEmpty(false)} onBlur={()=>isEmpty(codigoSeguridad,setCodeEmpty)}/>              
                     
                     {(codigoEnviado&&codeEmpty)&&<RequiredField/>}
@@ -125,7 +123,6 @@ const ForgotPassword = ({setLayoutLogin}) => {
                      size = 'small'
                      error = {invalidPassword}
                      helperText={invalidPassword ? 'Password must have al least 8 caracters, 1 number, 1 uppercase and 1 lowercase' : ' '}
-                    //style={isMobileDevice ? (invalidPassword ? mobilStyles.inputEmpty : mobilStyles.input) : (invalidPassword ? webStyles.inputEmpty : webStyles.input)} 
                     type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} onFocus={()=>setInvalidPassword(true)} onBlur={()=>setInvalidPassword(!isValidPassword(newPassword))}/>
                     
                     <Button 

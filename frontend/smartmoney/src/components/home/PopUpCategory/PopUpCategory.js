@@ -3,7 +3,6 @@ import {useState, useEffect} from 'react';
 import FlatList from 'flatlist-react';
 import icons from "../../../functions/icons";
 import { IoArrowBack } from "@react-icons/all-files/io5/IoArrowBack"; 
-import { IoPencil} from "@react-icons/all-files/io5/IoPencil"; 
 import "./style.css";
 
 
@@ -38,8 +37,6 @@ const PopUpCategory = ({month, closePopUp, openPopUpCategoryDetails,update,openP
     useEffect(() => fetchCategories(),[update])
 
    const categoryDetails = (category,month) => {
-    //    console.log(category)
-    //    console.log(month)
         openPopUpCategoryDetails(category,month);
    }
 

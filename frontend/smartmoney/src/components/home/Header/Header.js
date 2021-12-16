@@ -1,8 +1,6 @@
 import React from 'react';
 import "./style.css";
 import logoHorizontal from "../../../images/logoHorizontal.png"; 
-//import configurationIcon from "../../../images/configuration.png";
-import { IoSettings } from "@react-icons/all-files/io5/IoSettings"; 
 import { IoMenu } from "@react-icons/all-files/io5/IoMenu"; 
 
 

@@ -1,23 +1,12 @@
 import React from 'react';
 import {useState} from 'react';
 import "./style.css";
-import webStyles from "../webStyles";
-import mobilStyles from "../mobilStyles";
-import { useMediaQuery } from 'react-responsive';
-import RequiredField from '../../RequiredField/requiredField';
 import isValidPassword from '../../../functions/passwordFormatValidation';
-
-
-
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
 
 const PopUpChangePassword = ({closePopUp}) => {
-
-    const isMobileDevice = useMediaQuery({
-        query: "(max-device-width: 480px)",
-    });
 
     const [previousPassword, setPreviousPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -67,8 +56,6 @@ const PopUpChangePassword = ({closePopUp}) => {
                     required
                     error = {previousPasswordEmpty}
                     helperText = {previousPasswordEmpty ? '* This field is required' : ''}
-
-                    //style={isMobileDevice ? (previousPasswordEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (previousPasswordEmpty ? webStyles.inputEmpty : webStyles.input)} 
                     type="password" value={previousPassword} onChange={e => setPreviousPassword(e.target.value)}  onFocus={()=>setPreviousPasswordEmpty(false)} 
                     onBlur={()=>isEmpty(previousPassword,setPreviousPasswordEmpty)}/>
                     <TextField 
@@ -77,7 +64,6 @@ const PopUpChangePassword = ({closePopUp}) => {
                     size ="small"
                     error = {newPasswordInvalid}
                     helperText = {newPasswordInvalid ? 'Password must have al least 8 caracters, 1 number, 1 uppercase and 1 lowercase' : ''} 
-                    //style={isMobileDevice ? (newPasswordInvalid ? mobilStyles.inputEmpty : mobilStyles.input) : (newPasswordInvalid ? webStyles.inputEmpty : webStyles.input)} 
                     type="password" value={newPassword} 
                     onChange={e => setNewPassword(e.target.value)} 
                     onFocus={()=>setNewPasswordInvalid(false)} 

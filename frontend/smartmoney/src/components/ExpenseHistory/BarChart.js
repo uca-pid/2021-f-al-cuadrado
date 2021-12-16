@@ -50,14 +50,12 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update,openPopUpSe
     }
 
     function getElementFromEvent(elem) {
-      console.log(elem[0].datasetIndex === 1)
       let month = fromDate.getMonth()
       if (elem[0] && elem[0].datasetIndex === 0 && !onlyBudgets) 
         {
-          console.log(dataFrame.labels[elem[0].index].split(" ")[1]+"-"+(((month+elem[0].index)%12)+1)+"-1")
           openPopUpCategories(dataFrame.labels[elem[0].index].split(" ")[1]+"-"+(((month+elem[0].index)%12)+1)+"-1")
         }
-      else if((elem[0] && elem[0].datasetIndex === 1)|| onlyBudgets)
+      else if((elem[0] && elem[0].datasetIndex === 1)||onlyBudgets)
         {
           let dateAux = new Date(fromDate)
           dateAux.setMonth(fromDate.getMonth()+(elem[0].index))
@@ -91,7 +89,6 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update,openPopUpSe
           .then(data => {
             dataFrameBarChart.datasets[0].data = []
             data.forEach(month => month_totalProcess(month,dataFrameBarChart))
-            //Math.min(...dataFrameBarChart.datasets[0].data)
             setDataFrame({...dataFrameBarChart})
           })
 
@@ -122,13 +119,12 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update,openPopUpSe
         })
         .then(data => {
           dataFrameBarChart.datasets[dataset_index].data = []
-          console.log(data)
           data.forEach(month => {
             let month_date = new Date(month.budget__month)
             let month_number = month_date.getMonth() + 1
             let index
             if (month_date.getFullYear() !== fromDate.getFullYear()) {
-              let diferenciaAnios = month_date.getFullYear()-fromDate.getFullYear();
+              let diferenciaAnios = month_date.getFullYear() -fromDate.getFullYear()
               index = month_date.getMonth() + (13 - fromDate.getMonth()) + (diferenciaAnios-1)*12
             } else {
               index = month_number - fromDate.getMonth()

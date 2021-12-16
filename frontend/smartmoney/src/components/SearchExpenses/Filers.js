@@ -47,7 +47,6 @@ const Filters = ({
         if(value[0]==='Categories')value.splice(0,1)
         console.log(value)
         setCategories(
-          // On autofill we get a the stringified value.
           typeof value === 'string' ? value.split(',') : value,
         );
       };

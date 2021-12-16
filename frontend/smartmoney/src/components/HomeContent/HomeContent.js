@@ -16,8 +16,6 @@ const HomeContent = ({monthSummary, expenseHistory,searchExpenses,openPopUpCateg
             <ExpensesHistory expenseHistory={expenseHistory} update ={update} openPopUpSessionExpired={openPopUpSessionExpired}/>
             <Expenses searchExpenses={searchExpenses} openPopUpEditExpense={openPopUpEditExpense}  openPopUpDeleteExpense={openPopUpDeleteExpense} update ={update} openPopUpSessionExpired={openPopUpSessionExpired}/>
             </div>
-
-            {/* <Categories openPopUpCategoryDetails={openPopUpCategoryDetails} update ={update}/> */}
         </div>
     )
 }

@@ -1,17 +1,12 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
 import "./style.css";
-import webStyles from "../webStyles";
-import mobilStyles from "../mobilStyles";
-import { useMediaQuery } from 'react-responsive';
 import FlatList from 'flatlist-react';
 import icons from "../../../functions/icons";
 import { IoArrowBack } from "@react-icons/all-files/io5/IoArrowBack"; 
 import { IoPencil} from "@react-icons/all-files/io5/IoPencil"; 
 import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline"; 
 
-
-// import TableScrollbar from 'react-table-scrollbar';
 const PopUpCategoryDetails = ({category, month, closePopUp, openPopUpEditExpense,editCategory,deleteCategoryPopUp, update,openPopUpSessionExpired}) => {
 
     const [expenses, setExpenses] = useState([]);

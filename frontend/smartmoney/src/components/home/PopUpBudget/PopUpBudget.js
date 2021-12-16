@@ -1,12 +1,7 @@
-import React, { cloneElement } from 'react';
+import React from 'react';
 import "./style.css";
 import {useState,useEffect} from 'react';
-import RequiredField from '../../RequiredField/requiredField';
-import { useMediaQuery } from 'react-responsive';
-import webStyles from "../webStyles";
-import mobilStyles from "../mobilStyles";
 import icons from '../../../functions/icons';
-import IconList from '../../IconList';
 
 
 import TextField from '@mui/material/TextField';
@@ -22,23 +17,12 @@ import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline";
 
 const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, confirmBudget, openPopUpCantCreateBudget,openPopUpSessionExpired}) => {
 
-    // const isMobileDevice = useMediaQuery({
-    //     query: "(max-device-width: 480px)",
-    // });
-
     const [title, setTitle] = useState('New budget');
-    const [month, setMonth] = useState(new Date()); //#TODO: Revisar con fran
+    const [month, setMonth] = useState(new Date());
     const [categories, setCategories] = useState([]);
     const [update, setUpdate] = useState(false);
     const [total, setTotal] = useState(0);
     const [sinValores, setSinValores] = useState(false);
-
-
- 
-    // const [name, setName] = useState('');
-    // const [nameEmpty, setNameEmpty] = useState('');
-    // const [iconEmpty, setIconEmpty] = useState('');
-    // const [selectedIcon, setSelectedIcon] = useState('');
 
     const loadEditFiles = () =>{
       const session = JSON.parse(localStorage.session);
@@ -61,13 +45,9 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, co
               .catch(error => {openPopUpSessionExpired()})
         }else{
           let dateAux = new Date(parseInt(budgetToEdit.budget__month.substring(0, 4)),parseInt(budgetToEdit.budget__month.substring(5, 7)-1));
-          // console.log(dateAux)
-          // console.log(budgetToEdit.budget__month.substring(0, 10))  
-          // console.log(dateAux.getFullYear()+'-'+(dateAux.getMonth())+'-'+1)
           setTitle("Edit budget");
             setMonth(dateAux);
             console.log(dateAux.getFullYear()+'-'+(dateAux.getMonth()+1)+'-'+1)
-            // setMonth(new Date(parseInt(budgetToEdit.budget__month.substring(0, 4)),parseInt(budgetToEdit.budget__month.substring(5, 7)-1)));
             const requestOptions = {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -208,7 +188,6 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, co
                     margin = "dense"
                     size ="small"
                     error = {errorOnlyNumbers}
-                    //helperText = {newExpenseOnlyNumbers ? 'Only numbers' : newExpenseEmpty ? '* This field is required' : ''} 
                     type="text" 
                     style={{width:'80%', margin:0, padding:0}}
                     value={item.total} 
@@ -276,7 +255,6 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, co
                     className="button1"
                     type="button" 
                     onClick={submitBudget}  
-                    // disabled={nameEmpty||iconEmpty}
                     >
                     Save
                     </Button> 

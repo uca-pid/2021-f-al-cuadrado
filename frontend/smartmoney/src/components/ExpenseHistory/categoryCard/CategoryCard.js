@@ -54,13 +54,8 @@ const Categories = ({openPopUpCategoryDetails, update, openPopUpSessionExpired})
 
     return(
         <div className="cardContainer cardContainerHomeContent">
-            {/* <TableScrollbar> */}
             <div className="cardTitleContainer">
                 <p className="cardTitle">Current month</p>
-                {/* <button className="cardViewAll">
-                    <p>See all</p>
-                    {icons("IoArrowForwardOutline")}
-                </button> */}
             </div>
             <table className = "categoriesHomeTable">
                 <thead className = "categoriesHomeTableHead">
@@ -78,7 +73,6 @@ const Categories = ({openPopUpCategoryDetails, update, openPopUpSessionExpired})
                     />
                 </tbody>
             </table>
-            {/* </TableScrollbar> */}
         </div>
     )
 }

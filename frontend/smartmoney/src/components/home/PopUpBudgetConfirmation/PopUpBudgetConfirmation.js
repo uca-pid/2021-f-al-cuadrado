@@ -64,13 +64,11 @@ const PopUpBudgetConfirmation = ({closePopUp, budget, closeNewBudgetPopUp,openPo
                   variant = 'contained'
                   size = 'small'
                   style={{width:230}}
-                  //className="button1 popUpDeleteButton" 
                   onClick={closePopUp}>Let me double check it</Button>
                   <Button 
                   variant ='outlined'
                   size = 'small'
                   style={{width:230}}
-                  //className="buttonconfirmBudget popUpDeleteButton" 
                   onClick={confirmBudget}>Yes, save budget</Button>
 
                 </Stack>

@@ -2,10 +2,10 @@ const mobilStyles = {
     forgotPassword:{
       backgroundColor:"#D7D7D6",
       borderStyle:'none', 
-      color:'#7346c7', //#TODO: Ver si volvemos al azul
+      color:'#7346c7', 
       textDecorationLine: 'underline', 
       textAlign:'left', 
-      fontSize:6, //#TODO: Ver si volvemos a 10
+      fontSize:6, 
       webkitAppearance: 'none',
     },
     input: {

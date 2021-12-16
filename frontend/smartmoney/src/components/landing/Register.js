@@ -78,7 +78,6 @@ const Register = ({setLayoutLogin}) => {
                 size = 'small'
                 error = {userInvalid}
                 helperText={userInvalid ? 'Wrong email' : ' '}
-                //style={isMobileDevice ? (userInvalid ? mobilStyles.inputEmpty : mobilStyles.input) : (userInvalid ? webStyles.inputEmpty : webStyles.input)} 
                 type="text" 
                 value={mail} 
                 onChange={e => setMail(e.target.value)}
@@ -91,7 +90,6 @@ const Register = ({setLayoutLogin}) => {
                 size = 'small'
                 error = {nameEmpty}
                 helperText={nameEmpty ? 'This field is required' : ' '}
-                //style={isMobileDevice ? (nameEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (nameEmpty ? webStyles.inputEmpty : webStyles.input)} 
                 type="text" 
                 value={name} 
                 onChange={e => setName(e.target.value)}
@@ -104,7 +102,6 @@ const Register = ({setLayoutLogin}) => {
                 size = 'small'
                 error = {surnameEmpty}
                 helperText={surnameEmpty ? 'This field is required' : ' '}
-                //style={isMobileDevice ? (surnameEmpty ? mobilStyles.inputEmpty : mobilStyles.input) : (surnameEmpty ? webStyles.inputEmpty : webStyles.input)} 
                 type="text" value={surname} onChange={e => setSurname(e.target.value)} onFocus={()=>setSurnameEmpty(false)} onBlur={()=>isEmpty(surname,setSurnameEmpty)}/>
                 <TextField
                 label = "Password" variant = 'outlined' 
@@ -113,7 +110,6 @@ const Register = ({setLayoutLogin}) => {
                 size = 'small'
                 error = {invalidPassword}
                 helperText={invalidPassword ? 'Password must have al least 8 caracters, 1 number, 1 uppercase and 1 lowercase' : ' '}
-                //style={isMobileDevice ? (invalidPassword ? mobilStyles.inputEmpty : mobilStyles.input) : (invalidPassword ? webStyles.inputEmpty : webStyles.input)} 
                 type="password" value={password} onChange={e => setPassword(e.target.value)} onFocus={()=>setInvalidPassword(false)} onBlur={()=>setInvalidPassword(!isValidPassword(password))}/>
                 <Button  
                     variant = "contained"

@@ -51,7 +51,6 @@ const Categories = ({categories,changeSelectedCategories, openPopUpCategoryDetai
                     />
                 </tbody>
             </table>
-            {/* </TableScrollbar> */}
         </div>
     )
 }
