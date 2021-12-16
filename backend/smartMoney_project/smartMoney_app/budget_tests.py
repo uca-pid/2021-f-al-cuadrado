@@ -76,7 +76,7 @@ class BudgetTestCase(APITestCase):
 			last_month_budget.modify()
 	def test_modify_budget_month(self):
 		budget = Budget.create_budget(user = self.user,month = self.next_month)
-		self.assertEqual(budget.getMonth(), self.int_month + 1)
+		self.assertEqual(budget.getMonth(), self.next_month_date.month)
 		date = pytz.timezone("Europe/Paris").localize(self.following_month_date)
 		budget.modify(month = date)
 		self.assertEqual(budget.getMonth(),self.following_month_date.month)

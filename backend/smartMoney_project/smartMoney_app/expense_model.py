@@ -46,7 +46,7 @@ class Expense(models.Model,baseModel):
     @classmethod
     def getTotalOf(cls,month,user):
         expense_owner_filter = (Q(owner = user))
-        next_month = month.replace(month= month.month +1)
+        next_month = month + relativedelta(months=+1)
         date_filter = Q(date__gte = month) & Q(date__lt = next_month)
         total = cls.objects.filter(date_filter).values('date__month').annotate(total = models.Sum('value'))
         return total
@@ -61,7 +61,6 @@ class Expense(models.Model,baseModel):
         last_months_filter = Q(date__gt= from_date) 
         months = cls.objects.annotate(month = TruncMonth('date',output_field = models.DateField())).values('month')
         totals_per_month = months.filter(last_months_filter & expense_owner_filter).annotate(total= models.Sum('value')).order_by('month')
-        print(totals_per_month)
         return totals_per_month
 
     def modify(self, **args_to_change):

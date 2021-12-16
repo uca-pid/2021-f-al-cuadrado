@@ -63,7 +63,6 @@ def budget_details(request,user_id):
 	if validCode(user_id,received_code):
 		budget = Budget.get(user = user, month = start_of_month)
 		details = budget.getDetails()
-		print(details)
 		return Response(details,status = status.HTTP_200_OK)
 	return Response(status = status.HTTP_401_UNAUTHORIZED)
 
