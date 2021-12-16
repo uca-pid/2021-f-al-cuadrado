@@ -58,10 +58,11 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit, openPopUpDeleteExpen
     }
 
     const submitNewExpense = () =>{
-        const onlyNumbers = /^[0-9]*$/;
+        //const onlyNumbers = /^[0-9]*$/;
+        const onlyNumbers = /^\d+$/;
         if(description==='')setDescriptionEmpty(true);
         if(selectedOption==='' )setCategoryEmpty(true);
-        if(onlyNumbers.test(expenseValue) && description!=='' && selectedOption!==''){
+        if(onlyNumbers.test(expenseValue) && expenseValue>0 && description!=='' && selectedOption!==''){
           const session = JSON.parse(localStorage.session);
           const requestOptionsNewExpense = {
             method: 'POST',

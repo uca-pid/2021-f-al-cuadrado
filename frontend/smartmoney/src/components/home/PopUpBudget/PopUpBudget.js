@@ -67,7 +67,11 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, co
 
     const submitBudget = () => {
       setSinValores(false)
-        if(total>0){
+      let errorCategoryNegative = false
+      for (let i=0;i<categories.length;i++){
+        if(categories[i].total<0)errorCategoryNegative=true;
+      }
+        if(total>0 && !errorCategoryNegative){
           (state==='New') ? submitNewBudget() : submitEditBudget();
         }else{
             setSinValores(true)
@@ -228,7 +232,7 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, co
                       </LocalizationProvider>
                       <div style={{margin:0, width:'50%'}}>
                         <p style={{margin:0,textAlign:'right', fontWeight:'bolder', fontSize:20}}>Total: $ {total}</p>
-                        {sinValores&&<p className="invalidCredentials" style={{margin:0,textAlign:'right'}}>Must be grater than 0</p>}
+                        {sinValores&&<p className="invalidCredentials" style={{margin:0,textAlign:'right'}}>Cat. be grater than 0</p>}
                       </div>
                     </div>
                     <table className = "categoriesPopUpBudget">

@@ -32,6 +32,11 @@ const PopUpNewCategory = ({closePopUp, state, categoryToEdit, openPopUpCantCreat
         (state==='New') ? submitNewCategory() : submitEditCategory();
       }
 
+    const setIcon = (icon) => {
+      setSelectedIcon(icon);
+      setIconEmpty(false)
+    }
+
     const submitNewCategory = () => {
         if(name==='')setNameEmpty(true);
         if(selectedIcon==='')setIconEmpty(true);
@@ -129,7 +134,7 @@ const PopUpNewCategory = ({closePopUp, state, categoryToEdit, openPopUpCantCreat
                             {icons(selectedIcon,"selectedIcon")}
                         </div>
                     </div>
-                    <IconList numberColumns={4} setIcon={setSelectedIcon}/>
+                    <IconList numberColumns={4} setIcon={setIcon}/>
                     {iconEmpty&&<RequiredField/>}
                     <Button 
                     style = {{marginTop: '5%'}}
