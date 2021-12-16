@@ -5,7 +5,7 @@ import FlatList from 'flatlist-react';
 import icons from "../../../functions/icons";
 import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline"; 
 import { Bar } from 'react-chartjs-2';
-import { dataFrameBarChart } from '../../../constants/dataFrameBarChart';
+import { dataFrameBarChartExpenses } from '../../../constants/dataFrameBarChart';
 import { monthsNamesShort } from '../../../constants/monthsNamesShort';
 
 
@@ -26,7 +26,7 @@ const options = {
   },
 };
 
-const ExpensesHistory = ({expenseHistory,update}) => {
+const ExpensesHistory = ({expenseHistory,update, openPopUpSessionExpired}) => {
 
     const [dataFrame,setDataFrame] = useState([])
 
@@ -35,8 +35,8 @@ const ExpensesHistory = ({expenseHistory,update}) => {
         let month_letter = monthsNamesShort[month_number-1];
         let year = monthTotal.month.slice(0,4);
         let total = monthTotal.total;
-        dataFrameBarChart.datasets[0].data.push(total)
-        dataFrameBarChart.labels.push(month_letter + ' ' + year)
+        dataFrameBarChartExpenses.datasets[0].data.push(total)
+        dataFrameBarChartExpenses.labels.push(month_letter + ' ' + year)
 
     }
 
@@ -55,14 +55,20 @@ const ExpensesHistory = ({expenseHistory,update}) => {
             })
         };
         fetch('https://smart-money-back.herokuapp.com/expenses_per_month/'+session.user_id+'/', requestOptions)
-          .then(response => response.json())
+          .then(response => {
+            if(response.status===200){
+                return response.json()
+            }else if (response.status===401){
+              openPopUpSessionExpired()
+            }
+          })
           .then(data => {
-            dataFrameBarChart.labels = []
-            dataFrameBarChart.datasets[0].data = []
+            dataFrameBarChartExpenses.labels = []
+            dataFrameBarChartExpenses.datasets[0].data = []
             data.forEach(month => month_totalProcess(month))
-            setDataFrame({...dataFrameBarChart})
-            //Math.min(...dataFrameBarChart.datasets[0].data)
-    })
+            setDataFrame({...dataFrameBarChartExpenses})
+            //Math.min(...dataFrameBarChartExpenses.datasets[0].data)
+          })
 }
     useEffect(() => fetchTotals(),[update])
    

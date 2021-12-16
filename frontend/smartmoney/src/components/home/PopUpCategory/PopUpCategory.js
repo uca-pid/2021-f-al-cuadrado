@@ -4,13 +4,14 @@ import FlatList from 'flatlist-react';
 import icons from "../../../functions/icons";
 import { IoArrowBack } from "@react-icons/all-files/io5/IoArrowBack"; 
 import { IoPencil} from "@react-icons/all-files/io5/IoPencil"; 
+import "./style.css";
 
 
 const monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
 ];
 
-const PopUpCategory = ({month, closePopUp, openPopUpCategoryDetails,update}) => {
+const PopUpCategory = ({month, closePopUp, openPopUpCategoryDetails,update,openPopUpSessionExpired}) => {
 
     const [categories, setCategories] = useState([]);
 
@@ -23,14 +24,22 @@ const PopUpCategory = ({month, closePopUp, openPopUpCategoryDetails,update}) => 
                                 month: month})
         };
         fetch('https://smart-money-back.herokuapp.com/categories/'+session.user_id+'/', requestOptions)
-          .then(response => response.json())
-          .then(data => {
-              setCategories(data);
-            });
+            .then(response => {
+                if(response.status===200){
+                    return response.json()
+                }else if (response.status===401){
+                openPopUpSessionExpired()
+                }
+            })
+            .then(data => {
+                setCategories(data);
+            })
     }
     useEffect(() => fetchCategories(),[update])
 
    const categoryDetails = (category,month) => {
+    //    console.log(category)
+    //    console.log(month)
         openPopUpCategoryDetails(category,month);
    }
 
@@ -39,9 +48,9 @@ const PopUpCategory = ({month, closePopUp, openPopUpCategoryDetails,update}) => 
         if (item.total!==null) total = item.total;
         return (
           <tr className = "categoriesRow" key={item.name} onClick={()=>categoryDetails(item,month)}>
-            <th className = "categoriesValue tableIcon">{icons(item.icon)}</th> 
-            <th className = "categoriesValue tableCategory">{item.name}</th>
-            <th className = "categoriesValue tableTotal">$ {total}</th>
+            <th className = "categoriesValue tableIconCategories">{icons(item.icon)}</th> 
+            <th className = "categoriesValue tableCategoryCategories">{item.name}</th>
+            <th className = "categoriesValue tableTotalCategories">$ {total}</th>
           </tr>        
         )  
     }

@@ -15,7 +15,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 
 
-const PopUpDeleteCategory = ({closePopUp, categoryToDelete, deleted}) => {
+const PopUpDeleteCategory = ({closePopUp, categoryToDelete, deleted,openPopUpSessionExpired}) => {
 
     const deleteCategory = () => {
       const session = JSON.parse(localStorage.session);
@@ -29,7 +29,14 @@ const PopUpDeleteCategory = ({closePopUp, categoryToDelete, deleted}) => {
       };
       console.log(requestOptions.body)
       fetch('https://smart-money-back.herokuapp.com/delete_category/'+session.user_id+'/', requestOptions)
-        .then(() => {deleted();closePopUp()});
+        .then(response => {
+          if(response.status===200){
+            deleted();
+            closePopUp()
+          }else if (response.status===401){
+            openPopUpSessionExpired()
+          }
+        })
 
     }
 

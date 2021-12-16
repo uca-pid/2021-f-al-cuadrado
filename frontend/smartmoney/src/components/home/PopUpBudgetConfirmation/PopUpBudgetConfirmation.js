@@ -15,7 +15,7 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 
 
-const PopUpBudgetConfirmation = ({closePopUp, budget, closeNewBudgetPopUp}) => {
+const PopUpBudgetConfirmation = ({closePopUp, budget, closeNewBudgetPopUp,openPopUpSessionExpired}) => {
 
     const confirmBudget = () => {
       const session = JSON.parse(localStorage.session);
@@ -34,6 +34,8 @@ const PopUpBudgetConfirmation = ({closePopUp, budget, closeNewBudgetPopUp}) => {
           if(response.status===200){
               closeNewBudgetPopUp();
               closePopUp();
+          }else{
+            openPopUpSessionExpired()
           }
         });  
 

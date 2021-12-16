@@ -1,5 +1,7 @@
 import {colors} from './colors';
 import {colorsLessOpacity} from './colorsLessOpacity';
+import {colorsExpensesFill,colorsExpensesBorder} from './colorsExpenses';
+import {colorsBudgetsFill,colorsBudgetsBorder} from './colorsBudgets';
 
 export let dataFrameBarChart = {
   labels: [],
@@ -7,15 +9,15 @@ export let dataFrameBarChart = {
     {
       label: 'Amount expended',
       data: [],
-      backgroundColor: colorsLessOpacity,
-      borderColor: colors,
+      backgroundColor: colorsExpensesFill,
+      borderColor: colorsExpensesBorder,
       borderWidth: 1,
     },
     {
       label: 'Budget total',
       data: [],
-      backgroundColor: colorsLessOpacity,
-      borderColor: colors,
+      backgroundColor: colorsBudgetsFill,
+      borderColor: colorsBudgetsBorder,
       borderWidth: 1,
     },
   ],

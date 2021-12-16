@@ -4,7 +4,7 @@ import "./style.css";
 import FlatList from 'flatlist-react';
 import icons from "../../../functions/icons";
 
-const Categories = ({openPopUpCategoryDetails, update}) => {
+const Categories = ({openPopUpCategoryDetails, update, openPopUpSessionExpired}) => {
 
     const [categories, setCategories] = useState([]);
 
@@ -16,19 +16,26 @@ const Categories = ({openPopUpCategoryDetails, update}) => {
           body: JSON.stringify({ code: session.code})
         };
         fetch('https://smart-money-back.herokuapp.com/categories/'+session.user_id+'/', requestOptions)
-          .then(response => response.json())
-          .then(data => {
-              setCategories(data);
-              let allCategories = [];
-              data.map( obj => {allCategories.push(obj.name)});
-              localStorage.setItem('allCategories',allCategories);
-            });
+            .then(response => {
+                if(response.status===200){
+                    return response.json()
+                }else if (response.status===401){
+                openPopUpSessionExpired()
+                }
+            })
+            .then(data => {
+                setCategories(data);
+                let allCategories = [];
+                data.map( obj => {allCategories.push(obj.name)});
+                localStorage.setItem('allCategories',allCategories);
+            })
+
     }
 
    useEffect(() => fetchCategories(),[update])
 
    const categoryDetails = (category) => {
-        openPopUpCategoryDetails(category);
+        openPopUpCategoryDetails(category); 
    }
 
 

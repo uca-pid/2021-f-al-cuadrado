@@ -23,7 +23,7 @@ import { IoArrowBack } from "@react-icons/all-files/io5/IoArrowBack";
 import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline"; 
 
 
-const PopUpNewExpense = ({closePopUp, state, expenseToEdit, openPopUpDeleteExpense}) => {
+const PopUpNewExpense = ({closePopUp, state, expenseToEdit, openPopUpDeleteExpense, openPopUpNewCategory, openPopUpSessionExpired}) => {
 
     const isMobileDevice = useMediaQuery({
         query: "(max-device-width: 480px)",
@@ -79,7 +79,7 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit, openPopUpDeleteExpen
                 value: expenseValue,
                 description: description,
                 category: selectedOption,
-                date: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+(date.getDate()+1),
+                date: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate(),
             })
           };
           console.log(requestOptionsNewExpense)
@@ -87,6 +87,8 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit, openPopUpDeleteExpen
             .then((response) => {
               if(response.status===201){
                   closePopUp();
+              }else{
+                openPopUpSessionExpired()
               }
             });
         }else{
@@ -115,6 +117,8 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit, openPopUpDeleteExpen
           .then((response) => {
             if(response.status===200){
                 closePopUp();
+            }else{
+              openPopUpSessionExpired()
             }
           });
       }else{
@@ -136,7 +140,18 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit, openPopUpDeleteExpen
                 <div className="divCenteredItems">
                 <p className="popUpTitle">{title}</p>
                 <form className="formNewExpense">
+                  
                     <p className="label"></p>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DatePicker 
+                      label = 'Date'
+                      value={date} 
+                      onChange={(date) => setDate(date)} 
+                      maxDate={new Date()}
+                      renderInput={(params) => 
+                        <TextField margin = 'dense'
+                        size = "small" {...params} />}/>
+                    </LocalizationProvider>
                     <TextField
                     label = "Value" variant = 'outlined' 
                     margin = "dense"
@@ -163,27 +178,31 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit, openPopUpDeleteExpen
                     onChange={e => setDescription(e.target.value)}  
                     onFocus={()=>setDescriptionEmpty(false)} 
                     onBlur={()=>isEmpty(description,setDescriptionEmpty)}/>
-                    <TextField 
-                    label="Category" 
-                    select required
-                    margin = "dense"
-                    //options={allCategories} 
-                    labelId = 'label'
-                    size = 'small'
-                    value={selectedOption} 
-                    onChange={event=>{setSelectedOption(event.target.value);setCategoryEmpty(false);console.log(event.target.value)}}>
-                    {loadCategories()}
-                    </TextField>
+                    <div style={{display:'flex', flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
+                      <TextField 
+                      label="Category" 
+                      select required
+                      margin = "dense"
+                      style={{width:'80%'}}
+                      //options={allCategories} 
+                      labelId = 'label'
+                      size = 'small'
+                      value={selectedOption} 
+                      onChange={event=>{setSelectedOption(event.target.value);setCategoryEmpty(false);console.log(event.target.value)}}>
+                      {loadCategories()}
+                      </TextField>
+                      <div style={{width:'15%',marginTop:8, marginBottom:4}}>
+                      <Button 
+                        variant ='outlined'
+                        size = 'small'
+                        style={{minWidth: 0}}
+                        onClick={openPopUpNewCategory}>+</Button>
+                      </div>
+                      
+                    </div>
+
                     {categoryEmpty&&<RequiredField/>}
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <DatePicker 
-                      label = 'Date'
-                      value={date} 
-                      onChange={(date) => setDate(date)} 
-                      renderInput={(params) => 
-                        <TextField margin = 'dense'
-                        size = "small" {...params} />}/>
-                    </LocalizationProvider>
+                    
                     <Button 
                     variant = 'contained'
                     style = {{marginTop: '5%'}}

@@ -1,0 +1,44 @@
+@import "../../../styles/generalWebStyles.css";
+
+.cantCreateBudgetContainer{
+    position:absolute;
+    top:20%;
+    left: 50%;
+    margin-left: -150px;
+    width:300px;
+    height:250px;
+    background-color:#FFFFFF;
+    border-radius:10px;
+}
+.closeDeleteBudget{
+    position:relative;
+    left:270px;
+    top:5px;
+    background-color:#FFFFFF;
+    border:0px
+}
+.cantCreateBudgetContent{
+    width: 80%;
+    margin-bottom: 20px;
+}
+.budgetToDelete{
+    font-weight: bold;
+    margin: 2px;
+}
+.buttonDeleteBudget{
+    height:40px;
+    border-radius:5px;
+    border:0px;
+    color:#FFFFFF;
+    font-weight:bold;
+    background-color:#a59ba8;
+
+}
+.buttonDeleteBudget:hover{
+    background-color:#8a818d;
+
+}
+.popUpDeleteButton{
+    margin-top: 15px;
+    width: 100px;
+}

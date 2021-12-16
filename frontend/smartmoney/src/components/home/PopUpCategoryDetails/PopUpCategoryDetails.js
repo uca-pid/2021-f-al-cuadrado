@@ -12,7 +12,7 @@ import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline";
 
 
 // import TableScrollbar from 'react-table-scrollbar';
-const PopUpCategoryDetails = ({category, month, closePopUp, openPopUpEditExpense,editCategory,deleteCategoryPopUp, update}) => {
+const PopUpCategoryDetails = ({category, month, closePopUp, openPopUpEditExpense,editCategory,deleteCategoryPopUp, update,openPopUpSessionExpired}) => {
 
     const [expenses, setExpenses] = useState([]);
     const [errorMessage, setErrorMessage] = useState('')
@@ -21,9 +21,9 @@ const PopUpCategoryDetails = ({category, month, closePopUp, openPopUpEditExpense
         let from = null
         let upTo = null
         if (month){
-            const date = new Date()
-            from = new Date(date.getFullYear(), month-1, 1).toISOString().slice(0, 10);
-            upTo = new Date(date.getFullYear(),month, 0).toISOString().slice(0, 10);
+            const date = new Date(month)
+            from = new Date(date.getFullYear(), date.getMonth(), 1).toISOString().slice(0, 10);
+            upTo = new Date(date.getFullYear(),date.getMonth()+1, 0).toISOString().slice(0, 10);
         }
         const session = JSON.parse(localStorage.session);
         const requestOptions = {
@@ -37,11 +37,17 @@ const PopUpCategoryDetails = ({category, month, closePopUp, openPopUpEditExpense
         })
         };
         fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptions)
-        .then(response => response.json())
-        .then(data => {
-            setExpenses(data);
-            if(data.length===0)setErrorMessage("There is no expense yet!")
-            });
+            .then(response => {
+                if(response.status===200){
+                    return response.json()
+                }else if (response.status===401){
+                openPopUpSessionExpired()
+                }
+            })
+            .then(data => {
+                setExpenses(data.data);
+                if(data.data.length===0)setErrorMessage("There is no expense yet!")
+            })
    }
    useEffect(() => categoryDetails(),[update])
 

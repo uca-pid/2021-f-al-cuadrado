@@ -30,10 +30,11 @@ const options = {
   },
 };
 
-const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update}) => {
+const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update,openPopUpSessionExpired}) => {
     const [fromDate, setFromDate] = useState(new Date(new Date().getFullYear(), 0, 1));
     const [upToDate, setUpToDate] = useState(new Date());
     const [dataFrame,setDataFrame] = useState([])
+    const [onlyBudgets, setOnlyBudgets] = useState(false);
 
     const isMobileDevice = useMediaQuery({
       query: "(max-device-width: 480px)",
@@ -51,17 +52,17 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update}) => {
     function getElementFromEvent(elem) {
       console.log(elem[0].datasetIndex === 1)
       let month = fromDate.getMonth()
-      if (elem[0] && elem[0].datasetIndex === 0) 
+      if (elem[0] && elem[0].datasetIndex === 0 && !onlyBudgets) 
         {
           console.log(dataFrame.labels[elem[0].index].split(" ")[1]+"-"+(((month+elem[0].index)%12)+1)+"-1")
           openPopUpCategories(dataFrame.labels[elem[0].index].split(" ")[1]+"-"+(((month+elem[0].index)%12)+1)+"-1")
         }
-      else if(elem[0] && elem[0].datasetIndex === 1)
+      else if((elem[0] && elem[0].datasetIndex === 1)||onlyBudgets)
         {
-
           let dateAux = new Date(new Date().setMonth(fromDate.getMonth()+(elem[0].index)))
           openPopUpBudgetDetails(dateAux)
         }
+
     }
 
     function expenseTotals(dataFrameBarChart) {
@@ -79,13 +80,20 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update}) => {
             })
         };
         fetch('https://smart-money-back.herokuapp.com/expenses_per_month/'+session.user_id+'/', requestOptions)
-          .then(response => response.json())
+          .then(response => {
+            if(response.status===200){
+                return response.json()
+            }else if (response.status===401){
+              openPopUpSessionExpired()
+            }
+          })
           .then(data => {
             dataFrameBarChart.datasets[0].data = []
             data.forEach(month => month_totalProcess(month,dataFrameBarChart))
             //Math.min(...dataFrameBarChart.datasets[0].data)
             setDataFrame({...dataFrameBarChart})
-    });
+          })
+
     }
     function fetchBudgets(dataFrameBarChart,dataset_index) {
       const offset = fromDate.getTimezoneOffset()
@@ -104,14 +112,20 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update}) => {
             })
         };
         fetch('https://smart-money-back.herokuapp.com/past_budgets/'+session.user_id+'/', requestOptions)
-        .then(response => response.json())
+        .then(response => {
+          if(response.status===200){
+              return response.json()
+          }else if (response.status===401){
+            openPopUpSessionExpired()
+          }
+        })
         .then(data => {
           dataFrameBarChart.datasets[dataset_index].data = []
           data.forEach(month => {
             let month_date = new Date(month.budget__month)
             let month_number = month_date.getMonth() + 1
             let index
-            if (month_date.getFullYear() != fromDate.getFullYear()) {
+            if (month_date.getFullYear() !== fromDate.getFullYear()) {
               index = month_date.getMonth() + (13 - fromDate.getMonth())
             } else {
               index = month_number - fromDate.getMonth()
@@ -135,6 +149,7 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update}) => {
       
     }
     function fetchAll(){
+        setOnlyBudgets(false);
         dataFrameBarChart.datasets[1].data = []
         dataFrameBarChart.datasets[0].data = []
         dataFrameBarChart.labels = []
@@ -145,6 +160,7 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update}) => {
 
 }
     function fetchOnlyBudgets() {
+        setOnlyBudgets(true);
         dataFrameBarChart.datasets[1].data = []
         dataFrameBarChartBudget.datasets[0].data = []
         dataFrameBarChartBudget.labels = []
@@ -152,6 +168,7 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update}) => {
         loadLabels(dataFrameBarChartBudget)
 }
     function fetchOnlyExpenses() {
+        setOnlyBudgets(false);
         dataFrameBarChart.datasets[1].data = []
         dataFrameBarChartExpenses.datasets[0].data = []
         dataFrameBarChartExpenses.labels = []
@@ -159,7 +176,7 @@ const BarChart = ({openPopUpCategories,openPopUpBudgetDetails,update}) => {
         loadLabels(dataFrameBarChartExpenses)
 }
 
-    useEffect(() => fetchAll(),[fromDate,upToDate,update])
+    useEffect(() => fetchAll(),[fromDate,upToDate])
 
     return(
     <Stack 

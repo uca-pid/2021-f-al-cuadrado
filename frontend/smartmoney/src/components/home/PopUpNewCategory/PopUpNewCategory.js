@@ -14,7 +14,7 @@ import Button from '@mui/material/Button';
 
 
 
-const PopUpNewCategory = ({closePopUp, state, categoryToEdit}) => {
+const PopUpNewCategory = ({closePopUp, state, categoryToEdit, openPopUpCantCreateCategory, openPopUpSessionExpired}) => {
 
     const isMobileDevice = useMediaQuery({
         query: "(max-device-width: 480px)",
@@ -56,7 +56,14 @@ const PopUpNewCategory = ({closePopUp, state, categoryToEdit}) => {
             fetch('https://smart-money-back.herokuapp.com/new_category/'+session.user_id+'/', requestOptionsNewExpense)
             .then((response) => {
               if(response.status===201){
-                  closePopUp();
+                updaCategoriesList(name);
+                closePopUp();
+              }
+              if(response.status===400){
+                openPopUpCantCreateCategory()
+              }
+              if(response.status===401){
+                openPopUpSessionExpired()
               }
             });
         } 
@@ -80,11 +87,26 @@ const PopUpNewCategory = ({closePopUp, state, categoryToEdit}) => {
           fetch('https://smart-money-back.herokuapp.com/edit_category/'+session.user_id+'/', requestOptionsNewExpense)
             .then((response) => {
               if(response.status===200){
-                  closePopUp();
+                updaCategoriesList(name);
+                closePopUp();
+
+              }
+              if(response.status===400){
+                openPopUpCantCreateCategory()
+              }
+              if(response.status===401){
+                openPopUpSessionExpired()
               }
             });
         } 
       }
+
+    function updaCategoriesList(category){
+        let allCategories = localStorage.allCategories.split(',');
+        allCategories.push(category);
+        localStorage.setItem('allCategories',allCategories);
+
+    }
 
     function isEmpty(input, isEmpty){
         if(input==='')isEmpty(true)

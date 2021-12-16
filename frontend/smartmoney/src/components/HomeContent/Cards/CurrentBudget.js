@@ -11,7 +11,7 @@ import { IoChevronDownSharp } from "@react-icons/all-files/io5/IoChevronDownShar
 import { IoChevronUpSharp } from "@react-icons/all-files/io5/IoChevronUpSharp"; 
 import { useMediaQuery } from 'react-responsive';
 
-const CurrentBudget = ({newBudget, update}) => {
+const CurrentBudget = ({newBudget, update, openPopUpSessionExpired}) => {
 
    const [categories, setCategories] = useState([]);
    const [budget, setBudget] = useState(0);
@@ -28,6 +28,7 @@ const CurrentBudget = ({newBudget, update}) => {
     function fetchLoadScreen(){
         const date = new Date();
         const session = JSON.parse(localStorage.session);
+        let activeBudget = false;
 
         const requestOptionsNewExpense = {
             method: 'POST',
@@ -37,38 +38,52 @@ const CurrentBudget = ({newBudget, update}) => {
           console.log(requestOptionsNewExpense.body)
           fetch('https://smart-money-back.herokuapp.com/active_budget/'+session.user_id+'/', requestOptionsNewExpense)
             .then((response) => {
+                console.log(response.status)
               if(response.status===200){
+                  activeBudget = true;
                 setBudgetCurrentMonth(true)
+              }else if (response.status===400){
+                setBudgetCurrentMonth(false)
+              }else if (response.status===401){
+                openPopUpSessionExpired()
               }
-            });  
-
-        const requestOptions = {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-                code: session.code,
-                month: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+1,
             })
-        };
-        fetch('https://smart-money-back.herokuapp.com/budget_details/'+session.user_id+'/', requestOptions)
-          .then(response => response.json())
-          .then(data => {
-              let totalBudget = 0;
-              let totalSpent = 0;
-              setCategories(data)
-              data.map(category =>{
-                totalBudget += category.total;
-                totalSpent += category.total_spent;
-              })
-              setBudget(totalBudget);
-              setSpent(totalSpent);
-              if((totalBudget-totalSpent)>=0){
-                setDiference(totalBudget-totalSpent);
-              }else{
-                setDiference(totalSpent-totalBudget);
-              }
-              setGreen((totalBudget-totalSpent)>=0);
+            .then(()=>{
+                if(activeBudget){
+                    console.log(date.getFullYear()+'-'+(date.getMonth()+1)+'-'+1)
+                    const requestOptions = {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            code: session.code,
+                            month: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+1,
+                        })
+                    };
+                    fetch('https://smart-money-back.herokuapp.com/budget_details/'+session.user_id+'/', requestOptions)
+                        .then(response => {
+                            if(response.status===200){
+                                return response.json()
+                            }else if (response.status===401){
+                            openPopUpSessionExpired()
+                            }
+                        })
+                        .then(data => {
+                            console.log(data)
+                            let totalBudget = 0;
+                            let totalSpent = 0;
+                            setCategories(data)
+                            data.map(category =>{
+                            totalBudget += category.total;
+                            totalSpent += category.total_spent;
+                            })
+                            setBudget(totalBudget);
+                            setSpent(totalSpent);
+                            setDiference((totalSpent*100/totalBudget).toFixed(0));
+                            setGreen((totalBudget-totalSpent)>=0);
+                        })
+                }
             });
+
     }
 
     useEffect(() => fetchLoadScreen(),[update])
@@ -101,8 +116,8 @@ const CurrentBudget = ({newBudget, update}) => {
                     <div style={{marginTop:20}}>
                         <p className="cardTitle" style={{margin:0}}>Current budget</p>
                         <div style={{marginTop:20}}>
-                            <p style={{margin:0, fontSize:12}}>Balance:</p>
-                            <p className="homeBudgetValues" style={green ? {fontWeight:'bold',color:'green'} : {fontWeight:'bold',color:'red'}}>$ {diference}</p>
+                            <p style={{margin:0, fontSize:12}}>Spent:</p>
+                            <p className="homeBudgetValues" style={green ? {fontWeight:'bold',color:'green'} : {fontWeight:'bold',color:'red'}}>{diference} %</p>
                         </div>
                         <div style={{marginTop:20}}>
                             <p style={{margin:0, fontSize:12}}>Spent:</p>
@@ -145,8 +160,8 @@ const CurrentBudget = ({newBudget, update}) => {
                 {(!display && budgetCurrentMonth&&!isMobileDevice)&&
                  <div style={{width:'100%', display:'flex',flexDirection:'row', justifyContent:'space-around'}}>
                     <div style={{width:'30%'}}>
-                        <p style={{margin:0, fontSize:12}}>Balance:</p>
-                        <p className="homeBudgetValues" style={green ? {fontWeight:'bold',color:'green'} : {fontWeight:'bold',color:'red'}}>$ {diference}</p>
+                        <p style={{margin:0, fontSize:12}}>Spent:</p>
+                        <p className="homeBudgetValues" style={green ? {fontWeight:'bold',color:'green'} : {fontWeight:'bold',color:'red'}}>{diference} %</p>
                     </div>
                     <div style={{width:'30%'}}>
                         <p style={{margin:0, fontSize:12}}>Spent:</p>
@@ -189,8 +204,8 @@ const CurrentBudget = ({newBudget, update}) => {
                     <div style={{width:'100%', display:'flex', flexDirection:'row', justifyContent:'space-around', alignItems:'center'}}>
                         <p className="cardTitle" style={{margin:0, width:'30%'}}>Current budget</p>
                         <div style={{marginTop:20}}>
-                            <p style={{margin:0, fontSize:12}}>Balance:</p>
-                            <p className="homeBudgetValues" style={green ? {fontWeight:'bold',color:'green'} : {fontWeight:'bold',width:'30%',color:'red'}}>$ {diference}</p>
+                            <p style={{margin:0, fontSize:12}}>Spent:</p>
+                            <p className="homeBudgetValues" style={green ? {fontWeight:'bold',color:'green'} : {fontWeight:'bold',width:'30%',color:'red'}}>{diference} %</p>
                         </div>
                         <div style={{marginTop:20}}>
                             <p style={{margin:0, fontSize:12}}>Spent:</p>

@@ -6,15 +6,15 @@ import CurrentBudget from './Cards/CurrentBudget';
 
 import "./style.css";
  
-const HomeContent = ({monthSummary, expenseHistory,searchExpenses,openPopUpCategoryDetails, openPopUpEditExpense, openPopUpDeleteExpense, newBudget, update}) => {
+const HomeContent = ({monthSummary, expenseHistory,searchExpenses,openPopUpCategoryDetails, openPopUpEditExpense, openPopUpDeleteExpense, newBudget, update,openPopUpSessionExpired}) => {
 
     return(
         <div style={{width:'100%', overflowY:'auto', height:'100%'}}>
-            <CurrentBudget newBudget={newBudget} update ={update} />
+            <CurrentBudget newBudget={newBudget} update ={update}  openPopUpSessionExpired={openPopUpSessionExpired}/>
             <div className="container" style={{width:'100%'}}>
-            <MonthSummary monthSummary={monthSummary} update ={update}/>
-            <ExpensesHistory expenseHistory={expenseHistory} update ={update}/>
-            <Expenses searchExpenses={searchExpenses} openPopUpEditExpense={openPopUpEditExpense}  openPopUpDeleteExpense={openPopUpDeleteExpense} update ={update}/>
+            <MonthSummary monthSummary={monthSummary} update ={update} openPopUpSessionExpired={openPopUpSessionExpired}/>
+            <ExpensesHistory expenseHistory={expenseHistory} update ={update} openPopUpSessionExpired={openPopUpSessionExpired}/>
+            <Expenses searchExpenses={searchExpenses} openPopUpEditExpense={openPopUpEditExpense}  openPopUpDeleteExpense={openPopUpDeleteExpense} update ={update} openPopUpSessionExpired={openPopUpSessionExpired}/>
             </div>
 
             {/* <Categories openPopUpCategoryDetails={openPopUpCategoryDetails} update ={update}/> */}

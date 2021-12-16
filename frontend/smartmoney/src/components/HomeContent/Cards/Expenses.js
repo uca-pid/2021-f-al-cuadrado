@@ -5,7 +5,7 @@ import FlatList from 'flatlist-react';
 import icons from "../../../functions/icons";
 import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline"; 
 
-const Expenses = ({searchExpenses,openPopUpEditExpense, openPopUpDeleteExpense, update}) => {
+const Expenses = ({searchExpenses,openPopUpEditExpense, openPopUpDeleteExpense, update, openPopUpSessionExpired}) => {
 
     const [expenses, setExpenses] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
@@ -15,14 +15,20 @@ const Expenses = ({searchExpenses,openPopUpEditExpense, openPopUpDeleteExpense, 
         const requestOptions = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code: session.code})
+          body: JSON.stringify({ code: session.code, from_item:0, up_to_item:20})
         };
         fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptions)
-          .then(response => response.json())
-          .then(data => {
-              setExpenses(data);
-              if(data.length===0)setErrorMessage("There is no expense yet!")
-            });
+            .then(response => {
+                if(response.status===200){
+                    return response.json()
+                }else if (response.status===401){
+                openPopUpSessionExpired()
+                }
+            })
+            .then(data => {
+                setExpenses(data.data);
+                if(data.data.length===0)setErrorMessage("There is no expense yet!")
+            })
 
     }
     useEffect(() => fetchExpenses(),[update])

@@ -5,7 +5,7 @@ import { IoPencil} from "@react-icons/all-files/io5/IoPencil";
 import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline"; 
 import FlatList from 'flatlist-react';
 
-const PopUpEditCategoires = ({closePopUp, openPopUpEditCategory, openPopUpDeleteCategory, update}) => {
+const PopUpEditCategoires = ({closePopUp, openPopUpEditCategory, openPopUpDeleteCategory, update, openPopUpSessionExpired}) => {
 
     
     const [customCategories, setCustomCategories] = useState([]);
@@ -21,18 +21,23 @@ const PopUpEditCategoires = ({closePopUp, openPopUpEditCategory, openPopUpDelete
           body: JSON.stringify({ code: session.code, month:date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()})
         };
         fetch('https://smart-money-back.herokuapp.com/categories/'+session.user_id+'/', requestOptions)
-          .then(response => response.json())
-          .then(data => {
-              
-            data.map(category => {
-                if(category.user_id!==null){
-                    categories.push(category)
+            .then(response => {
+                if(response.status===200){
+                    return response.json()
+                }else if (response.status===401){
+                openPopUpSessionExpired()
                 }
             })
-            setCustomCategories({...categories});
-            if(data.length===6)setErrorMessage("There is no custom categories yet!")
-          })
-        
+            .then(data => {
+                
+                data.map(category => {
+                    if(category.user_id!==null){
+                        categories.push(category)
+                    }
+                })
+                setCustomCategories({...categories});
+                if(data.length===6)setErrorMessage("There is no custom categories yet!")
+            })        
 
     }
     useEffect(() => getcustomCategories(),[update])

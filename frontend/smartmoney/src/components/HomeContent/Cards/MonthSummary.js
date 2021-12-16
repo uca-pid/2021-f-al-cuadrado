@@ -7,7 +7,7 @@ import { IoTrashOutline } from "@react-icons/all-files/io5/IoTrashOutline";
 import { Pie } from 'react-chartjs-2';
 import { dataFramePieChart } from '../../../constants/dataFramePieChart';
 
-const MonthSummary = ({monthSummary,update}) => {
+const MonthSummary = ({monthSummary,update, openPopUpSessionExpired}) => {
 
     const [chartCategories,setChartCategories] = useState(dataFramePieChart);
    
@@ -20,7 +20,13 @@ const MonthSummary = ({monthSummary,update}) => {
           body: JSON.stringify({ code: session.code, month:date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()})
         };
         fetch('https://smart-money-back.herokuapp.com/categories/'+session.user_id+'/', requestOptions)
-          .then(response => response.json())
+          .then(response => {
+            if(response.status===200){
+                return response.json()
+            }else if (response.status===401){
+              openPopUpSessionExpired()
+            }
+          })
           .then(data => {
               let categoriesChartName = [];
               let categoriesChartValue = [];
@@ -33,7 +39,7 @@ const MonthSummary = ({monthSummary,update}) => {
               dataFrame.datasets[0].data = categoriesChartValue;
               setChartCategories(dataFrame);
 
-            });
+            })
     }
 
     useEffect(() => fetchCategories(),[update])

@@ -1,3 +1,3 @@
-import PopUpDetailsDetails from "./PopUpDetailsDetails";
+import PopUpBudgetDetails from "./PopUpBudgetDetails";
 
-export default PopUpDetailsDetails;
+export default PopUpBudgetDetails;
