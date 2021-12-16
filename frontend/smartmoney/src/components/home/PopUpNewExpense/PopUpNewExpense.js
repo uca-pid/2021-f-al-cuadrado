@@ -79,7 +79,7 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit, openPopUpDeleteExpen
                 value: expenseValue,
                 description: description,
                 category: selectedOption,
-                date: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+(date.getDate()+1),
+                date: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate(),
             })
           };
           console.log(requestOptionsNewExpense)
@@ -140,7 +140,18 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit, openPopUpDeleteExpen
                 <div className="divCenteredItems">
                 <p className="popUpTitle">{title}</p>
                 <form className="formNewExpense">
+                  
                     <p className="label"></p>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DatePicker 
+                      label = 'Date'
+                      value={date} 
+                      onChange={(date) => setDate(date)} 
+                      maxDate={new Date()}
+                      renderInput={(params) => 
+                        <TextField margin = 'dense'
+                        size = "small" {...params} />}/>
+                    </LocalizationProvider>
                     <TextField
                     label = "Value" variant = 'outlined' 
                     margin = "dense"
@@ -191,15 +202,7 @@ const PopUpNewExpense = ({closePopUp, state, expenseToEdit, openPopUpDeleteExpen
                     </div>
 
                     {categoryEmpty&&<RequiredField/>}
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <DatePicker 
-                      label = 'Date'
-                      value={date} 
-                      onChange={(date) => setDate(date)} 
-                      renderInput={(params) => 
-                        <TextField margin = 'dense'
-                        size = "small" {...params} />}/>
-                    </LocalizationProvider>
+                    
                     <Button 
                     variant = 'contained'
                     style = {{marginTop: '5%'}}

@@ -22,13 +22,17 @@ const PopUpEditBudgets = ({closePopUp, openPopUpEditBudget, openPopUpDeleteBudge
           body: JSON.stringify({ code: session.code})
         };
         fetch('https://smart-money-back.herokuapp.com/future_budgets/'+session.user_id+'/', requestOptions)
-          .then(response => response.json())
+          .then(response => {
+              if(response.status===200){
+                  return response.json()
+              }else if (response.status===401){
+                openPopUpSessionExpired()
+              }
+            })
           .then(data => {
             setFutureBudgets(data);
-            console.log(data)
             if(data.length===0)setErrorMessage("There is no future budget yet!")
           })
-          .catch(error => openPopUpSessionExpired())
         
 
     }

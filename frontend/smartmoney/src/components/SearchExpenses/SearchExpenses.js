@@ -54,9 +54,14 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update, o
           };
           
           fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptions)
-            .then(response => response.json())
+            .then(response => {
+                if(response.status===200){
+                    return response.json()
+                }else if (response.status===401){
+                openPopUpSessionExpired()
+                }
+            })
             .then(data => {setMobileFilterDisplay(false);setMorePages(data.flag);setFromItem(50);setExpenses(data.data)})
-            .catch(error => openPopUpSessionExpired())
       }
       const applyFilters = () => {
         fetchExpenses()
@@ -67,8 +72,8 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update, o
         let from_date = null;
         let upTo_date = null;
         let fetchCategories = categories;
-        if(fromDate)from_date=fromDate.getFullYear()+'-'+(fromDate.getMonth()+1)+'-'+(fromDate.getDate()+1);
-        if(upToDate)upTo_date=upToDate.getFullYear()+'-'+(upToDate.getMonth()+1)+'-'+(upToDate.getDate()+1);
+        if(fromDate)from_date=fromDate.getFullYear()+'-'+(fromDate.getMonth()+1)+'-'+(fromDate.getDate());
+        if(upToDate)upTo_date=upToDate.getFullYear()+'-'+(upToDate.getMonth()+1)+'-'+(upToDate.getDate());
         if(fetchCategories[0]=='Categories')fetchCategories=[];
         const session = JSON.parse(localStorage.session);
         const requestOptions = {
@@ -88,13 +93,18 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update, o
         };
         
         fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptions)
-          .then(response => response.json())
-          .then(data => {
-              setExpenses(data.data);
-              setMorePages(data.flag);
-              if(data.data.length===0)setErrorMessage("There is no expense yet!")
+            .then(response => {
+                if(response.status===200){
+                    return response.json()
+                }else if (response.status===401){
+                openPopUpSessionExpired()
+                }
             })
-            .catch(error => openPopUpSessionExpired())
+            .then(data => {
+                setExpenses(data.data);
+                setMorePages(data.flag);
+                if(data.data.length===0)setErrorMessage("There is no expense yet!")
+            })
 
     }
     useEffect(() => fetchExpenses(),[update])
@@ -124,16 +134,21 @@ const SearchExpenses = ({openPopUpEditExpense, openPopUpDeleteExpense, update, o
         };
         
         fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptions)
-          .then(response => response.json())
-          .then(data => {
-              data.data.map((exp) => {console.log(exp)})
-                expenses.push(...data.data)
-                console.log(expenses)
-              setMorePages(data.flag);
-              setFromItem(fromItem+50);
-              if(data.data.length===0)setErrorMessage("There is no expense yet!")
+            .then(response => {
+                if(response.status===200){
+                    return response.json()
+                }else if (response.status===401){
+                openPopUpSessionExpired()
+                }
             })
-            .catch(error => openPopUpSessionExpired())
+            .then(data => {
+                data.data.map((exp) => {console.log(exp)})
+                    expenses.push(...data.data)
+                    console.log(expenses)
+                setMorePages(data.flag);
+                setFromItem(fromItem+50);
+                if(data.data.length===0)setErrorMessage("There is no expense yet!")
+            })
     }
 
     return(

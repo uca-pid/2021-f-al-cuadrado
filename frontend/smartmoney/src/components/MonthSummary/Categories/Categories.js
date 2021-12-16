@@ -8,6 +8,7 @@ import { IoCheckmarkSharp } from "@react-icons/all-files/io5/IoCheckmarkSharp";
 const Categories = ({categories,changeSelectedCategories, openPopUpCategoryDetails,month}) => {
 
    const categoryDetails = (category) => {
+       console.log(month)
         openPopUpCategoryDetails(category,month);
    }
 

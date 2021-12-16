@@ -29,8 +29,14 @@ const PopUpDeleteCategory = ({closePopUp, categoryToDelete, deleted,openPopUpSes
       };
       console.log(requestOptions.body)
       fetch('https://smart-money-back.herokuapp.com/delete_category/'+session.user_id+'/', requestOptions)
-        .then(() => {deleted();closePopUp()})
-        .catch(error => openPopUpSessionExpired())
+        .then(response => {
+          if(response.status===200){
+            deleted();
+            closePopUp()
+          }else if (response.status===401){
+            openPopUpSessionExpired()
+          }
+        })
 
     }
 

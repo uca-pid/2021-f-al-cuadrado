@@ -34,7 +34,7 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, co
     const [sinValores, setSinValores] = useState(false);
 
 
-
+ 
     // const [name, setName] = useState('');
     // const [nameEmpty, setNameEmpty] = useState('');
     // const [iconEmpty, setIconEmpty] = useState('');
@@ -50,6 +50,7 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, co
               body: JSON.stringify({ code: session.code, month:date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()})
             };
             fetch('https://smart-money-back.herokuapp.com/categories/'+session.user_id+'/', requestOptions)
+              
               .then(response => response.json())
               .then(data => {
                 data.map(category => {
@@ -57,14 +58,20 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, co
                 })
                 setCategories(data);
               })
-              .catch(error => openPopUpSessionExpired())
+              .catch(error => {openPopUpSessionExpired()})
         }else{
-            setTitle("Edit budget");
-            setMonth(new Date(parseInt(budgetToEdit.budget__month.substring(0, 4)),parseInt(budgetToEdit.budget__month.substring(5, 7)-1)));
+          let dateAux = new Date(parseInt(budgetToEdit.budget__month.substring(0, 4)),parseInt(budgetToEdit.budget__month.substring(5, 7)-1));
+          // console.log(dateAux)
+          // console.log(budgetToEdit.budget__month.substring(0, 10))  
+          // console.log(dateAux.getFullYear()+'-'+(dateAux.getMonth())+'-'+1)
+          setTitle("Edit budget");
+            setMonth(dateAux);
+            console.log(dateAux.getFullYear()+'-'+(dateAux.getMonth()+1)+'-'+1)
+            // setMonth(new Date(parseInt(budgetToEdit.budget__month.substring(0, 4)),parseInt(budgetToEdit.budget__month.substring(5, 7)-1)));
             const requestOptions = {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ code: session.code, month:budgetToEdit.budget__month.substring(0, 10)})
+              body: JSON.stringify({ code: session.code, month:dateAux.getFullYear()+'-'+(dateAux.getMonth()+1)+'-'+1})
             };
             fetch('https://smart-money-back.herokuapp.com/budget_details/'+session.user_id+'/', requestOptions)
               .then(response => response.json())
@@ -72,7 +79,8 @@ const PopUpBudget = ({closePopUp, state, budgetToEdit, openPopUpDeleteBudget, co
                 setCategories(data);
                 setTotal(budgetToEdit.total_budget);
               })
-              .catch(error => openPopUpSessionExpired())
+              .catch(error => console.log(error.info))
+              
         }
       }
     useEffect(() => loadEditFiles(),[state, budgetToEdit])

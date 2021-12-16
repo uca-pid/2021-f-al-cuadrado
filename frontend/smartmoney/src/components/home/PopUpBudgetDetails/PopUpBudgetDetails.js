@@ -32,7 +32,13 @@ const PopUpBudgetDetails = ({month, closePopUp,openPopUpSessionExpired}) => {
               })
           };
           fetch('https://smart-money-back.herokuapp.com/budget_details/'+session.user_id+'/', requestOptions)
-            .then(response => response.json())
+            .then(response => {
+                if(response.status===200){
+                    return response.json()
+                }else if (response.status===401){
+                openPopUpSessionExpired()
+                }
+            })
             .then(data => {
                 let totalBudget = 0;
                 let totalSpent = 0;
@@ -46,7 +52,6 @@ const PopUpBudgetDetails = ({month, closePopUp,openPopUpSessionExpired}) => {
                 setDiference((totalSpent*100/totalBudget).toFixed(0));
                 setGreen((totalBudget-totalSpent)>=0);
               })
-              .catch(error => openPopUpSessionExpired())
    }
 
    useEffect(() => budgetDetails(),[])

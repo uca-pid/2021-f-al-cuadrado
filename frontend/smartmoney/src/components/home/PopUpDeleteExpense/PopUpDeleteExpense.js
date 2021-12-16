@@ -33,8 +33,13 @@ const PopUpDeleteExpense = ({closePopUp, expenseToDelete,openPopUpSessionExpired
       };
       console.log(requestOptions.body)
       fetch('https://smart-money-back.herokuapp.com/delete_expense/'+session.user_id+'/', requestOptions)
-        .then(() => closePopUp())
-        .catch(error => openPopUpSessionExpired())
+        .then(response => {
+          if(response.status===200){
+            closePopUp()
+          }else if (response.status===401){
+            openPopUpSessionExpired()
+          }
+        })
 
     }
 

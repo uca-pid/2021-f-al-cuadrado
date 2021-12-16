@@ -18,12 +18,17 @@ const Expenses = ({searchExpenses,openPopUpEditExpense, openPopUpDeleteExpense, 
           body: JSON.stringify({ code: session.code, from_item:0, up_to_item:20})
         };
         fetch('https://smart-money-back.herokuapp.com/expenses/'+session.user_id+'/', requestOptions)
-          .then(response => response.json())
-          .then(data => {
-              setExpenses(data.data);
-              if(data.data.length===0)setErrorMessage("There is no expense yet!")
+            .then(response => {
+                if(response.status===200){
+                    return response.json()
+                }else if (response.status===401){
+                openPopUpSessionExpired()
+                }
             })
-            .catch(error => openPopUpSessionExpired())
+            .then(data => {
+                setExpenses(data.data);
+                if(data.data.length===0)setErrorMessage("There is no expense yet!")
+            })
 
     }
     useEffect(() => fetchExpenses(),[update])

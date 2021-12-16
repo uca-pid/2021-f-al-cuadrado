@@ -85,14 +85,19 @@ const Home = () => {
       body: JSON.stringify({ code: session.code})
     };
     fetch('https://smart-money-back.herokuapp.com/categories/'+session.user_id+'/', requestOptions)
-      .then(response => response.json())
+      .then(response => {
+        if(response.status===200){
+            return response.json()
+        }else if (response.status===401){
+          openPopUpSessionExpired()
+        }
+      })
       .then(data => {
         let allCategories = [];
         data.map( obj => {allCategories.push(obj.name)});
         localStorage.setItem('allCategories',allCategories);
         console.log(allCategories)
     })
-    .catch(error => openPopUpSessionExpired())
   }
   useEffect(() => fetchCategories(),[])
 
@@ -112,6 +117,7 @@ const Home = () => {
   function deletedCategory(){
     setSelectedCategory('');
     setPopUpCategoryDetails(false);
+    fetchCategories();
     updateComponents();
   }
   function openPopUpSessionExpired(){

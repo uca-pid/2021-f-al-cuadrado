@@ -34,7 +34,13 @@ const MonthSummary = ({openPopUpCategoryDetails, update, openPopUpSessionExpired
           body: JSON.stringify({ code: session.code, month: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()})
         };
         fetch('https://smart-money-back.herokuapp.com/categories/'+session.user_id+'/', requestOptions)
-          .then(response => response.json())
+          .then(response => {
+            if(response.status===200){
+                return response.json()
+            }else if (response.status===401){
+              openPopUpSessionExpired()
+            }
+          })
           .then(data => {
               let categoriesFetch = [];
               let categoriesChartName = [];
@@ -66,7 +72,6 @@ const MonthSummary = ({openPopUpCategoryDetails, update, openPopUpSessionExpired
               setCategories([]);
               setCategories(categoriesFetch);
             })
-            .catch(error => openPopUpSessionExpired())
     }
 
     useEffect(() => fetchCategories(),[update,updatte])
@@ -74,7 +79,7 @@ const MonthSummary = ({openPopUpCategoryDetails, update, openPopUpSessionExpired
 
     function getElementFromEvent(elem) {
       console.log(elem[0].index)
-      openPopUpCategoryDetails(categories[elem[0].index],date.getMonth()+1);
+      openPopUpCategoryDetails(categories[elem[0].index],date);
     }
 
     const changeSelectedCategories = (category, add) => {
@@ -118,7 +123,7 @@ const MonthSummary = ({openPopUpCategoryDetails, update, openPopUpSessionExpired
             </div>
             <div className="monthSummarySecondtDiv">
                 <Categories 
-                  month= {date.getMonth() +1} 
+                  month= {date} 
                   categories={categories} 
                   changeSelectedCategories={changeSelectedCategories} 
                   openPopUpCategoryDetails={openPopUpCategoryDetails}/>

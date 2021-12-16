@@ -20,7 +20,13 @@ const MonthSummary = ({monthSummary,update, openPopUpSessionExpired}) => {
           body: JSON.stringify({ code: session.code, month:date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate()})
         };
         fetch('https://smart-money-back.herokuapp.com/categories/'+session.user_id+'/', requestOptions)
-          .then(response => response.json())
+          .then(response => {
+            if(response.status===200){
+                return response.json()
+            }else if (response.status===401){
+              openPopUpSessionExpired()
+            }
+          })
           .then(data => {
               let categoriesChartName = [];
               let categoriesChartValue = [];
@@ -34,7 +40,6 @@ const MonthSummary = ({monthSummary,update, openPopUpSessionExpired}) => {
               setChartCategories(dataFrame);
 
             })
-            .catch(error => openPopUpSessionExpired())
     }
 
     useEffect(() => fetchCategories(),[update])

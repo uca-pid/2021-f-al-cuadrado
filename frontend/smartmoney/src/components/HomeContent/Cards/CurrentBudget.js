@@ -28,6 +28,7 @@ const CurrentBudget = ({newBudget, update, openPopUpSessionExpired}) => {
     function fetchLoadScreen(){
         const date = new Date();
         const session = JSON.parse(localStorage.session);
+        let activeBudget = false;
 
         const requestOptionsNewExpense = {
             method: 'POST',
@@ -37,37 +38,52 @@ const CurrentBudget = ({newBudget, update, openPopUpSessionExpired}) => {
           console.log(requestOptionsNewExpense.body)
           fetch('https://smart-money-back.herokuapp.com/active_budget/'+session.user_id+'/', requestOptionsNewExpense)
             .then((response) => {
+                console.log(response.status)
               if(response.status===200){
+                  activeBudget = true;
                 setBudgetCurrentMonth(true)
-              }else{
+              }else if (response.status===400){
+                setBudgetCurrentMonth(false)
+              }else if (response.status===401){
                 openPopUpSessionExpired()
               }
-            });  
+            })
+            .then(()=>{
+                if(activeBudget){
+                    console.log(date.getFullYear()+'-'+(date.getMonth()+1)+'-'+1)
+                    const requestOptions = {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            code: session.code,
+                            month: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+1,
+                        })
+                    };
+                    fetch('https://smart-money-back.herokuapp.com/budget_details/'+session.user_id+'/', requestOptions)
+                        .then(response => {
+                            if(response.status===200){
+                                return response.json()
+                            }else if (response.status===401){
+                            openPopUpSessionExpired()
+                            }
+                        })
+                        .then(data => {
+                            console.log(data)
+                            let totalBudget = 0;
+                            let totalSpent = 0;
+                            setCategories(data)
+                            data.map(category =>{
+                            totalBudget += category.total;
+                            totalSpent += category.total_spent;
+                            })
+                            setBudget(totalBudget);
+                            setSpent(totalSpent);
+                            setDiference((totalSpent*100/totalBudget).toFixed(0));
+                            setGreen((totalBudget-totalSpent)>=0);
+                        })
+                }
+            });
 
-        const requestOptions = {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-                code: session.code,
-                month: date.getFullYear()+'-'+(date.getMonth()+1)+'-'+1,
-            })
-        };
-        fetch('https://smart-money-back.herokuapp.com/budget_details/'+session.user_id+'/', requestOptions)
-          .then(response => response.json())
-          .then(data => {
-              let totalBudget = 0;
-              let totalSpent = 0;
-              setCategories(data)
-              data.map(category =>{
-                totalBudget += category.total;
-                totalSpent += category.total_spent;
-              })
-              setBudget(totalBudget);
-              setSpent(totalSpent);
-              setDiference((totalSpent*100/totalBudget).toFixed(0));
-              setGreen((totalBudget-totalSpent)>=0);
-            })
-            .catch(error => openPopUpSessionExpired())
     }
 
     useEffect(() => fetchLoadScreen(),[update])
